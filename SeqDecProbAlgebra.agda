@@ -7,6 +7,12 @@ open import Data.Sum renaming (_⊎_ to _∨_; inj₁ to inl; inj₂ to inr)
 open import Data.Maybe
 open import Data.Unit
 open import Data.Empty
+open import Data.List
+
+{- Did not find this function in the standard library.. -}
+iterate : {A : Set} → ℕ → (A → A) → A → List A
+iterate zero f a = []
+iterate (suc n) f a = a ∷ iterate n f (f a)
 
 {- A dynamic system is a datatype of states together with a transition 
    function. The transition function takes as input only the state, and 
@@ -15,6 +21,11 @@ record DynamicSystem : Set₁ where
   field
     State : Set
     Step  : State → State
+
+{- A trajectory of a dynamic system is simply repeating the step function
+   n times. -}
+trajectoryDyn : (d : DynamicSystem) → DynamicSystem.State d → (ℕ → List (DynamicSystem.State d))
+trajectoryDyn d x₀ = λ n → iterate n (DynamicSystem.Step d) x₀
 
 {- A sequential decision process (SDP) is a datatype of states, as in a dynamic
    system, but the step function now takes as an additional argument a

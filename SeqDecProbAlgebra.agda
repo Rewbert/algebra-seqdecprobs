@@ -144,7 +144,23 @@ sumUnit = record {State   = ⊥;
                   Control = λ state → ⊥;
                   Step    = λ state → λ control → state}
 
-{--}
+{- An interesting extension of the sum process is one where during execution, the 'current'
+   process would be able to yield in favor of the other process. We could capture this
+   behaviour by giving the combinator two functions, one with domain s₁ and codomain s₂,
+   and vice versa. The idea is that the available controls at any given point are captured
+   in the Maybe monad. If there is a control, it is represented by a just control. If there
+   is no available control, the 'value' of the control is nothing. If this is the case,
+   the step function will instead call the given swap functions.
+
+   An example situation could be if the processes modeled some software. One process could
+   model some software that could potentially throw exceptions. The other process could
+   model some error handler taking care of exceptions. The given 'swap'-functions would then
+   be a map from 'exceptions' (states) to 'handlers' (states in the other process).
+   The idea now is that if the software 'throws' an exception, there would be no available
+   control/action to take. Instead the step function would look up the exception handler and
+   switch to that process. When the handler-process reaches a state where the error has been
+   taken care of, it would again have no controls/actions to take, but would instead yield
+   in favor of the software again. -}
 sumMaybeSDProc : (p₁ : SeqDecProc) → (p₂ : SeqDecProc) → (SeqDecProc.State p₁ → SeqDecProc.State p₂) →
                                                            (SeqDecProc.State p₂ → SeqDecProc.State p₁) → SeqDecProc
 sumMaybeSDProc record { State   = s₁ ;

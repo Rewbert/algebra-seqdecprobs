@@ -14,8 +14,8 @@ iterate : {A : Set} → ℕ → (A → A) → A → List A
 iterate zero f a = []
 iterate (suc n) f a = a ∷ iterate n f (f a)
 
-{- A dynamic system is a datatype of states together with a transition 
-   function. The transition function takes as input only the state, and 
+{- A dynamic system is a datatype of states together with a transition
+   function. The transition function takes as input only the state, and
    from this computes a single new state. -}
 record DynamicSystem : Set₁ where
   field
@@ -26,6 +26,7 @@ record DynamicSystem : Set₁ where
    n times. -}
 trajectoryDyn : (d : DynamicSystem) → DynamicSystem.State d → (ℕ → List (DynamicSystem.State d))
 trajectoryDyn d x₀ = λ n → iterate n (DynamicSystem.Step d) x₀
+-- Suggestion: use |(n : ℕ) -> Vec n S| instead of |ℕ → List S|
 
 {- A sequential decision process (SDP) is a datatype of states, as in a dynamic
    system, but the step function now takes as an additional argument a
@@ -33,27 +34,27 @@ trajectoryDyn d x₀ = λ n → iterate n (DynamicSystem.Step d) x₀
    state. Not all actions are possible in all states, and this behaviour is
    captured by the control. The control is dependent on the state. -}
 record SeqDecProc : Set₁ where
+  constructor SDP
   field
     State   : Set
     Control : State → Set
     Step    : (x : State) → (y : Control x) → State
 
-{- A SDP can be time dependent. This boils down to the idea of e.g that every 
-   control is not available at each point in time, thus adding a third 
+{- A SDP can be time dependent. This boils down to the idea of e.g that every
+   control is not available at each point in time, thus adding a third
    dimension (time) to the problem. -}
 record SeqDecProcTime : Set₁ where
   field
     State   : ℕ → Set
     Control : (n : ℕ) → State n → Set
     Step    : (n : ℕ) → (x : State n) → (y : Control n x) → State (suc n)
+-- Note that it is now clear from the type that the step function moves forward in "time".
 
 {- There is a trivial embedding of the non time dependent SDP in the time
    dependent case. The problem becomes one that takes time as a parameter
    to the fields, but does not care what value they are applied to. -}
 embedTime : SeqDecProc → SeqDecProcTime
-embedTime record { State   = state ;
-                   Control = control ;
-                   Step    = step }
+embedTime (SDP state control step)
                    = record {State   = λ time → state;
                              Control = λ time → control;
                              Step    = λ time → step}
@@ -63,7 +64,7 @@ embedTime record { State   = state ;
    The datatype of states becomes a product type, where each element contains the two
    prior states.
 
-   The datatype capturing the controls would accept a state as argument, 
+   The datatype capturing the controls would accept a state as argument,
    and apply the prior controls componentwise.
 
    The step function would accept a state and control as argument, and then apply
@@ -74,15 +75,11 @@ embedTime record { State   = state ;
    Since both problems must be in a state at any given time, and they advance one step
    at the same time, if one of the problems reach a state where there are no controls
    available the other problem will not be able to advance either.
-   Similarly, if one problem were to not have any states possible to begin with, the 
+   Similarly, if one problem were to not have any states possible to begin with, the
    combined problem will never be able to advance. -}
 productSDProc : SeqDecProc → SeqDecProc → SeqDecProc
-productSDProc record { State   = s₁ ;
-                       Control = c₁ ;
-                       Step    = sf₁ }
-              record { State   = s₂ ;
-                       Control = c₂ ;
-                       Step    = sf₂ }
+productSDProc (SDP s₁ c₁ sf₁)
+              (SDP s₂ c₂ sf₂)
                        = record {State   = s₁ × s₂;
                                  Control = λ state → c₁ (fst state) × c₂ (snd state);
                                  Step    = λ state → λ control → sf₁ (fst state) (fst control) , sf₂ (snd state) (snd control)}
@@ -92,14 +89,17 @@ productSDProc record { State   = s₁ ;
    problems using the step function at the same time, the process will have as states ⊤, the
    unit type. We can only construct one value of this type, tt. Similarly, there must only
    be one possible control, ⊤ & tt. The step function would take as input state tt, and as
-   output always produce tt. 
+   output always produce tt.
 
    p = a problem
    mul = productSDProc
-   
-   p `mul` productUnit = 
-   productUnit `mul` p = 
-   productUnit -}
+
+   p `mul` productUnit =
+   productUnit `mul` p =
+   productUnit
+
+Comment: Note that "=" is probably "isomorphic to" here.
+ -}
 productUnit : SeqDecProc
 productUnit = record { State   = ⊤;
                        Control = λ state → ⊤;
@@ -116,16 +116,13 @@ productUnit = record { State   = ⊤;
    one of the processes has no states to transition between the other process can still
    advance. -}
 sumSDProc : SeqDecProc → SeqDecProc → SeqDecProc
-sumSDProc record { State   = s₁ ;
-                   Control = c₁ ;
-                   Step    = sf₁ }
-          record { State   = s₂ ;
-                   Control = c₂ ;
-                   Step    = sf₂ } = record { State   = s₁ ∨ s₂;
-                                              Control = λ { (inl s₁) → (c₁ s₁);
-                                                            (inr s₂) → (c₂ s₂)};
-                                              Step    = (λ { (inl s₁) c → inl (sf₁ s₁ c);
-                                                             (inr s₂) c → inr (sf₂ s₂ c) })}
+sumSDProc (SDP s₁ c₁ sf₁)
+          (SDP s₂ c₂ sf₂)
+  = record { State   = s₁ ∨ s₂;
+             Control = λ { (inl s₁) → (c₁ s₁);
+                           (inr s₂) → (c₂ s₂)};
+             Step    = (λ { (inl s₁) c → inl (sf₁ s₁ c);
+                            (inr s₂) c → inr (sf₂ s₂ c) })}
 
 {- If we want a unit problem to sumSDProc, we create a unit process based on the Empty
    datatype. A sum process can be in either of the two processes, and then stays there.
@@ -133,10 +130,10 @@ sumSDProc record { State   = s₁ ;
    processes could only ever be in the other process (given that it is not the unit, also).
 
    As state, we select the empty type. There is no way to construct states of this type.
-   
+
    As control we also select the empty type. It is dependent on the state, but as the state
    is the empty type, and hence the initial type in the category of sets, we know that the
-   function from the initial type to any other is unique, that this is the only function. 
+   function from the initial type to any other is unique, that this is the only function.
 
    As step function we need to go to a new state, given a prior state and a control. Once again,
    since now both state and control are initial types, again, the function we give is unique.
@@ -146,7 +143,7 @@ sumSDProc record { State   = s₁ ;
 
    p = a problem
    plus = sumSDProc
-   
+
    p `plus` sumUnit =
    sumUnit `plus` p =
    p -}
@@ -172,14 +169,11 @@ sumUnit = record {State   = ⊥;
    switch to that process. When the handler-process reaches a state where the error has been
    taken care of, it would again have no controls/actions to take, but would instead yield
    in favor of the software again. -}
+-- Comment: perhaps use some |helper p1 p2| to make the type more readable (avoid 4*SeqDecProc.State)
 sumMaybeSDProc : (p₁ : SeqDecProc) → (p₂ : SeqDecProc) → (SeqDecProc.State p₁ → SeqDecProc.State p₂) →
                                                            (SeqDecProc.State p₂ → SeqDecProc.State p₁) → SeqDecProc
-sumMaybeSDProc record { State   = s₁ ;
-                        Control = c₁ ;
-                        Step    = sf₁ }
-               record { State   = s₂ ;
-                        Control = c₂ ;
-                        Step    = sf₂ }
+sumMaybeSDProc (SDP s₁ c₁ sf₁)
+               (SDP s₂ c₂ sf₂)
                swaps₁tos₂
                swaps₂tos₁
                = record { State   = s₁ ∨ s₂;
@@ -191,20 +185,20 @@ sumMaybeSDProc record { State   = s₁ ;
                                         (inr s₂) (just c₂) → inr (sf₂ s₂ c₂)}}
 
 interleaveSDProc : SeqDecProc → SeqDecProc → SeqDecProc
-interleaveSDProc record { State   = s₁ ;
-                          Control = c₁ ;
-                          Step    = sf₁ }
-                 record { State   = s₂ ;
-                          Control = c₂ ;
-                          Step    = sf₂ }
-                          = record { State   = Bool × (s₁ × s₂); -- index for product
-                                     Control = λ state → c₁ (fst (snd state)) × c₂ (snd (snd state));
-                                     Step    = λ state → λ control → if fst state
-                                                                     then false , (sf₁ (fst (snd state)) (fst control) , snd (snd state))
-                                                                     else (true , (fst (snd state) , sf₂ (snd (snd state)) (snd control)))}
-
-
-
+interleaveSDProc (SDP s₁ c₁ sf₁)
+                 (SDP s₂ c₂ sf₂)
+  = record { State   = Bool × (s₁ × s₂); -- index for product
+             Control = λ { (toggle , (x₁ , x₂)) → c₁ x₁ × c₂ x₂ }; -- use two cases here
+             Step    = λ { (toggle , (x₁ , x₂)) → λ { (c₁ , c₂) →
+                         if toggle
+                           then (false , (sf₁ x₁ c₁ , x₂))
+                           else (true  , (x₁ , sf₂ x₂ c₂)) }
+                         }
+           }
+-- Comment: It looks the Control is too big: only one "half" is actually used in each step
+-- Something like
+--           Control = λ { (false , (x₁ , x₂)) → c₁ x₁ ;
+--                         (true  , (x₁ , x₂)) → c₂ x₂ }
 
 
 

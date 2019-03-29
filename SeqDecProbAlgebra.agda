@@ -35,12 +35,21 @@ record SeqDecProc : Set₁ where
     Control : State → Set
     Step    : (x : State) → (y : Control x) → State
 
+{- A policy selects what control to use in a given state. It clearly must be
+   dependent on a SeqDecProb, to know what type the state should be, i.e. -}
 Policy : SeqDecProc → Set
 Policy (SDP State Control Step) = (x : State) → Control x
 
+{- A policy sequence is essentially just a vector of policies. -}
 PolicySeq : SeqDecProc → ℕ → Set
 PolicySeq s n = Vec (Policy s) n
 
+{- A trajectory for a SDProc is computed in a similar way to that of a dynamic system.
+   The main difference is that the step function now also accepts a control,
+   which in each step is computed from the policy sequence.
+
+   Given an initial state and a sequence of n policies, returns a vector of n
+   states. -}
 trajectorySDProc : (p : SeqDecProc) → (n : ℕ) → PolicySeq p n → (SeqDecProc.State p) → Vec (SeqDecProc.State p) n
 trajectorySDProc p .0 [] x₀ = []
 trajectorySDProc (SDP State Control Step) .(suc _) (x ∷ seq) x₀ = newstate ∷ trajectorySDProc (SDP State Control Step) _ seq newstate
@@ -158,6 +167,9 @@ sumUnit = record {State   = ⊥;
                   Control = λ state → ⊥;
                   Step    = λ state → λ control → state}
 
+swap-function : SeqDecProc → SeqDecProc → Set
+swap-function p₁ p₂ = SeqDecProc.State p₁ → SeqDecProc.State p₂
+
 {- An interesting extension of the sum process is one where during execution, the 'current'
    process would be able to yield in favor of the other process. We could capture this
    behaviour by giving the combinator two functions, one with domain s₁ and codomain s₂,
@@ -175,9 +187,7 @@ sumUnit = record {State   = ⊥;
    switch to that process. When the handler-process reaches a state where the error has been
    taken care of, it would again have no controls/actions to take, but would instead yield
    in favor of the software again. -}
--- Comment: perhaps use some |helper p1 p2| to make the type more readable (avoid 4*SeqDecProc.State)
-sumMaybeSDProc : (p₁ : SeqDecProc) → (p₂ : SeqDecProc) → (SeqDecProc.State p₁ → SeqDecProc.State p₂) →
-                                                           (SeqDecProc.State p₂ → SeqDecProc.State p₁) → SeqDecProc
+sumMaybeSDProc : (p₁ : SeqDecProc) → (p₂ : SeqDecProc) → swap-function p₁ p₂ → swap-function p₂ p₁ → SeqDecProc
 sumMaybeSDProc (SDP s₁ c₁ sf₁)
                (SDP s₂ c₂ sf₂)
                swaps₁tos₂
@@ -194,17 +204,10 @@ interleaveSDProc : SeqDecProc → SeqDecProc → SeqDecProc
 interleaveSDProc (SDP s₁ c₁ sf₁)
                  (SDP s₂ c₂ sf₂)
   = record { State   = Bool × (s₁ × s₂); -- index for product
-             Control = λ { (toggle , (x₁ , x₂)) → c₁ x₁ × c₂ x₂ }; -- use two cases here
-             Step    = λ { (toggle , (x₁ , x₂)) → λ { (c₁ , c₂) →
-                         if toggle
-                           then (false , (sf₁ x₁ c₁ , x₂))
-                           else (true  , (x₁ , sf₂ x₂ c₂)) }
-                         }
-           }
--- Comment: It looks the Control is too big: only one "half" is actually used in each step
--- Something like
---           Control = λ { (false , (x₁ , x₂)) → c₁ x₁ ;
---                         (true  , (x₁ , x₂)) → c₂ x₂ }
+             Control = λ { (false , x₁ , x₂) → c₁ x₁ ;
+                           (true , x₁ , x₂)  → c₂ x₂};
+             Step = λ { (false , x₁ , x₂) → λ control → true , sf₁ x₁ control , x₂ ;
+                        (true , x₁ , x₂)  → λ control → false , x₁ , sf₂ x₂ control }}
 
 
 

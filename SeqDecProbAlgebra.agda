@@ -7,12 +7,7 @@ open import Data.Sum renaming (_⊎_ to _∨_; inj₁ to inl; inj₂ to inr)
 open import Data.Maybe
 open import Data.Unit
 open import Data.Empty
-open import Data.List
-
-{- Did not find this function in the standard library.. -}
-iterate : {A : Set} → ℕ → (A → A) → A → List A
-iterate zero f a = []
-iterate (suc n) f a = a ∷ iterate n f (f a)
+open import Data.Vec
 
 {- A dynamic system is a datatype of states together with a transition
    function. The transition function takes as input only the state, and
@@ -24,9 +19,9 @@ record DynamicSystem : Set₁ where
 
 {- A trajectory of a dynamic system is simply repeating the step function
    n times. -}
-trajectoryDyn : (d : DynamicSystem) → DynamicSystem.State d → (ℕ → List (DynamicSystem.State d))
-trajectoryDyn d x₀ = λ n → iterate n (DynamicSystem.Step d) x₀
--- Suggestion: use |(n : ℕ) -> Vec n S| instead of |ℕ → List S|
+trajectoryDyn : (d : DynamicSystem) → DynamicSystem.State d → ((n : ℕ) → Vec (DynamicSystem.State d) n)
+trajectoryDyn d x₀ = λ { zero    → [];
+                         (suc n) → x₀ ∷ trajectoryDyn d (DynamicSystem.Step d x₀) n}
 
 {- A sequential decision process (SDP) is a datatype of states, as in a dynamic
    system, but the step function now takes as an additional argument a
@@ -39,6 +34,17 @@ record SeqDecProc : Set₁ where
     State   : Set
     Control : State → Set
     Step    : (x : State) → (y : Control x) → State
+
+Policy : SeqDecProc → Set
+Policy (SDP State Control Step) = (x : State) → Control x
+
+PolicySeq : SeqDecProc → ℕ → Set
+PolicySeq s n = Vec (Policy s) n
+
+trajectorySDProc : (p : SeqDecProc) → (n : ℕ) → PolicySeq p n → (SeqDecProc.State p) → Vec (SeqDecProc.State p) n
+trajectorySDProc p .0 [] x₀ = []
+trajectorySDProc (SDP State Control Step) .(suc _) (x ∷ seq) x₀ = newstate ∷ trajectorySDProc (SDP State Control Step) _ seq newstate
+  where newstate = Step x₀ (x x₀)
 
 {- A SDP can be time dependent. This boils down to the idea of e.g that every
    control is not available at each point in time, thus adding a third

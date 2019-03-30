@@ -200,6 +200,23 @@ sumMaybeSDProc (SDP s₁ c₁ sf₁)
                                         (inr s₂) nothing → inl (swaps₂tos₁ s₂);
                                         (inr s₂) (just c₂) → inr (sf₂ s₂ c₂)}}
 
+{- Two sequential decision processes can be interleaved, being allowed to advance
+   one step every other time step. In the simplest case, with two processes, the 'toggle'
+   can be thought of as a boolean. If it is true, advance one process, if it is false,
+   advance the other. In reality, however, the toggle can be thought of as an index
+   into the state, specifying which of the processes should advance. 
+
+   This is not too different from the productSDProc, with some small details. In the
+   product process, we had the 'problem' where if one process was 'empty' the other
+   would not be able to progress. In the product process, if one process reached a point
+   where it could not progress further, the entire process would sease to progress. In
+   this interleaved process, we suffer a similar fate, with the exception that if the
+   process that DO have available controls, it will be allowed to progress one step
+   further.
+
+   This situation could be similar to that of a game, where each player would take turns
+   making their next move. However, the game would not be very interesting as the players
+   do not possess the ability to inspect the other players moves. -}
 interleaveSDProc : SeqDecProc → SeqDecProc → SeqDecProc
 interleaveSDProc (SDP s₁ c₁ sf₁)
                  (SDP s₂ c₂ sf₂)
@@ -209,9 +226,29 @@ interleaveSDProc (SDP s₁ c₁ sf₁)
              Step = λ { (false , x₁ , x₂) → λ control → true , sf₁ x₁ control , x₂ ;
                         (true , x₁ , x₂)  → λ control → false , x₁ , sf₂ x₂ control }}
 
+{- Insted of a control depending on 'just' the state of a process, it could perhaps
+   depend on the state of another process also. In the case of two interleaved problems,
+   this captures e.g the notion of a game where the opponents last move is known. 
 
+   This could perhaps be embodied in the Control field in the record somehow.. Since the
+   interleaved process is built up of two existing ones i feel the need to actually use
+   the original processes controls. -}
+smart-control : SeqDecProc → SeqDecProc → Set
+smart-control p₁ p₂ = (x₁ : SeqDecProc.State p₁)     →
+                            SeqDecProc.State p₂      →
+                            SeqDecProc.Control p₁ x₁ → SeqDecProc.Control p₁ x₁
 
-
+{- Using this smart control, which bases a processes next move based on the original processes
+   control as well as the other processes current state. Now imagine a game of chess
+   where your next move is based not only on the state of your pieces on the board,
+   but also your opponents pieces. -}
+interleaveSDProcClever : (p₁ : SeqDecProc) → (p₂ : SeqDecProc) → smart-control p₁ p₂ → smart-control p₂ p₁ → SeqDecProc
+interleaveSDProcClever (SDP s₁ c₁ sf₁) (SDP s₂ c₂ sf₂) sc₁ sc₂
+  = record {State   = Bool × s₁ × s₂;
+            Control = λ { (true , x₁ , x₂)  → c₁ x₁;
+                          (false , x₁ , x₂) → c₂ x₂};
+            Step    = λ { (true , x₁ , x₂) → λ control → false , sf₁ x₁ (sc₁ x₁ x₂ control) , x₂ ;
+                          (false , x₁ , x₂)  → λ control → true , x₁ , sf₂ x₂ (sc₂ x₂ x₁ control) }}
 
 
 

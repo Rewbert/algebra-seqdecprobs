@@ -5,9 +5,12 @@ open import Data.Bool hiding (_∨_)
 open import Data.Product renaming (proj₁ to fst; proj₂ to snd)
 open import Data.Sum renaming (_⊎_ to _∨_; inj₁ to inl; inj₂ to inr)
 open import Data.Maybe
-open import Data.Unit
+open import Data.Unit hiding (_≤_)
 open import Data.Empty
 open import Data.Vec
+
+data So : Bool → Set where
+  oh : So true
 
 {- A dynamic system is a datatype of states together with a transition
    function. The transition function takes as input only the state, and
@@ -209,7 +212,7 @@ sumMaybeSDProc (SDP s₁ c₁ sf₁)
    This is not too different from the productSDProc, with some small details. In the
    product process, we had the 'problem' where if one process was 'empty' the other
    would not be able to progress. In the product process, if one process reached a point
-   where it could not progress further, the entire process would sease to progress. In
+   where it could not progress further, the entire process would cease to progress. In
    this interleaved process, we suffer a similar fate, with the exception that if the
    process that DO have available controls, it will be allowed to progress one step
    further.
@@ -250,27 +253,72 @@ interleaveSDProcClever (SDP s₁ c₁ sf₁) (SDP s₂ c₂ sf₂) sc₁ sc₂
             Step    = λ { (true , x₁ , x₂) → λ control → false , sf₁ x₁ (sc₁ x₁ x₂ control) , x₂ ;
                           (false , x₁ , x₂)  → λ control → true , x₁ , sf₂ x₂ (sc₂ x₂ x₁ control) }}
 
-
-
-
-
-record SeqDecProb (A : Set) : Set₂ where
+record SeqDecProb : Set₁ where
+  constructor SDProb
   field
     State : Set
     Control : State -> Set
 
-    step : (x : State) -> (y : Control x) -> State
+    Step : (x : State) -> (y : Control x) -> State
 
-    val : Set  -- with 0, (+), (<=). Perhaps as parameter to the rec. type.
-    reward : (x : State) -> (y : Control x) -> (x' : State) -> A
+    val : ℕ  -- with 0, (+), (<=). Perhaps as parameter to the rec. type.
+    Reward : (x : State) -> (y : Control x) -> (x' : State) -> ℕ
 
-{-
+_leq_ : ℕ → ℕ → Bool
+zero leq zero = true
+zero leq (suc m) = false
+(suc n) leq zero = false
+(suc n) leq (suc m) = n leq m
 
-Project idea: implement an algebra (a category?) of SeqDecProbs and
-  explore their properties.
+getstate = SeqDecProb.State
+getcontrol = SeqDecProb.Control
+getstep = SeqDecProb.Step
+getreward = SeqDecProb.Reward
 
-  unit, product, sum, etc.
+data CtrlSeq : (x : SeqDecProb) → getstate x → ℕ → Set where
+    Nil : (x : SeqDecProb) → (state : getstate x) → CtrlSeq x state zero  
+    _∷_ : {n : ℕ} → (x : SeqDecProb) →
+           (state : getstate x)            →
+           (y : getcontrol x state)        →
+           CtrlSeq x (getstep x state y) n →
+           CtrlSeq x state (suc n)
 
-Student: Robert Krook, UGOT, CS 5:th year.
+value : (x : SeqDecProb) → (state : getstate x) → (n : ℕ) → CtrlSeq x state n → ℕ
+value x state zero seq = 0
+value x state (suc n) ((.x ∷ .state) y seq) =
+    getreward x state y (getstep x state y) +
+    value x (getstep x state y) n seq
 
--}
+OptCtrlSeq : (x : SeqDecProb) → (state : getstate x) → (n : ℕ) → CtrlSeq x state n → Set
+OptCtrlSeq x state n seq = (ys : CtrlSeq x state n) → So (value x state n ys leq value x state n seq)
+
+PolicyP : (x : SeqDecProb) →  Set
+PolicyP (SDProb State Control Step val Reward) = (x : State) → Control x
+
+PolicyPSeq : SeqDecProb → ℕ → Set
+PolicyPSeq x n = Vec (PolicyP x) n
+
+val : (x : SeqDecProb) → (state : getstate x) → (n : ℕ) → PolicyPSeq x n → ℕ
+val x state zero seq = 0
+val x state (suc n) (x₁ ∷ seq) = getreward x state (x₁ state) x' + val x x' n seq
+  where x' : getstate x
+        x' = getstep x state (x₁ state)
+
+OptPolicyPSeq : (x : SeqDecProb) → (n : ℕ) → PolicyPSeq x n → Set
+OptPolicyPSeq x n seq = (state : getstate x)   →
+                        (ps' : PolicyPSeq x n) →
+                        So (val x state n ps' leq val x state n seq)
+
+OptExt : (x : SeqDecProb) → (n : ℕ) → PolicyPSeq x n → PolicyP x → Set
+OptExt x n seq p = (p' : PolicyP x)     →
+                   (state : getstate x) →
+                   So (val x state (suc n) (p' ∷ seq) leq val x state (suc n) (p ∷ seq))
+
+Bellman : (x : SeqDecProb)       →
+          (n : ℕ)                →
+          (ps : PolicyPSeq x n)  →
+          (OptPolicyPSeq x n ps) →
+          (p : PolicyP x)        →
+          OptExt x n ps p        →
+          OptPolicyPSeq x (suc n) (p ∷ ps)
+Bellman x n ps optps p optp opsexts = {!!}

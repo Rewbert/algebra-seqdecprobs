@@ -1,3 +1,4 @@
+{-# OPTIONS --allow-unsolved-metas #-}
 module SeqDecProbAlgebra where
 
 open import Data.Nat
@@ -38,10 +39,15 @@ record SeqDecProc : Set₁ where
     Control : State → Set
     Step    : (x : State) → (y : Control x) → State
 
+-- TODO: check relation between State as a sum => Step as a product [contravariant, category etc.]
+
 {- A policy selects what control to use in a given state. It clearly must be
    dependent on a SeqDecProb, to know what type the state should be, i.e. -}
 Policy : SeqDecProc → Set
 Policy (SDP State Control Step) = (x : State) → Control x
+
+-- TODO: Note that a policy for a sum State = S1 + S2 is a product of policies for S1 and S2
+-- TODO check that a policy for a product State = S1 * S2 is a two-arg. policy / S1-parameterised policy for S2
 
 {- A policy sequence is essentially just a vector of policies. -}
 PolicySeq : SeqDecProc → ℕ → Set
@@ -53,10 +59,10 @@ PolicySeq s n = Vec (Policy s) n
 
    Given an initial state and a sequence of n policies, returns a vector of n
    states. -}
-trajectorySDProc : (p : SeqDecProc) → (n : ℕ) → PolicySeq p n → (SeqDecProc.State p) → Vec (SeqDecProc.State p) n
-trajectorySDProc p .0 [] x₀ = []
-trajectorySDProc (SDP State Control Step) .(suc _) (x ∷ seq) x₀ = newstate ∷ trajectorySDProc (SDP State Control Step) _ seq newstate
-  where newstate = Step x₀ (x x₀)
+trajectorySDProc : (p : SeqDecProc) → {n : ℕ} → PolicySeq p n → (SeqDecProc.State p) → Vec (SeqDecProc.State p) n
+trajectorySDProc sdp [] x₀ = []
+trajectorySDProc sdp (p ∷ ps) x₀ = newstate ∷ trajectorySDProc sdp ps newstate
+  where newstate = SeqDecProc.Step sdp x₀ (p x₀)
 
 {- A SDP can be time dependent. This boils down to the idea of e.g that every
    control is not available at each point in time, thus adding a third
@@ -207,7 +213,7 @@ sumMaybeSDProc (SDP s₁ c₁ sf₁)
    one step every other time step. In the simplest case, with two processes, the 'toggle'
    can be thought of as a boolean. If it is true, advance one process, if it is false,
    advance the other. In reality, however, the toggle can be thought of as an index
-   into the state, specifying which of the processes should advance. 
+   into the state, specifying which of the processes should advance.
 
    This is not too different from the productSDProc, with some small details. In the
    product process, we had the 'problem' where if one process was 'empty' the other
@@ -231,7 +237,7 @@ interleaveSDProc (SDP s₁ c₁ sf₁)
 
 {- Insted of a control depending on 'just' the state of a process, it could perhaps
    depend on the state of another process also. In the case of two interleaved problems,
-   this captures e.g the notion of a game where the opponents last move is known. 
+   this captures e.g the notion of a game where the opponents last move is known.
 
    This could perhaps be embodied in the Control field in the record somehow.. Since the
    interleaved process is built up of two existing ones i feel the need to actually use
@@ -276,7 +282,7 @@ getstep = SeqDecProb.Step
 getreward = SeqDecProb.Reward
 
 data CtrlSeq : (x : SeqDecProb) → getstate x → ℕ → Set where
-    Nil : (x : SeqDecProb) → (state : getstate x) → CtrlSeq x state zero  
+    Nil : (x : SeqDecProb) → (state : getstate x) → CtrlSeq x state zero
     _∷_ : {n : ℕ} → (x : SeqDecProb) →
            (state : getstate x)            →
            (y : getcontrol x state)        →
@@ -315,10 +321,11 @@ OptExt x n seq p = (p' : PolicyP x)     →
                    So (val x state (suc n) (p' ∷ seq) leq val x state (suc n) (p ∷ seq))
 
 Bellman : (x : SeqDecProb)       →
-          (n : ℕ)                →
+          {n : ℕ}                →
           (ps : PolicyPSeq x n)  →
           (OptPolicyPSeq x n ps) →
           (p : PolicyP x)        →
           OptExt x n ps p        →
           OptPolicyPSeq x (suc n) (p ∷ ps)
-Bellman x n ps optps p optp opsexts = {!!}
+Bellman x [] optps p optp opsexts = {!!}
+Bellman x (x₁ ∷ ps) optps p optp opsexts = {!!}

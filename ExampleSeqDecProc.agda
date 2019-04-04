@@ -18,6 +18,9 @@ data Control : state → Set where
   Backward : (x : state) → Control x
   Right    : (x : state) → Control x
 
+-- try to make a 1-D version, then cross it with itself and compare with this 2-D version
+-- make a version which disallows "bad" moves instead of using "monus"
+
 {- A step function will advance the proper coordinate to its next state. -}
 step : (x : state) → Control x → state
 step (x , y) (Left     .(x , y)) = x ∸ 1 , y
@@ -47,7 +50,7 @@ backwardPolicy x = Backward x
 
 {- An example policy sequence. -}
 policyseq : PolicySeq system 5
-policyseq = forwardPolicy ∷ backwardPolicy ∷ leftPolicy ∷ rightPolicy ∷ rightPolicy ∷ [] 
+policyseq = forwardPolicy ∷ leftPolicy ∷ backwardPolicy ∷ rightPolicy ∷ forwardPolicy ∷ []
 
 {- If we run this system, using the above defined policy sequence with a starting state of
    position (5, 5), it will look like this. The end result should be (6, 5). -}
@@ -70,6 +73,20 @@ newsystemexample = trajectorySDProc
                            prior-policy (proj₁ new-state) , prior-policy (proj₂ new-state))
                            policyseq)
                      ((0 , 0) , 10 , 10)
+
+bar : {n : ℕ} -> PolicySeq system n -> PolicySeq newsystem n
+bar = map (λ prior-policy →
+           λ new-state    →
+           prior-policy (proj₁ new-state) , prior-policy (proj₂ new-state))
+
+prodPolicy : {n : ℕ} -> PolicySeq system n -> PolicySeq system n -> PolicySeq newsystem n
+prodPolicy = zipWith (λ p-p-1 → λ p-p-2 → λ new-state    →
+                      p-p-1 (proj₁ new-state) , p-p-2 (proj₂ new-state))
+
+foo : PolicySeq newsystem 5
+foo = prodPolicy policyseq policyseq
+
+-- TODO clean up combinator for product of policy sequences
 
 {- To realise the statements made in SeqDecProbAlgebra.agda about not being able to advance
    the product of two processes if one of the processes is the initial process, we compute

@@ -21,4 +21,6 @@ sys : DynamicSystem
 sys = record { State = State; Step = transition}
 
 example : (n : ℕ) → Vec State n
-example n = trajectoryDyn sys One n
+example = trajectoryDyn sys One
+
+test = example 5

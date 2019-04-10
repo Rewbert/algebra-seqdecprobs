@@ -120,41 +120,43 @@ cantprogressexample = trajectorySDProc
 1d-state : Set
 1d-state = ℕ
 
-data Action : Set where
-  L : Action -- left
-  S : Action -- stay
-  R : Action -- right
+{- If the state is 0 we have two possible controls, stay or right-}
+data ZAction : Set where
+  ZS : ZAction -- stay for zero state
+  ZR : ZAction -- right for zero state
+
+{- Otherwise, the controlspace contains three controls. Left, stay and right. -}
+data SAction : Set where
+  SL : SAction -- left
+  SS : SAction -- stay
+  SR : SAction -- right
 
 {- One dimensional control, depends on state -}
 1d-control : 1d-state → Set
--- In the case where the state is 0, we can either stay or go to the right
--- thus we use bool to indicate that we have a binary control space.
-1d-control zero    = Bool
--- In all other cases we have three controls, we can either go left, stay or
--- go right.
-1d-control (suc s) = Action
+1d-control zero    = ZAction
+1d-control (suc s) = SAction
 
 1d-step : (x : 1d-state) → 1d-control x → 1d-state
-1d-step zero false = 1 -- false is the control which means right, for 0
-1d-step zero true = 0
-1d-step (suc x) L = x
-1d-step (suc x) S = suc x
-1d-step (suc x) R = suc (suc x)
+1d-step zero ZR = 1
+1d-step zero ZS = 0
+1d-step (suc x) SL = x
+1d-step (suc x) SS = suc x
+1d-step (suc x) SR = suc (suc x)
 
 system2 : SeqDecProc
 system2 = SDP 1d-state 1d-control 1d-step
 
 left : Policy system2
-left zero = true
-left (suc n) = L
+left zero = ZS
+left (suc n) = SL
 
 right : Policy system2
-right zero  = false
-right (suc n) = R
+right zero  = ZR
+right (suc n) = SR
 
 stay : Policy system2
-stay zero = true
-stay (suc n) = S
+stay zero = ZS
+stay (suc n) = SS
 
 1d-example : Vec 1d-state 5
 1d-example = trajectorySDProc system2

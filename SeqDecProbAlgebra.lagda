@@ -45,9 +45,14 @@ record DynamicSystem : Set₁ where
 
 {- A trajectory of a dynamic system is simply repeating the step function
    n times. -}
-trajectoryDyn : (d : DynamicSystem) → DynamicSystem.State d → ((n : ℕ) → Vec (DynamicSystem.State d) n)
-trajectoryDyn d x₀ = λ { zero    → [];
-                         (suc n) → x₀ ∷ trajectoryDyn d (DynamicSystem.Step d x₀) n}
+trajectoryDyn : (d : DynamicSystem) → DynamicSystem.State d → (n : ℕ) → Vec (DynamicSystem.State d) n
+trajectoryDyn d x₀ zero = []
+trajectoryDyn d x₀ (suc n) = x₀ ∷ trajectoryDyn d x₁ n
+  where x₁ : DynamicSystem.State d
+        x₁ = DynamicSystem.Step d x₀
+
+getdstate : DynamicSystem → Set
+getdstate system = DynamicSystem.State system
 
 {- A sequential decision process (SDP) is a datatype of states, as in a dynamic
    system, but the step function now takes as an additional argument a
@@ -81,9 +86,9 @@ PolicySeq s n = Vec (Policy s) n
 
    Given an initial state and a sequence of n policies, returns a vector of n
    states. -}
-trajectorySDProc : (p : SeqDecProc) → {n : ℕ} → PolicySeq p n → (SeqDecProc.State p) → Vec (SeqDecProc.State p) n
+trajectorySDProc : {n : ℕ} → (p : SeqDecProc) → PolicySeq p n → (SeqDecProc.State p) → Vec (SeqDecProc.State p) n
 trajectorySDProc sdp [] x₀ = []
-trajectorySDProc sdp (p ∷ ps) x₀ = newstate ∷ trajectorySDProc sdp ps newstate
+trajectorySDProc sdp (p ∷ ps) x₀ = x₀ ∷ trajectorySDProc sdp ps newstate
   where newstate = SeqDecProc.Step sdp x₀ (p x₀)
 
 {- A SDP can be time dependent. This boils down to the idea of e.g that every
@@ -167,8 +172,8 @@ sumSDProc (SDP s₁ c₁ sf₁)
   = record { State   = s₁ ∨ s₂;
              Control = λ { (inl s₁) → (c₁ s₁);
                            (inr s₂) → (c₂ s₂)};
-             Step    = (λ { (inl s₁) c → inl (sf₁ s₁ c);
-                            (inr s₂) c → inr (sf₂ s₂ c) })}
+             Step    = λ { (inl s₁) c → inl (sf₁ s₁ c);
+                            (inr s₂) c → inr (sf₂ s₂ c) }}
 
 {- If we want a unit problem to sumSDProc, we create a unit process based on the Empty
    datatype. A sum process can be in either of the two processes, and then stays there.
@@ -369,7 +374,7 @@ optExt x ps state = argmax x state f
               val x (getstep x state y) ps
     
 OptExtLemma : {n : ℕ} → (x : SeqDecProb) → (ps : PolicyPSeq x n) → OptExt x ps (optExt x ps)
-OptExtLemma x ps p' state = {!!}
+OptExtLemma x ps p' state = ?
 
 backwardsInduction : (n : ℕ) → (x : SeqDecProb) → PolicyPSeq x n
 backwardsInduction zero x = []

@@ -4,6 +4,9 @@ open import Data.Nat
 open import Data.Product hiding (map)
 open import Function
 open import Data.Vec
+open import Data.Unit
+open import Data.Bool
+
 
 open import SeqDecProbAlgebra
 
@@ -55,7 +58,7 @@ policyseq = forwardPolicy ∷ leftPolicy ∷ backwardPolicy ∷ rightPolicy ∷ 
 {- If we run this system, using the above defined policy sequence with a starting state of
    position (5, 5), it will look like this. The end result should be (6, 5). -}
 example : Vec state 5
-example = trajectorySDProc system 5 policyseq (5 , 5)
+example = trajectorySDProc system policyseq (5 , 5)
 
 {- As an example, we could combine the product system. -}
 newsystem : SeqDecProc
@@ -67,7 +70,6 @@ newsystem = productSDProc system system
 newsystemexample : Vec (SeqDecProc.State newsystem) 5
 newsystemexample = trajectorySDProc
                      newsystem
-                     5
                      (map (λ prior-policy →
                            λ new-state    →
                            prior-policy (proj₁ new-state) , prior-policy (proj₂ new-state))
@@ -98,7 +100,6 @@ cantprogress = productSDProc system sumUnit
 cantprogressexample : Vec (SeqDecProc.State cantprogress) 5
 cantprogressexample = trajectorySDProc
                         cantprogress
-                        5
                         (map (λ prior-policy →
                              λ new-state     →
                              {- we can 'cheat' and create a policy for the new problem.
@@ -114,3 +115,47 @@ cantprogressexample = trajectorySDProc
                              prior-policy (proj₁ new-state) , proj₂ new-state)
                              policyseq)
                         ((5 , 5) , {!can not create a value of ⊥, implementation stops here!})
+
+{- One dimensional state -}
+1d-state : Set
+1d-state = ℕ
+
+data Action : Set where
+  L : Action -- left
+  S : Action -- stay
+  R : Action -- right
+
+{- One dimensional control, depends on state -}
+1d-control : 1d-state → Set
+-- In the case where the state is 0, we can either stay or go to the right
+-- thus we use bool to indicate that we have a binary control space.
+1d-control zero    = Bool
+-- In all other cases we have three controls, we can either go left, stay or
+-- go right.
+1d-control (suc s) = Action
+
+1d-step : (x : 1d-state) → 1d-control x → 1d-state
+1d-step zero false = 1 -- false is the control which means right, for 0
+1d-step zero true = 0
+1d-step (suc x) L = x
+1d-step (suc x) S = suc x
+1d-step (suc x) R = suc (suc x)
+
+system2 : SeqDecProc
+system2 = SDP 1d-state 1d-control 1d-step
+
+left : Policy system2
+left zero = true
+left (suc n) = L
+
+right : Policy system2
+right zero  = false
+right (suc n) = R
+
+stay : Policy system2
+stay zero = true
+stay (suc n) = S
+
+1d-example : Vec 1d-state 5
+1d-example = trajectorySDProc system2
+               (right ∷ right ∷ stay ∷ left ∷ left ∷ []) 0

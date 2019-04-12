@@ -57,11 +57,11 @@ The step functions is swiftly implemented, pattern matching on the states and co
 
 \begin{code}
   1d-step : (x : 1d-state) -> 1d-control x -> 1d-state
-  1d-step zero ZR    = 1
-  1d-step zero ZS    = 0
-  1d-step (suc n) SL = n
-  1d-step (suc n) SS = suc n
-  1d-step (suc n) SR = suc (suc n)
+  1d-step zero ZR     = 1
+  1d-step zero ZS     = 0
+  1d-step (suc n) SL  = n
+  1d-step (suc n) SS  = suc n
+  1d-step (suc n) SR  = suc (suc n)
 \end{code}
 
 %

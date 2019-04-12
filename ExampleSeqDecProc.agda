@@ -11,6 +11,9 @@ open import Data.Bool
 
 open import SeqDecProbAlgebra
 
+open import SeqDecProc
+open import SeqDecProb
+
 {- An example state could be a set of coordinates -}
 state : Set
 state = ℕ × ℕ
@@ -139,7 +142,7 @@ data SAction : Set where
 
 1d-step : (x : 1d-state) → 1d-control x → 1d-state
 1d-step zero ZR = 1
-1d-step zero ZS = 0
+1d-step zero ZS = zero
 1d-step (suc x) SL = x
 1d-step (suc x) SS = suc x
 1d-step (suc x) SR = suc (suc x)

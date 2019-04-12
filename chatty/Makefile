@@ -7,9 +7,9 @@ LATEXMK := latexmk
 default : $(NAME).pdf
 
 %.tex : %.lhs %.format
-	$(LHS2TEX) --poly $< > $@
+#	$(LHS2TEX) --poly $< > $@
 
-#	$(LHS2TEX) --agda $< > $@
+	$(LHS2TEX) --agda $< > $@
 
 %.pdf : %.tex %.bib
 	$(LATEXMK) -pdf $<

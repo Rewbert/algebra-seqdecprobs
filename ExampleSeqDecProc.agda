@@ -1,6 +1,7 @@
 module ExampleSeqDecProc where
 
-open import Data.Nat
+open import Data.Nat hiding (_<_)
+open import Agda.Builtin.Nat
 open import Data.Product hiding (map)
 open import Function
 open import Data.Vec
@@ -143,21 +144,41 @@ data SAction : Set where
 1d-step (suc x) SS = suc x
 1d-step (suc x) SR = suc (suc x)
 
-system2 : SeqDecProc
-system2 = SDP 1d-state 1d-control 1d-step
+1d-system : SeqDecProc
+1d-system = SDP 1d-state 1d-control 1d-step
 
-left : Policy system2
+left : Policy 1d-system
 left zero = ZS
 left (suc n) = SL
 
-right : Policy system2
+right : Policy 1d-system
 right zero  = ZR
 right (suc n) = SR
 
-stay : Policy system2
+stay : Policy 1d-system
 stay zero = ZS
 stay (suc n) = SS
 
 1d-example : Vec 1d-state 5
-1d-example = trajectorySDProc system2
+1d-example = trajectorySDProc 1d-system
                (right ∷ right ∷ stay ∷ left ∷ left ∷ []) 0
+
+distance : ℕ → ℕ → ℕ
+distance zero zero       = 0
+distance zero (suc m)    = 1 + distance zero m
+distance (suc n) zero    = 1 + distance n zero
+distance (suc n) (suc m) = distance n m
+
+1d-reward : (goal : 1d-state) → (x : 1d-state) → 1d-control x -> 1d-state -> ℕ
+1d-reward goal zero ZS x₁     = if distance zero goal == 0 then 1 else 0
+1d-reward goal zero ZR x₁     = if distance zero goal == 0 then 0 else 1
+1d-reward goal (suc x₀) y x₁ = {!!}
+
+1d-find-5-system : SeqDecProb
+1d-find-5-system = SDProb 1d-state 1d-control 1d-step ℕ (1d-reward 5)
+
+1d-find-10-system : SeqDecProb
+1d-find-10-system = SDProb 1d-state 1d-control 1d-step ℕ (1d-reward 10)
+
+2d-system = productSDProc 1d-system 1d-system
+--2d-problem = productSDProb 1d-find-5-system 1d-find-10-system

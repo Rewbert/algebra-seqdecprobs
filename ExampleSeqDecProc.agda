@@ -4,8 +4,8 @@ open import Data.Nat hiding (_<_)
 open import Agda.Builtin.Nat
 open import Data.Product hiding (map)
 open import Function
-open import Data.Vec
-open import Data.List hiding (map; zipWith)
+open import Data.Vec hiding (_++_)
+open import Data.List hiding (zipWith) renaming (map to listmap)
 open import Data.Unit
 open import Data.Bool
 
@@ -186,42 +186,8 @@ distance (suc n) (suc m) = distance n m
 1d-find-10-system : SeqDecProb
 1d-find-10-system = SDProb 1d-state 1d-control 1d-step ℕ (1d-reward 10)
 
---2d-system = productSDProc 1d-system 1d-system
-2d-problem = productSDProb 1d-find-5-system 1d-find-10-system
-
-ℕ-max : ℕ → ℕ → ℕ
-ℕ-max zero n = n
-ℕ-max (suc m) zero = suc m
-ℕ-max (suc m) (suc n) = suc (ℕ-max m n)
-
-ℕ-tuplemax : {A : Set} → (ℕ × A) → (ℕ × A) → A
-ℕ-tuplemax (zero , x) (n , y) = y
-ℕ-tuplemax (suc m , x) (zero , y) = x
-ℕ-tuplemax (suc m , x) (suc n , y) = ℕ-tuplemax (m , x) (n , y)
-
-max' : (x : 1d-state) → (1d-control x → ℕ) → ℕ → ℕ
-max' zero f goal    = ℕ-max (f ZS) (f ZR)
-max' (suc x) f goal = ℕ-max (f SL) (ℕ-max (f SS) (f SR))
-
-argmax' : (x : 1d-state) → (1d-control x → ℕ) → 1d-control x
-argmax' zero    f = ℕ-tuplemax (f ZS , ZS) (f ZR , ZR)
-argmax' (suc x) f = ℕ-tuplemax (f SL , SL)
-                        (ℕ-tuplemax (f SS , f SS , SS)
-                                     (f SR , f SR , SR))
-
-1d-optExt : {n : ℕ} → (goal : ℕ) → PolicyPSeq (1d-prob-system goal) n → PolicyP (1d-prob-system goal)
-1d-optExt goal ps state = argmax' state f
-  where f : 1d-control state → ℕ
-        f y = 1d-reward goal state y (1d-step state y) + Bellman.val 1d-find-10-system state ps
-
-1d-backwardsInduction : (n goal : ℕ) → PolicyPSeq (1d-prob-system goal) n
-1d-backwardsInduction zero goal = []
-1d-backwardsInduction (suc n) goal = 1d-optExt goal ps ∷ ps
-  where ps : PolicyPSeq (1d-prob-system goal) n
-        ps = 1d-backwardsInduction n goal
-
-testrun' : (n goal : ℕ) → Vec 1d-state n
-testrun' n goal = trajectory (1d-prob-system goal) 10 (1d-backwardsInduction n goal)
+2d-problem : (goal₁ goal₂ : ℕ) → SeqDecProb
+2d-problem goal₁ goal₂ = productSDProb (1d-prob-system goal₁) (1d-prob-system goal₂)
 
 getcontrols : (state : 1d-state) → List (1d-control state)
 getcontrols zero = ZS ∷ ZR ∷ []
@@ -233,3 +199,23 @@ defaultcontrols (suc state₁) = SS
 
 testrun : (n goal : ℕ) → Vec 1d-state n
 testrun n goal = trajectory (1d-prob-system goal) 10 (backwardsInduction2 n (1d-prob-system goal) getcontrols defaultcontrols)
+
+cart : {A B : Set} → List A → List B → List (A × B)
+cart [] l₂ = []
+cart (a ∷ l₁) l₂ = listmap (λ b → a , b) l₂ ++ cart l₁ l₂
+
+2d-getcontrols : (goal₁ goal₂ : ℕ) → (state : getstate (2d-problem goal₁ goal₂)) → List (getcontrol (2d-problem goal₁ goal₂) state)
+2d-getcontrols goal₁ goal₂ (l , r) = cart (getcontrols l) (getcontrols r)
+
+2d-defaultcontrols : (goal₁ goal₂ : ℕ) → (state : getstate (2d-problem goal₁ goal₂)) → getcontrol (2d-problem goal₁ goal₂) state
+2d-defaultcontrols goal₁ goal₂ (l , r) = defaultcontrols l , defaultcontrols r
+
+test2drun : (n goal₁ goal₂ : ℕ) → Vec (getstate (2d-problem goal₁ goal₂)) n
+test2drun n goal₁ goal₂ = trajectory
+                            (2d-problem goal₁ goal₂)
+                            (0 , 0)
+                            (backwardsInduction2
+                              n
+                              (2d-problem goal₁ goal₂)
+                              (2d-getcontrols goal₁ goal₂)
+                              (2d-defaultcontrols goal₁ goal₂))

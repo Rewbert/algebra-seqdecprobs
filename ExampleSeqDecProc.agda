@@ -5,6 +5,7 @@ open import Agda.Builtin.Nat
 open import Data.Product hiding (map)
 open import Function
 open import Data.Vec
+open import Data.List hiding (map; zipWith)
 open import Data.Unit
 open import Data.Bool
 
@@ -12,7 +13,8 @@ open import Data.Bool
 open import SeqDecProbAlgebra
 
 open import SeqDecProc
-open import SeqDecProb
+open import SeqDecProb renaming (Policy to PolicyP; PolicySeq to PolicyPSeq)
+open import Bellman using (val; backwardsInduction2)
 
 {- An example state could be a set of coordinates -}
 state : Set
@@ -173,9 +175,10 @@ distance (suc n) zero    = 1 + distance n zero
 distance (suc n) (suc m) = distance n m
 
 1d-reward : (goal : 1d-state) → (x : 1d-state) → 1d-control x -> 1d-state -> ℕ
-1d-reward goal zero ZS x₁     = if distance zero goal == 0 then 1 else 0
-1d-reward goal zero ZR x₁     = if distance zero goal == 0 then 0 else 1
-1d-reward goal (suc x₀) y x₁ = {!!}
+1d-reward goal x y next = goal ∸ distance goal next
+
+1d-prob-system : ℕ → SeqDecProb
+1d-prob-system n = SDProb 1d-state 1d-control 1d-step ℕ (1d-reward n)
 
 1d-find-5-system : SeqDecProb
 1d-find-5-system = SDProb 1d-state 1d-control 1d-step ℕ (1d-reward 5)
@@ -183,5 +186,50 @@ distance (suc n) (suc m) = distance n m
 1d-find-10-system : SeqDecProb
 1d-find-10-system = SDProb 1d-state 1d-control 1d-step ℕ (1d-reward 10)
 
-2d-system = productSDProc 1d-system 1d-system
---2d-problem = productSDProb 1d-find-5-system 1d-find-10-system
+--2d-system = productSDProc 1d-system 1d-system
+2d-problem = productSDProb 1d-find-5-system 1d-find-10-system
+
+ℕ-max : ℕ → ℕ → ℕ
+ℕ-max zero n = n
+ℕ-max (suc m) zero = suc m
+ℕ-max (suc m) (suc n) = suc (ℕ-max m n)
+
+ℕ-tuplemax : {A : Set} → (ℕ × A) → (ℕ × A) → A
+ℕ-tuplemax (zero , x) (n , y) = y
+ℕ-tuplemax (suc m , x) (zero , y) = x
+ℕ-tuplemax (suc m , x) (suc n , y) = ℕ-tuplemax (m , x) (n , y)
+
+max' : (x : 1d-state) → (1d-control x → ℕ) → ℕ → ℕ
+max' zero f goal    = ℕ-max (f ZS) (f ZR)
+max' (suc x) f goal = ℕ-max (f SL) (ℕ-max (f SS) (f SR))
+
+argmax' : (x : 1d-state) → (1d-control x → ℕ) → 1d-control x
+argmax' zero    f = ℕ-tuplemax (f ZS , ZS) (f ZR , ZR)
+argmax' (suc x) f = ℕ-tuplemax (f SL , SL)
+                        (ℕ-tuplemax (f SS , f SS , SS)
+                                     (f SR , f SR , SR))
+
+1d-optExt : {n : ℕ} → (goal : ℕ) → PolicyPSeq (1d-prob-system goal) n → PolicyP (1d-prob-system goal)
+1d-optExt goal ps state = argmax' state f
+  where f : 1d-control state → ℕ
+        f y = 1d-reward goal state y (1d-step state y) + Bellman.val 1d-find-10-system state ps
+
+1d-backwardsInduction : (n goal : ℕ) → PolicyPSeq (1d-prob-system goal) n
+1d-backwardsInduction zero goal = []
+1d-backwardsInduction (suc n) goal = 1d-optExt goal ps ∷ ps
+  where ps : PolicyPSeq (1d-prob-system goal) n
+        ps = 1d-backwardsInduction n goal
+
+testrun' : (n goal : ℕ) → Vec 1d-state n
+testrun' n goal = trajectory (1d-prob-system goal) 10 (1d-backwardsInduction n goal)
+
+getcontrols : (state : 1d-state) → List (1d-control state)
+getcontrols zero = ZS ∷ ZR ∷ []
+getcontrols (suc state₁) = SL ∷ SS ∷ SR ∷ []
+
+defaultcontrols : (state : 1d-state) → 1d-control state
+defaultcontrols zero = ZS
+defaultcontrols (suc state₁) = SS
+
+testrun : (n goal : ℕ) → Vec 1d-state n
+testrun n goal = trajectory (1d-prob-system goal) 10 (backwardsInduction2 n (1d-prob-system goal) getcontrols defaultcontrols)

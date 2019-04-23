@@ -1,5 +1,5 @@
 \begin{code}
-
+{-# OPTIONS --allow-unsolved-metas #-}
 module Bellman where
 
 open import Data.Nat
@@ -10,7 +10,8 @@ open import Data.Sum renaming (_⊎_ to _∨_; inj₁ to inl; inj₂ to inr)
 open import Data.Maybe
 open import Data.Unit hiding (_≤_)
 open import Data.Empty
-open import Data.Vec
+open import Data.Vec hiding (foldl; head)
+open import Data.List
 
 open import SeqDecProc
 open import SeqDecProb
@@ -70,6 +71,40 @@ OptExt x seq p = (p' : PolicyP x)     →
 max : (x : SeqDecProb) → (state : getstate x) → (getcontrol x state → ℕ) → ℕ
 max x state f = {!!}
 
+{- In order to implement max we need to specify an additional piece of information, namely
+   how to iterate over all possible controls for a given state. An assumption is made
+   about having this knowledge, by forcing a user calling max to supply this additional information.
+-}
+max' : (x : SeqDecProb)
+    → (state : getstate x)
+    → ((it : getstate x) → List (getcontrol x it)) -- 'it' for iterator.
+    → (getcontrol x state → ℕ)
+    → ℕ
+max' x state controls f = foldl (λ n
+                              → λ control → if n leq f control then f control else n)
+                                 0
+                                 allcontrols
+  where
+    allcontrols : List (getcontrol x state)
+    allcontrols = controls state
+
+{- Similar as for the max' function, this one requires a way to iterate over controls.
+   This information is supplied by client code. Furthermore, a default control needs
+   to be required in order to initiate the fold.
+-}
+argmax' : (x : SeqDecProb)
+       → (state : getstate x)
+       → ((it : getstate x) → List (getcontrol x it)) -- 'it' for iterator.
+       → getcontrol x state                            -- default control
+       → (getcontrol x state → ℕ)
+       → getcontrol x state
+argmax' x state controls defcont f = foldl (λ current → λ contender → if f current leq f contender then contender else current)
+                                            defcont
+                                            allcontrols
+  where
+    allcontrols : List (getcontrol x state)
+    allcontrols = controls state
+
 {- Similarly to max, computes based on the same principle, but returns the argument (control)
    that produced this maximum reward. -}
 argmax : (x : SeqDecProb) → (state : getstate x) → (getcontrol x state → ℕ) → getcontrol x state
@@ -87,15 +122,47 @@ optExt x ps state = argmax x state f
   where f : getcontrol x state → ℕ
         f y = getreward x state y (getstep x state y) +
               val x (getstep x state y) ps
+
+{- The new modified optimal extension needs two additional pieces of information. In
+   order to properly propagate the control information to argmax, it needs to be
+   supplied here. Furthermore, here we don't only need a default control, but a function
+   that computes a default control for every state. This is because the control is a
+   dependent type, but the state upon which it depends does not appear in the type, and
+   thus it is not possible to get the control straight away.
+-}
+optExt' : {n : ℕ}
+       → (x : SeqDecProb)
+       → ((it : getstate x) → List (getcontrol x it))
+       → ((st : getstate x) → getcontrol x st)
+       → PolicyPSeq x n
+       → PolicyP x
+optExt' x conts defaultcontrol ps state = argmax' x state conts (defaultcontrol state) f
+  where f : getcontrol x state → ℕ
+        f y = getreward x state y (getstep x state y) +
+              val x (getstep x state y) ps
     
-OptExtLemma : {n : ℕ} → (x : SeqDecProb) → (ps : PolicyPSeq x n) → OptExt x ps (optExt x ps)
-OptExtLemma x ps p' state = {!!}
+--OptExtLemma : {n : ℕ} → (x : SeqDecProb) → (ps : PolicyPSeq x n) → OptExt x ps (optExt x ps)
+--OptExtLemma x ps p' state = {!!}
 
 backwardsInduction : (n : ℕ) → (x : SeqDecProb) → PolicyPSeq x n
 backwardsInduction zero x = []
 backwardsInduction (suc n) x = (optExt x ps) ∷ ps
   where ps : PolicyPSeq x n
         ps = backwardsInduction n x
+
+{- Finally, in order to properly propagate the information down to optExt' and
+   argmax', even the backwardsinduction itself needs to accept these parameters
+   as arguments.
+-}
+backwardsInduction2 : (n : ℕ)
+                   → (x : SeqDecProb)
+                   → ((it : getstate x) → List (getcontrol x it))
+                   → ((st : getstate x) → getcontrol x st)
+                   → PolicyPSeq x n
+backwardsInduction2 zero x f defcont    = []
+backwardsInduction2 (suc n) x f defcont = optExt' x f defcont ps ∷ ps
+  where ps : PolicyPSeq x n
+        ps = backwardsInduction2 n x f defcont
 
 transitiveLTE : (x₁ x₂ x₃ : ℕ) → So (x₁ leq x₂) → So (x₂ leq x₃) → So (x₁ leq x₃)
 transitiveLTE zero zero zero p₁ p₂ = oh
@@ -107,8 +174,8 @@ transitiveLTE (suc x) zero (suc z) () p₂
 transitiveLTE (suc x) (suc y) zero p₁ ()
 transitiveLTE (suc x) (suc y) (suc z) p₁ p₂ = transitiveLTE x y z p₁ p₂
 
-monotonePlus : (x y : ℕ) → (z : ℕ) → So (x leq y) → So ((z + x) leq (z + y))
-monotonePlus x y z p = {!-too lazy to complete now-!}
+{- Too lazy to do this now -}
+postulate monotonePlus : (x y : ℕ) → (z : ℕ) → So (x leq y) → So ((z + x) leq (z + y))
 
 Bellman : {n : ℕ}                →
           (x : SeqDecProb)       →
@@ -119,7 +186,7 @@ Bellman : {n : ℕ}                →
           OptPolicyPSeq x (p ∷ ps)
 Bellman x ps ops p oep = opps
   where opps : OptPolicyPSeq x (p ∷ ps)
-        opps state []          = {!!}
+        opps state []          = oh
         opps state (p' ∷ ps') = transitiveLTE (val x state (p' ∷ ps'))
                                                (val x state (p' ∷ ps))
                                                (val x state (p ∷ ps))

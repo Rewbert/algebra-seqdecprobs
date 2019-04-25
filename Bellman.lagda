@@ -37,11 +37,11 @@ value x state (nil .x .state) = 0
 value x state ((.x ∷ .state) y seq) =
   getreward x state y (getstep x state y) +
   value x (getstep x state y) seq
-  
+
 OptCtrlSeq : {n : ℕ} → (x : SeqDecProb) → (state : getstate x) → CtrlSeq x state n → Set
 OptCtrlSeq x state seq =
   {n : ℕ} → (ys : CtrlSeq x state n) → So (value x state ys leq value x state seq)
-  
+
 PolicyP : (x : SeqDecProb) →  Set
 PolicyP (SDProb state control step val reward) = (x : state) → control x
 
@@ -132,15 +132,15 @@ optExt x ps state = argmax x state f
 -}
 optExt' : {n : ℕ}
        → (x : SeqDecProb)
-       → ((it : getstate x) → List (getcontrol x it))
-       → ((st : getstate x) → getcontrol x st)
+       → ((it : getstate x) → List (getcontrol x it))  -- proof of finiteness of the control space for every state
+       → ((st : getstate x) → getcontrol x st)         -- always progress policy
        → PolicyPSeq x n
        → PolicyP x
 optExt' x conts defaultcontrol ps state = argmax' x state conts (defaultcontrol state) f
   where f : getcontrol x state → ℕ
         f y = getreward x state y (getstep x state y) +
               val x (getstep x state y) ps
-    
+
 --OptExtLemma : {n : ℕ} → (x : SeqDecProb) → (ps : PolicyPSeq x n) → OptExt x ps (optExt x ps)
 --OptExtLemma x ps p' state = {!!}
 

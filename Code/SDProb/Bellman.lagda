@@ -15,6 +15,7 @@ open import Data.List
 
 
 open import SeqDecProb
+open import VSDProb
 
 data So : Bool → Set where
   oh : So true

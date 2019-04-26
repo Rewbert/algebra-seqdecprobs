@@ -5,12 +5,12 @@
 This section will explore different ways sequential decision processes can be combined to produce more sophisticated processes.
 %
 %-----------------------------------------------------------------------
-%include product.lhs
+%include product.lagda
 %-----------------------------------------------------------------------
-%include coproduct.lhs
+%include coproduct.lagda
 %-----------------------------------------------------------------------
-%include swapcoproduct.lhs
+%include swapcoproduct.lagda
 %-----------------------------------------------------------------------
-%include interleave.lhs
+%include interleave.lagda
 %-----------------------------------------------------------------------
 

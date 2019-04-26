@@ -3,7 +3,7 @@ module ExampleDynamicSystem where
 open import Data.Nat
 open import Data.Vec
 
-open import SeqDecProbAlgebra
+open import DynamicSystem
 
 data State : Set where
   One   : State

@@ -25,13 +25,11 @@ Computing a sequence of states should come naturally to the functional programme
 %
 We define a recursive function that at each step computes the next state.
 %
+
 \begin{code}
-  trajectory : (sys : DynamicSystem) ->
-               getstate sys          ->
-               (n : Nat)             ->
-               Vec (getstate sys) n
-trajectory system x0 zero    = []
-trajectory system x0 (suc n) = x0 :: trajectory system x1 n
-  where x1 : getstate system
-        x1 = getstep system x0
+  trajectory : (sys : DynamicSystem) -> getstate sys -> (n : Nat) -> Vec (getstate sys) n
+  trajectory system x0 zero     = []  
+  trajectory system x0 (suc n)  = x0 :: trajectory system x1 n
+    where x1 : getstate system
+          x1 = getstep system x0
 \end{code}

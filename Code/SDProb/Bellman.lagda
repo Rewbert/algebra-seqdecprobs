@@ -13,7 +13,7 @@ open import Data.Empty
 open import Data.Vec hiding (foldl; head)
 open import Data.List
 
-open import SeqDecProc
+
 open import SeqDecProb
 
 data So : Bool → Set where

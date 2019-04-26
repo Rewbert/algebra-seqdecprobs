@@ -29,7 +29,7 @@
 \usepackage{ucs}
 \usepackage[utf8x]{inputenc}
 \usepackage{amssymb}
-%\usepackage{bbm}
+\usepackage{bbm}
 \usepackage[greek,english]{babel}
 \usepackage{autofe}
 \usepackage{agda}
@@ -98,77 +98,12 @@ design, languages, verification
 some, important, concepts, not already, mentioned, in the title
 
 %------------------------------------------------------------------------------
-%include sections/background/background.lhs
+%include sections/background/background.lagda
 %------------------------------------------------------------------------------
-%include sections/examples/examples.lhs
+%include sections/examples/examples.lagda
 %------------------------------------------------------------------------------
-%include sections/combinators/combinators.lhs
+%include sections/combinators/combinators.lagda
 %------------------------------------------------------------------------------
-\section{Testing the monoid laws}
-\label{sec:monoidlaws}
-
-\paragraph{The |Monoid| class.}
-%include code/Monoid.lhs
-
-\paragraph{Using |testEqual| for the |Monoid| laws.}
-Another way to include code is using ``Bird tracks'':
-
-> type Equal a = (a,a)
-> infixr 0 =.=
-> (=.=) = (,)
->
-> monoidLaw1 m      =  mempty +++ m              =.= m
-> monoidLaw2 m      =  m +++ mempty              =.= m
-> monoidLaw3 l m r  =  l +++ (m +++ r)           =.= (l +++ m) +++ r
-
-\paragraph{Another example}
-
-Code can also be be surrounded by \verb+\begin{code}+ and \verb+\end{code}+:
-%
-\begin{code}
-class Monoid m => MonoidLaws m where
-
-  monoidLaw1  ::  m -> Equal m
-  monoidLaw2  ::  m -> Equal m
-  monoidLaw3  ::  m -> m -> m -> Equal m
-
-  monoidLaw1 m      =  mempty +++ m     =.=  m
-  monoidLaw2 m      =  m +++ mempty     =.=  m
-  monoidLaw3 l m r  =  l +++ (m +++ r)  =.=  (l +++ m) +++  r
-\end{code}
-%
-Note that the code examples are from Jeuring et
-al~\citet{jeuringHaskell12ClassLaws}.
-
-Inline references to the code can be done using bars: \verb+|Equal m|+
-renders as |Equal m|.
-%
-Sometimes it is useful to include a backwards reference to
-\refSec{sec:intro} or a forward reference to \refSec{sec:lawspec}.
-
-
-%------------------------------------------------------------------------------
-\section{Specifying class laws}
-\label{sec:lawspec}
-
-Sometimes it is useful to render code which cannot type check:
-
-<     lhs
-<  =    { good reason }
-<     lhs'
-<  ...
-<     rhs'
-<  =    { another good reason }
-<     rhs
-
-%------------------------------------------------------------------------------
-\section{Conclusions and related work}
-\label{sec:conc}
-
-There is very often a conclusion section.
-%
-Not so much in this skeleton!
-
 \paragraph{Acknowledgements.} This research has been partially funded
 by the (some project title + granting agency).
 %

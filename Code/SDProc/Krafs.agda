@@ -1,4 +1,9 @@
-module Comment where
+module Krafs  where
+  open import Data.Nat
+  open import Data.Product hiding (map)
+  open import SeqDecProc
+  open import Data.Vec
+
   {- An example state could be a set of coordinates -}
   state : Set
   state = ℕ × ℕ

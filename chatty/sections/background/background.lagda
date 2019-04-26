@@ -11,9 +11,9 @@ Since our contributions are defined in Agda \cite{norell_practical_2007}, we nee
 %
 
 %-----------------------------------------------------------
-%include dynamicsystem.lhs
+%include dynamicsystem.lagda
 %-----------------------------------------------------------
-%include seqdecproc.lhs
+%include seqdecproc.lagda
 %-----------------------------------------------------------
-%include seqdecprob.lhs
+%include seqdecprob.lagda
 %-----------------------------------------------------------

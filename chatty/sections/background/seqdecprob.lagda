@@ -11,10 +11,10 @@ The problem becomes that of finding the sequence of policies which results in th
   record SDProb : Set1 where
     constructor SDProb
     field
-      State : Set
-      Control :  State -> Set
-      Step : (x : State) -> Control x -> State
-      Reward : (x : State) -> Control x -> State -> Nat
+      State    : Set
+      Control  :  State -> Set
+      Step     : (x : State) -> Control x -> State
+      Reward   : (x : State) -> Control x -> State -> Nat
 \end{code}
 
 %

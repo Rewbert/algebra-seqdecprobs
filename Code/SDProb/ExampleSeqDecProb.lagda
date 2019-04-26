@@ -1,4 +1,5 @@
-module ExampleSeqDecProc where
+\begin{code}
+module ExampleSeqDecProb where
 
 open import Data.Nat hiding (_<_)
 open import Agda.Builtin.Nat
@@ -10,9 +11,9 @@ open import Data.Unit
 open import Data.Bool
 
 
-open import SeqDecProbAlgebra
+--open import SeqDecProb
 
-open import SeqDecProc
+--open import SeqDecProc
 open import SeqDecProb renaming (Policy to PolicyP; PolicySeq to PolicyPSeq)
 open import Bellman using (val; backwardsInduction2)
 
@@ -43,6 +44,7 @@ data SAction : Set where
 1d-step (suc x) SS = suc x
 1d-step (suc x) SR = suc (suc x)
 
+\end{code}
 1d-system : SeqDecProc
 1d-system = SDP 1d-state 1d-control 1d-step
 
@@ -61,7 +63,7 @@ stay (suc n) = SS
 1d-example : Vec 1d-state 5
 1d-example = trajectorySDProc 1d-system
                (right ∷ right ∷ stay ∷ left ∷ left ∷ []) 0
-
+\begin{code}
 distance : ℕ → ℕ → ℕ    -- distance m n = abs (m-n)  informally
 distance zero zero       = 0
 distance zero (suc m)    = 1 + distance zero m
@@ -79,21 +81,15 @@ large = 100
 1d-prob-system : ℕ → SeqDecProb
 1d-prob-system n = SDProb 1d-state 1d-control 1d-step ℕ (1d-reward n)
 
-1d-find-5-system : SeqDecProb
-1d-find-5-system = SDProb 1d-state 1d-control 1d-step ℕ (1d-reward 5)
-
-1d-find-10-system : SeqDecProb
-1d-find-10-system = SDProb 1d-state 1d-control 1d-step ℕ (1d-reward 10)
-
 2d-problem : (goal₁ goal₂ : ℕ) → SeqDecProb
 2d-problem goal₁ goal₂ = productSDProb (1d-prob-system goal₁) (1d-prob-system goal₂)
 
 getcontrols : (state : 1d-state) → List (1d-control state)
-getcontrols zero = ZS ∷ ZR ∷ []
+getcontrols zero         = ZS ∷ ZR ∷ []
 getcontrols (suc state₁) = SL ∷ SS ∷ SR ∷ []
 
 defaultcontrols : (state : 1d-state) → 1d-control state
-defaultcontrols zero = ZS
+defaultcontrols zero         = ZS
 defaultcontrols (suc state₁) = SS
 
 testrun : (n goal : ℕ) → Vec 1d-state n
@@ -118,3 +114,4 @@ test2drun n goal₁ goal₂ = trajectory
                               (2d-problem goal₁ goal₂)
                               (2d-getcontrols goal₁ goal₂)
                               (2d-defaultcontrols goal₁ goal₂))
+\end{code}

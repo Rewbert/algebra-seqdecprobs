@@ -5,3 +5,4 @@
 %format x1 = x "_1"
 %format x2 = x "_2"
 %format x3 = x "_3"
+%format (getstate x) = "\getstate{" x "}"

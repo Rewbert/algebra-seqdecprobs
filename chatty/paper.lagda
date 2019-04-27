@@ -51,6 +51,8 @@
 \newcommand{\refSecsI}[1]{Sections \ref{#1}}
 \newcommand{\refTab}[1]{Tab. \ref{#1}}
 
+% \newcommand{\getstate}[1]{\ensuremath{\left||#1\right||}}
+\newcommand{\getstate}[1]{\ensuremath{\##1}}
 \toappear{}
 \begin{document}
 

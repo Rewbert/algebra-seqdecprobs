@@ -7,14 +7,12 @@ A first example of how two problems can be combined is to create their product.
 \TODO{Use consistent constructor/variable names/cases also elsewhere}
 %
 \begin{code}
-  productSDProc : SDProc -> SDProc -> SDProc
-  productSDProc (SDP S1 C1 sf1) (SDP S2 C2 sf2) = record {
-      State    =  S1 × S2;
-      Control  =  \ state -> C1 (proj1 state) × C2 (proj2 state);
-      Step     =  \ state -> \ control ->
-                    ( sf1  (proj1  state)  (proj1  control)
-                    , sf2  (proj2  state)  (proj2  control) )
-      }
+productSDProc : SeqDecProc → SeqDecProc → SeqDecProc
+productSDProc (SDP S₁ C₁ sf₁)  (SDP S₂ C₂ sf₂) = record {
+  State    = S₁ × S₂;
+  Control  = \ { (s₁ , s₂) → C₁ s₁ × C₂ s₂ };
+  step     = \ { (s₁ , s₂) → \ { (c₁ , c₂) → (sf₁ s₁ c₁ , sf₂ s₂ c₂) } }
+  }
 \end{code}
 %
 As the new state, the cartesian product of the two prior states is chosen.
@@ -43,7 +41,7 @@ Consider a process that has only one state, one control for that state and a ste
   singleton = record {
     State    =  ⊤;
     Control  =  \ state -> ⊤;
-    Step     =  \ state -> \ control -> tt}
+    step     =  \ state -> \ control -> tt}
 \end{code}
 %
 This could be considered to be a constant process, since the state is constant and the control space never changes.

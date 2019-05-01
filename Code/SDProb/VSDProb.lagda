@@ -25,9 +25,9 @@ record VSeqDProb A : Set₁ where
   field
     State   : Set
     Control : State -> Set
-    Step    : (x : State) -> (y : Control x) -> State
+    step    : (x : State) -> (y : Control x) -> State
     Val     : Num A
-    Reward  : (x : State) -> (y : Control x) -> (x' : State) -> A
+    reward  : (x : State) -> (y : Control x) -> (x' : State) -> A
 
     {- The control space is finite, and it is always possible to retrieve all controls
        available in a given state. -}
@@ -39,9 +39,9 @@ record VSeqDProb A : Set₁ where
 {- helper functions, makes acessing elements prettier -}
 getstate   = VSeqDProb.State
 getcontrol = VSeqDProb.Control
-getstep    = VSeqDProb.Step
+getstep    = VSeqDProb.step
 getval     = VSeqDProb.Val
-getreward  = VSeqDProb.Reward
+getreward  = VSeqDProb.reward
 getfincont = VSeqDProb.finite-controls
 getprog    = VSeqDProb.progression
 

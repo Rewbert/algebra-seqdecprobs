@@ -5,5 +5,5 @@ module DynamicSystem where
 record DynamicSystem : Set₁ where
   field
     State : Set
-    Step  : State → State
+    step  : State → State
 \end{code}

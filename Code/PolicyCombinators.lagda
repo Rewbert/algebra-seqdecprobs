@@ -20,7 +20,7 @@ SumPolicy = zipWith (λ p₁ → λ p₂ → λ { (inj₁ x) → p₁ x ;
 
 getstate = SeqDecProc.State
 getcontrol = SeqDecProc.Control
-getstep  = SeqDecProc.Step
+getstep  = SeqDecProc.step
 
 stepfun : (x : SeqDecProc) → Set
 stepfun x = (st : getstate x) → getcontrol x st → getstate x

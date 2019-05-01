@@ -20,7 +20,7 @@ In the simplest case the number of combined processes is two, and a boolean can 
     State    = Bool × (S1 × S2);
     Control  = \ {  (false , x1 , x2) -> C1 x1;
                     (true ,  x1 , x2) -> C2 s2};
-    Step     = \ {  (false , x1 , x2) -> \ control ->
+    step     = \ {  (false , x1 , x2) -> \ control ->
                       true , sf1 x1 control , x2;
                     (true , x1 , x2) -> \ control ->
                       false , x1 , sf2 x2 control}}  

@@ -12,7 +12,7 @@ This description of a system can be described as a record in Agda.
 > record DynamicSystem : Set1 where
 >   field
 >     State  : Set
->     Step   : State -> State
+>     step   : State -> State
 %
 To make further type signatures more convenient it is handy to define helper functions which extract the different components of the record.
 %

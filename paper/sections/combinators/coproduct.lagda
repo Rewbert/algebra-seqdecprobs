@@ -17,7 +17,7 @@ Similarly if it was constructed using the second injection, the control is that 
       State    = S1 sumuni S2;
       Control  = \ {  (inj1 s)    -> (C1 s);
                       (inj2 s)    -> (C2 s)};
-      Step     = \ {  (inj1 s) c  -> inj1 (sf1 s c);
+      step     = \ {  (inj1 s) c  -> inj1 (sf1 s c);
                       (inj2 s) c  -> inj2 (sf2 s c)}}
 \end{code}
 
@@ -42,7 +42,7 @@ However, we will never be able to call the step function since we can not supply
   empty = record {
     State    = \bot;
     Control  = \ state -> \bot;
-    Step     = \ state -> \ control -> state }
+    step     = \ state -> \ control -> state }
 \end{code}
 
 %

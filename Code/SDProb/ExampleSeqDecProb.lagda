@@ -79,7 +79,7 @@ large = 100
 
 
 1d-prob-system : ℕ → SeqDecProb
-1d-prob-system n = SDProb 1d-state 1d-control 1d-step ℕ (1d-reward n)
+1d-prob-system n = SDProb 1d-state 1d-control 1d-step (1d-reward n)
 
 2d-problem : (goal₁ goal₂ : ℕ) → SeqDecProb
 2d-problem goal₁ goal₂ = productSDProb (1d-prob-system goal₁) (1d-prob-system goal₂)

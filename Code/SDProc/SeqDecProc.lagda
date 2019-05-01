@@ -112,12 +112,33 @@ embedTime (SDP State Control step)
    available the other problem will not be able to advance either.
    Similarly, if one problem were to not have any states possible to begin with, the
    combined problem will never be able to advance. -}
+
+module ProductHelpers where
+  -- TODO perhaps other name for Pred?
+  Pred : Set -> Set₁
+  Pred S = S -> Set
+
+  _×C_ : {S₁ S₂ : Set} -> Pred S₁ -> Pred S₂ -> Pred (S₁ × S₂)
+  (C₁ ×C C₂) (s₁ , s₂) = C₁ s₁ × C₂ s₂
+
+  Step : (S : Set) -> Pred S -> Set
+  Step S C = (s : S) -> C s -> S
+
+  _×sf_  :  {S₁ S₂ : Set} -> {C₁ : Pred S₁} -> {C₂ : Pred S₂} ->
+            Step S₁ C₁ -> Step S₂ C₂ -> Step (S₁ × S₂) (C₁ ×C C₂)
+  (sf₁ ×sf sf₂) (s₁ , s₂) (c₁ , c₂) = (sf₁ s₁ c₁ , sf₂ s₂ c₂)
+
+  _×SDP_ : SeqDecProc → SeqDecProc → SeqDecProc
+  (SDP S₁ C₁ sf₁) ×SDP (SDP S₂ C₂ sf₂) = SDP (S₁ × S₂) (C₁ ×C C₂) (sf₁ ×sf sf₂)
+
+-- TODO: Perhaps use the operator version instead
 productSDProc : SeqDecProc → SeqDecProc → SeqDecProc
-productSDProc (SDP S₁ C₁ sf₁)
-              (SDP S₂ C₂ sf₂)
-                       = record {State   = S₁ × S₂;
-                                 Control = λ state → C₁ (fst state) × C₂ (snd state);
-                                 step    = λ state → λ control → sf₁ (fst state) (fst control) , sf₂ (snd state) (snd control)}
+productSDProc (SDP S₁ C₁ sf₁)  (SDP S₂ C₂ sf₂) = record {
+  State   = S₁ × S₂;
+  Control = \ { (s₁ , s₂) → C₁ s₁ × C₂ s₂ };
+  step    = \ { (s₁ , s₂) → \ { (c₁ , c₂) → (sf₁ s₁ c₁ , sf₂ s₂ c₂) } }
+  }
+
 
 {- If we would like a unit to combine with the product operation, it would be the unit process.
    Since the states of the prior processes will 'live' alongside eachother, and advance the

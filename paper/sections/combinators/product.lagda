@@ -7,14 +7,12 @@ A first example of how two problems can be combined is to produce their product.
 \TODO{Use consistent constructor/variable names/cases also elsewhere}
 %
 \begin{code}
-  productSDProc : SDProc -> SDProc -> SDProc
-  productSDProc (SDP S1 C1 sf1) (SDP S2 C2 sf2) = record {
-      State    =  S1 × S2;
-      Control  =  \state -> C1 (fst state) × C2 (snd state);
-      step     =  \state -> \control ->
-                    ( sf1  (fst  state)  (fst  control)
-                    , sf2  (snd  state)  (snd  control) )
-      }
+productSDProc : SeqDecProc → SeqDecProc → SeqDecProc
+productSDProc (SDP S₁ C₁ sf₁)  (SDP S₂ C₂ sf₂) = record {
+  State    = S₁ × S₂;
+  Control  = \ { (s₁ , s₂) → C₁ s₁ × C₂ s₂ };
+  step     = \ { (s₁ , s₂) → \ { (c₁ , c₂) → (sf₁ s₁ c₁ , sf₂ s₂ c₂) } }
+  }
 \end{code}
 %
 As the new state, the cartesian product of the two prior states is chosen.

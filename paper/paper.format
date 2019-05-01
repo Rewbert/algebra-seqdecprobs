@@ -9,6 +9,12 @@
 %format S2 = S "_2"
 %format C1 = C "_1"
 %format C2 = C "_2"
+%format \bot = ⊥
+%format sumuni = ⊎
+%format proj1 = proj "_1"
+%format proj2 = proj "_2"
+%format inj1 = inj "_1"
+%format inj2 = inj "_2"
 %format sf1 = sf "\!_1"
 %format sf2 = sf "\!_2"
 % %format (getstate x) = "\getstate{" x "}"

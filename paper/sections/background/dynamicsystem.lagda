@@ -2,6 +2,7 @@
 
 \subsection{Dynamic System}
 \label{subsec:dynsys}
+%
 A dynamic system is a system which at any given time has a |State|.
 %
 The system can walk through a series of states by making use of a transition function.
@@ -13,14 +14,13 @@ This description of a system can be described as a record in Agda.
 >     State  : Set
 >     Step   : State -> State
 %
-To make further type signatures look better it is handy to define helper functions which extract the different components of the record.
+To make further type signatures more convenient it is handy to define helper functions which extract the different components of the record.
 %
 > getstate : DynamicSystem -> Set
 > getstate system = DynamicSystem.State system
 
 %
 In the following sections these helper functions are assumed to exist without being explicitly mentioned in this text.
-
 %
 Computing a sequence of states should come naturally to the functional programmer.
 %
@@ -37,3 +37,4 @@ trajectory system x0 (suc n)  = x0 :: trajectory system x1 n
 \end{code}
 
 \TODO{cite cezar ionescu thesis}
+% reference to Cezars thesis (ask patrik how to reference it properly)  https://refubium.fu-berlin.de/handle/fub188/5259

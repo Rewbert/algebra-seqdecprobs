@@ -15,14 +15,26 @@ In the simplest case the number of combined processes is two, and a boolean can 
 %
 \begin{code}
   interleaveSDProc : SDProc -> SDProc -> SDProc
-  interleaveSDProc (SDP s1 c1 sf1) (SDP s2 c2 sf2) =
+  interleaveSDProc (SDP S1 C1 sf1) (SDP S2 C2 sf2) =
   record {
-    State = Bool × (s1 × s2);
-    Control = \ { (false , x1 , x2) -> c1 x1;
-                  (true ,  x1 , x2) -> c2 s2};
-    Step = \ {(false , x1 , x2) -> \ control ->
-                 true , sf1 x1 control , x2;
-              (true , x1 , x2) -> \ control ->
-                 false , x1 , sf2 x2 control}}
-
+    State    = Bool × (S1 × S2);
+    Control  = \ {  (false , x1 , x2) -> C1 x1;
+                    (true ,  x1 , x2) -> C2 s2};
+    Step     = \ {  (false , x1 , x2) -> \ control ->
+                      true , sf1 x1 control , x2;
+                    (true , x1 , x2) -> \ control ->
+                      false , x1 , sf2 x2 control}}  
 \end{code}
+
+%
+In this case the boolean acts as an index into the product, determining which system to progress.
+%
+This way of modeling the interleaved problem is not optimal, is combining more than two processes with it will produce undesired behaviour.
+%
+If we combine three processes using this combinator the resulting system would be one where one of the processes advance half the time, and the other two only a quarter of the time each.
+%
+If we instead consider an implementation where the input to the combinator is a vector of processes, we would construct a more clever process with a better indexing behaviour.
+%
+A system like this would let all the processes advance equally much.
+%
+\TODO{implement this - A general product type with an indexing function}

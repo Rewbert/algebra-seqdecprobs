@@ -12,19 +12,19 @@ Similarly if it was constructed using the second injection, the control is that 
 %
 \begin{code}
   sumSDProc : SDProc -> SDProc -> SDProc
-  sumSDProc (SDP s1 c1 sf1) (SDP s2 c2 sf2)
+  sumSDProc (SDP S1 C1 sf1) (SDP S2 C2 sf2)
   = record {
-      State = s1 V s2;
-      Control = \ { (inl s1) -> (c1 s1);
-                    (inr s2) -> (c2 s2)};
-      Step = \ { (inl s1) c -> inl (sf1 s1 c);
-                 (inr s2) c -> inr (sf2 s2 c)}}
+      State    = S1 sumuni S2;
+      Control  = \ {  (inj1 s)    -> (C1 s);
+                      (inj2 s)    -> (C2 s)};
+      Step     = \ {  (inj1 s) c  -> inj1 (sf1 s c);
+                      (inj2 s) c  -> inj2 (sf2 s c)}}
 \end{code}
 
 %
 In the case of the product process the two prior processes were not entirely independent.
 %
-In one process could not progress the other process was affected in the sense that it too could not process further.
+If one process could not progress the other process was affected in the sense that it too could not process further.
 %
 The sum of two processes keeps the two problems truly independent.
 %
@@ -40,9 +40,9 @@ However, we will never be able to call the step function since we can not supply
 \begin{code}
   empty : SDProc
   empty = record {
-    State = \bot;
-    Control = \ state -> \bot;
-    Step = \ state -> \ control -> state }
+    State    = \bot;
+    Control  = \ state -> \bot;
+    Step     = \ state -> \ control -> state }
 \end{code}
 
 %

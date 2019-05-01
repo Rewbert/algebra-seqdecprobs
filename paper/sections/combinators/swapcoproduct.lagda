@@ -14,19 +14,17 @@ This can be done by having the control be of the |Maybe| type.
   swap : SDProc -> SDProc -> Set
   swap p1 p2 = getstate p1 -> getstate p2
 
-  surrCoproduct : (p1 : SDProc) -> (p2 : SDProc) ->
-  swap p1 p2 -> swap p2 p1 -> SDProc
-  surrCoproduct (SDP s1 c1 sf1) (SDP s2 c2 sf2) sw1 sw2 =
+  surrCoproduct :  (p1 : SDProc) -> (p2 : SDProc) ->
+                   swap p1 p2 -> swap p2 p1 -> SDProc
+  surrCoproduct (SDP S1 C1 sf1) (SDP S2 C2 sf2) sw1 sw2 =
   record {
-    State = s1 V s2;
-    Control = \ {
-      (inl s1) -> Maybe (c1 s1);
-      (inr s2) -> Maybe (c2 s2)};
-    Step = \ {
-      (inl s1) nothing -> inr (sw1 s1);
-      (inl s1) (just c1) -> inl (sf1 s1 c1);
-      (inr s2) nothing -> inl (sw2 s2);
-      (inr s2) (just c2) -> inr (sf2 s2 c2)}}
+    State    = S1 sumuni S2;
+    Control  = \ {  (inl s)           -> Maybe (C1 s);
+                    (inr s)           -> Maybe (C2 s)};
+    Step     = \ {  (inl s) nothing   -> inr (sw1 s);
+                    (inl s) (just c)  -> inl (sf1 s c);
+                    (inr s) nothing   -> inl (sw2 s);
+                    (inr s) (just c)  -> inr (sf2 s c)}}
 \end{code}
 
 %

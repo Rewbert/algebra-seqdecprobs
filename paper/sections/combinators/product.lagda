@@ -2,7 +2,7 @@
 \subsection{Product}
 \label{subsec:productseqdecproc}
 %
-A first example of how two problems can be combined is to produce their product.
+A first example of how two problems can be combined is to create their product.
 %
 \TODO{Use consistent constructor/variable names/cases also elsewhere}
 %
@@ -10,10 +10,10 @@ A first example of how two problems can be combined is to produce their product.
   productSDProc : SDProc -> SDProc -> SDProc
   productSDProc (SDP S1 C1 sf1) (SDP S2 C2 sf2) = record {
       State    =  S1 × S2;
-      Control  =  \state -> C1 (fst state) × C2 (snd state);
-      Step     =  \state -> \control ->
-                    ( sf1  (fst  state)  (fst  control)
-                    , sf2  (snd  state)  (snd  control) )
+      Control  =  \ state -> C1 (proj1 state) × C2 (proj2 state);
+      Step     =  \ state -> \ control ->
+                    ( sf1  (proj1  state)  (proj1  control)
+                    , sf2  (proj2  state)  (proj2  control) )
       }
 \end{code}
 %
@@ -27,7 +27,7 @@ This has the consequence that if one of the prior processes do not have any stat
 %
 Similarly, if one of the components reaches a point where there are no available controls, and thus can not progress, the other component will not be able to progress either.
 %
-% maybe some diagram here
+% maybe some diagram here (i can whip up some examples on my ipad later)
 
 %
 The functional programmer will often find himself needing a unit, e.g when using |reduce| or other frequently appearing constructs from the functional paradigm.
@@ -42,11 +42,11 @@ Consider a process that has only one state, one control for that state and a ste
   singleton : SDProc
   singleton = record {
     State    =  ⊤;
-    Control  =  \state -> ⊤;
-    Step     =  \state -> \control -> tt}
+    Control  =  \ state -> ⊤;
+    Step     =  \ state -> \ control -> tt}
 \end{code}
 %
-This could be considered to be a constant process.
+This could be considered to be a constant process, since the state is constant and the control space never changes.
 %
 
 %

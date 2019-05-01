@@ -7,6 +7,9 @@ open import Data.Maybe
 open import Data.Unit hiding (_≤_)
 open import Data.Empty
 open import Data.Vec
+open import Data.Fin
+
+open import Relation.Binary.Core
 \end{code}
 
 \begin{code}
@@ -154,10 +157,10 @@ sumSDProc : SeqDecProc → SeqDecProc → SeqDecProc
 sumSDProc (SDP s₁ c₁ sf₁)
           (SDP s₂ c₂ sf₂)
   = record { State   = s₁ ∨ s₂;
-             Control = λ { (inl s₁) → (c₁ s₁);
-                           (inr s₂) → (c₂ s₂)};
-             Step    = λ { (inl s₁) c → inl (sf₁ s₁ c);
-                            (inr s₂) c → inr (sf₂ s₂ c) }}
+             Control = λ { (inl s) → (c₁ s);
+                           (inr s) → (c₂ s)};
+             Step    = λ { (inl s) c → inl (sf₁ s c);
+                           (inr s) c → inr (sf₂ s c) }}
 
 {- If we want a unit problem to sumSDProc, we create a unit process based on the Empty
    datatype. A sum process can be in either of the two processes, and then stays there.
@@ -255,4 +258,5 @@ interleaveSDProc (SDP s₁ c₁ sf₁)
                            (true , x₁ , x₂)  → c₂ x₂};
              Step = λ { (false , x₁ , x₂) → λ control → true , sf₁ x₁ control , x₂ ;
                         (true , x₁ , x₂)  → λ control → false , x₁ , sf₂ x₂ control }}
+
 \end{code}

@@ -75,16 +75,16 @@ Now, how to turn a process into a problem?
 %
 We need to introduce some sort of goal, described by a |reward| function.
 %
-It seems suitable to define the reward function to be parameterised over a target coordinate.
+For our example we define the reward function to be parameterised over a target coordinate.
 %
-The reward function could then reward the system based on how close to the target the coordinate is.
+The reward function could then reward a proposed step based on how close to the target it lands.
 %
 \begin{code}
   large-number : Nat
   large-number = 10000
 
-  oned-reward : oned-state -> (x : oned-state) -> oned-control x ->
-              oned-state -> Nat
+  oned-reward :  oned-state ->
+                 (x : oned-state) -> oned-control x -> oned-state -> Nat
   oned-reward target x0 y x1 = large-number - (distance target x1)
 \end{code}
 %
@@ -93,10 +93,5 @@ We can redefine the sequential decision process above to be a sequential decisio
 
 \begin{code}
   problem : oned-state -> SDProb
-  problem target =
-  SDProb
-    oned-state
-    oned-control
-    oned-step
-   (oned-reward target)
+  problem target = SDProb oned-state oned-control oned-step (oned-reward target)
 \end{code}

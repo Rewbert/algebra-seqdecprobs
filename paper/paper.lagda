@@ -1,13 +1,14 @@
 % -*- latex -*-
 %----------------------------------------------------------------------------
 %
-%  Title       :  So far just a skeleton
-%  Conference: :  Something suitable (the example below is from a Haskell Symposium submission)
-%  Author(s)   :  A few of us
-%  Copyright   :  Often needs to be transferred
-%  Created     :  starting date
+%  Title       :  An Algebra of Sequential Decision Problems
+%  Conference: :  MPC 2019
+%  Author(s)   :  Robert Krook, Patrik Jansson
+%  Copyright   :  TBD
+%  Created     :  2019-04-12
 %
-%  Purpose     :  It is good to try to formulate a purpose early on.
+%  Purpose : Build up a library of combinators for creating SeqDecProbs.
+%            In the process, understand the design space better.
 %
 %----------------------------------------------------------------------------
 

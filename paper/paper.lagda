@@ -13,31 +13,29 @@
 %----------------------------------------------------------------------------
 
 %let submit = True
-%if submit
-\documentclass[times,authoryear]{sigplanconf}
-%else
-\documentclass[preprint,times]{sigplanconf}
-%endif
-
+\documentclass[runningheads]{llncs}
 %%% Standard definitions from the lhs2TeX installation
 %include polycode.fmt
 %%% Put your own formatting directives in a separate file
 %include paper.format
 
-\usepackage{url}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+% \usepackage{color}
+\renewcommand\UrlFont{\color{blue}\rmfamily}
+\usepackage{doi}
 
 %for agda
-\usepackage{ucs}
-\usepackage[utf8x]{inputenc}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8x]{inputenc}
+\RequirePackage{ucs}
+
 \usepackage{amssymb}
 \usepackage{bbm}
 \usepackage[greek,english]{babel}
 \usepackage{autofe}
 \usepackage{agda}
-
-%if techreport
-\usepackage{TRtitlepage}
-%endif
 
 %%% Some useful macros
 %if submit
@@ -54,51 +52,35 @@
 
 % \newcommand{\getstate}[1]{\ensuremath{\left||#1\right||}}
 \newcommand{\getstate}[1]{\ensuremath{\##1}}
-\toappear{}
+
+% -------------------------------------------------------------------------------
 \begin{document}
+\title{An Algebra of Sequential Decision Problems}
+\author{Robert Krook\inst{1}\orcidID{TODO}
+   \and Patrik Jansson\inst{1,2}\orcidID{0000-0003-3078-1437}}
 
-%-------------------------------------------------------------------------------
+%Note: double "@" in email to please lhs2tex
 
-%if submit
-%\conferenceinfo{Haskell'12,} {September 13, 2012, Copenhagen, Denmark.}
-%\CopyrightYear{2012}
-%\copyrightdata{978-1-4503-1574-6/12/09}
-%elif not techreport
-%\titlebanner{Preprint}
-%\preprintfooter{Preprint}
-%endif
-
-%if techreport
-\TRtitlepage
-  {Analysing an Algebra of Sequential Decision Problems}             % argument 1 <= the title
-  {Robert Krook} % argument 2 <= authors
-  {}                                     % argument 3 <= report number
-%else
-\title{Analysing an Algebra of Sequential Decision Problems}
-
-\authorinfo{name}
-           {city, country}
-           {\texttt{email}}
-
+\institute{University of Gothenburg,
+             \email{guskrooro@@student.gu.se}
+      \and Chalmers University of Technology,
+             \email{patrik.jansson@@chalmers.se}%, Computer Science and Engineering, SE-412 96 Göteborg, Sweden
+}
 \maketitle
-%endif
 
 %-------------------------------------------------------------------------------
 
 \begin{abstract}
-  The abstract should describe in a short and catch way what the paper is about etc.
+  \TODO{The abstract should briefly summarize the contents of the paper in 150--250 words.}
+  \input{abstract.txt}
+
+\keywords{Functional Programming \and Domain Specific Languages.}
 \end{abstract}
 
-%%% Some venues require ACM classification categories - here is an example
-\category{D.1.1}%
-  {Programming Techniques}%
-  {Applicative (Functional) Programming}%
-
-\terms
-design, languages, verification
-
-\keywords
-some, important, concepts, not already, mentioned, in the title
+%\setcounter{tocdepth}{2}
+%\tableofcontents
+%\todo{Remove ToC before submission.}
+%\newpage
 
 %------------------------------------------------------------------------------
 %include sections/background/background.lagda
@@ -107,16 +89,13 @@ some, important, concepts, not already, mentioned, in the title
 %------------------------------------------------------------------------------
 %include sections/combinators/combinators.lagda
 %------------------------------------------------------------------------------
-\paragraph{Acknowledgements.} This research has been partially funded
-by the (some project title + granting agency).
-%
-Somebody helped with something.
-%
-The reviewers suggested many improvements to the paper.
+
+% \paragraph{Acknowledgements.}
+% %
+% The reviewers suggested many improvements to the paper.
 
 %------------------------------------------------------------------------------
-\bibliographystyle{abbrvnat}
-%%% Keep references in a separate bib-file
+\bibliographystyle{splncs04}
 \bibliography{paper}
 
 \end{document}

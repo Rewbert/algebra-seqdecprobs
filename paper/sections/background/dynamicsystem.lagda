@@ -35,3 +35,5 @@ trajectory system x0 (suc n)  = x0 :: trajectory system x1 n
   where  x1  :  getstate system
          x1  =  getstep system x0
 \end{code}
+
+\TODO{cite cezar ionescu thesis}

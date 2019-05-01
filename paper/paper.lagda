@@ -52,6 +52,7 @@
 
 % \newcommand{\getstate}[1]{\ensuremath{\left||#1\right||}}
 \newcommand{\getstate}[1]{\ensuremath{\##1}}
+%\mathchardef\mhyphen="2D
 
 % -------------------------------------------------------------------------------
 \begin{document}

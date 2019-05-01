@@ -11,10 +11,10 @@ The problem becomes that of finding the sequence of policies which results in th
   record SDProb : Set1 where
     constructor SDProb
     field
-      State    : Set
+      State    :  Set
       Control  :  State -> Set
-      Step     : (x : State) -> Control x -> State
-      Reward   : (x : State) -> Control x -> State -> Nat
+      Step     :  (x : State) -> Control x -> State
+      Reward   :  (x : State) -> Control x -> State -> Nat
 \end{code}
 
 %
@@ -26,11 +26,10 @@ The only difference in their definition is that they must depend on a |SeqDecPro
 %
 \begin{code}
   Policy : SDProb -> Set
-  Policy (SDProb state control step reward) =
-    (x : state) -> control x
+  Policy (SDProb S C _ _)  =  (x : S) -> C x
 
   PolicySeq : SDProb -> Nat -> Set
-  PolicySeq system n = Vec (Policy system) n
+  PolicySeq sys n = Vec (Policy sys) n
 \end{code}
 
 %

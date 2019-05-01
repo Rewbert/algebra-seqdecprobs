@@ -5,4 +5,9 @@
 %format x1 = x "_1"
 %format x2 = x "_2"
 %format x3 = x "_3"
-%format (getstate x) = "\getstate{" x "}"
+% %format (getstate x) = "\getstate{" x "}"
+%format oned-state    = "\Varid{1d\text{-}state}"
+%format oned-control  = "\Varid{1d\text{-}control}"
+%format oned-step     = "\Varid{1d\text{-}step}"
+%format oned-reward   = "\Varid{1d\text{-}reward}"
+%format large-number = large "\text{-}" number

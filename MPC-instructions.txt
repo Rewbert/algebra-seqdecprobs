@@ -1,0 +1,34 @@
+# MPC 2019
+13th International Conference on
+Mathematics of Program Construction
+7-9 October 2019, Porto, Portugal
+
+## Timeline
+* Abstract submission	  2019-05-07 (Anywhere on Earth) = Wed 2019-05-08, 14.00, in Gothenburg
+* Paper submission	  2019-05-10 (Anywhere on Earth) = Sat 2019-05-11, 14.00, in Gothenburg
+* Author notification	  2019-06-14
+* Camera ready copy	  2019-07-12 (Anywhere on Earth)
+* Conference	  	  2019-10-07/9
+
+## Background
+
+The International Conference on Mathematics of Program Construction (MPC) aims to promote the development of mathematical principles and techniques that are demonstrably practical and effective in the process of constructing computer programs.
+
+...
+
+## Scope
+
+MPC seeks original papers on mathematical methods and tools put to use in program construction. Topics of interest range from algorithmics to support for program construction in programming languages and systems. Typical areas include type systems, program analysis and transformation, programming language semantics, security, and program logics. The notion of a 'program' is interpreted broadly, ranging from algorithms to hardware.
+
+Theoretical contributions are welcome, provided that their relevance to program construction is clear. Reports on applications are welcome, provided that their mathematical basis is evident. We also encourage the submission of 'programming pearls' that present elegant and instructive examples of the mathematics of program construction.
+
+## Submission
+
+Submission is in two stages.
+* TODO Wed 2019-05-08 14.00: Abstract (plain text, maximum 250 words)
+* TODO Sat 2019-05-11 14.00: Full paper (pdf, formatted using the llncs.sty style file for LaTex)
+
+There is no prescribed page limit, but authors should strive for brevity.
+Both abstracts and papers will be submitted using EasyChair (submission is now open).
+
+Papers must present previously unpublished work, and not be submitted concurrently to any other publication venue. Submissions will be evaluated by the program committee according to their relevance, correctness, significance, originality, and clarity. Each submission should explain its contributions in both general and technical terms, clearly identifying what has been accomplished, explaining why it is significant, and comparing it with previous work. Accepted papers must be presented in person at the conference by one of the authors.

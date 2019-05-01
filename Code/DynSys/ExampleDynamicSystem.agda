@@ -6,19 +6,19 @@ open import Data.Vec
 open import DynamicSystem
 
 data State : Set where
-  One   : State
-  Two   : State
-  Three : State
-  Four  : State
+  One    : State
+  Two    : State
+  Three  : State
+  Four   : State
 
 transition : State → State
-transition One = Two
-transition Two = Three
-transition Three = Four
-transition Four = One
+transition One    = Two
+transition Two    = Three
+transition Three  = Four
+transition Four   = One
 
 sys : DynamicSystem
-sys = record { State = State; Step = transition}
+sys = record { State = State; step = transition}
 
 example : (n : ℕ) → Vec State n
 example = trajectoryDyn sys One

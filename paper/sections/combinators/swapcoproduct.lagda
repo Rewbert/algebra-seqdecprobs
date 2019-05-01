@@ -22,7 +22,7 @@ This can be done by having the control be of the |Maybe| type.
     Control = \ {
       (inl s1) -> Maybe (c1 s1);
       (inr s2) -> Maybe (c2 s2)};
-    Step = \ {
+    step = \ {
       (inl s1) nothing -> inr (sw1 s1);
       (inl s1) (just c1) -> inl (sf1 s1 c1);
       (inr s2) nothing -> inl (sw2 s2);

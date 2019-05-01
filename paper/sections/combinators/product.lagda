@@ -11,7 +11,7 @@ A first example of how two problems can be combined is to produce their product.
   productSDProc (SDP S1 C1 sf1) (SDP S2 C2 sf2) = record {
       State    =  S1 × S2;
       Control  =  \state -> C1 (fst state) × C2 (snd state);
-      Step     =  \state -> \control ->
+      step     =  \state -> \control ->
                     ( sf1  (fst  state)  (fst  control)
                     , sf2  (snd  state)  (snd  control) )
       }
@@ -43,7 +43,7 @@ Consider a process that has only one state, one control for that state and a ste
   singleton = record {
     State    =  ⊤;
     Control  =  \state -> ⊤;
-    Step     =  \state -> \control -> tt}
+    step     =  \state -> \control -> tt}
 \end{code}
 %
 This could be considered to be a constant process.

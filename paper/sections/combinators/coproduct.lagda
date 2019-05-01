@@ -17,7 +17,7 @@ Similarly if it was constructed using the second injection, the control is that 
       State = s1 V s2;
       Control = \ { (inl s1) -> (c1 s1);
                     (inr s2) -> (c2 s2)};
-      Step = \ { (inl s1) c -> inl (sf1 s1 c);
+      step = \ { (inl s1) c -> inl (sf1 s1 c);
                  (inr s2) c -> inr (sf2 s2 c)}}
 \end{code}
 
@@ -42,7 +42,7 @@ However, we will never be able to call the step function since we can not supply
   empty = record {
     State = \bot;
     Control = \ state -> \bot;
-    Step = \ state -> \ control -> state }
+    step = \ state -> \ control -> state }
 \end{code}
 
 %

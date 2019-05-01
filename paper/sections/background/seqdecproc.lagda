@@ -15,7 +15,7 @@ record SDProc : Set1 where
   field
     State   : Set
     Control : State -> Set
-    Step    : (x : State) -> Control x -> State
+    step    : (x : State) -> Control x -> State
 \end{code}
 %
 Many different controls could be available at each step.

@@ -8,6 +8,12 @@ As an example, let us consider a sequential decision process where the state spa
 %
 
 \begin{code}
+  _×sf_  :  {S₁ S₂ : Set} -> {C₁ : Pred S₁} -> {C₂ : Pred S₂} ->
+            Step S₁ C₁ -> Step S₂ C₂ -> Step (S₁ × S₂) (C₁ ×C C₂)
+  (sf₁ ×sf sf₂) (s₁ , s₂) (c₁ , c₂) = (sf₁ s₁ c₁ , sf₂ s₂ c₂)
+
+
+
   oned-state  :  Set
   oned-state  =  Nat
 \end{code}

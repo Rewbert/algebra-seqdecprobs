@@ -4,18 +4,23 @@
 \label{sec:examples}
 
 
+%if false
+module examples where
+
+\begin{code}
+open import core.seqdecproc
+open import core.seqdecprob hiding (Policy; PolicySeq)
+open import Data.Nat
+\end{code}
+
+%endif
+
 As an example, let us consider a sequential decision process where the state space is a one dimensional coordinate system represented by natural numbers.
 %
 
 \begin{code}
-  _×sf_  :  {S₁ S₂ : Set} -> {C₁ : Pred S₁} -> {C₂ : Pred S₂} ->
-            Step S₁ C₁ -> Step S₂ C₂ -> Step (S₁ × S₂) (C₁ ×C C₂)
-  (sf₁ ×sf sf₂) (s₁ , s₂) (c₁ , c₂) = (sf₁ s₁ c₁ , sf₂ s₂ c₂)
-
-
-
-  oned-state  :  Set
-  oned-state  =  Nat
+oned-state  :  Set
+oned-state  =  ℕ
 \end{code}
 
 %
@@ -25,10 +30,10 @@ Here taking a step to the left means subtracting one from the coordinate, stay m
 %
 
 \begin{code}
-  data SAction : Set where
-    SL  : SAction -- left
-    SS  : SAction -- stay
-    SR  : SAction -- right
+data SAction : Set where
+  SL  : SAction -- left
+  SS  : SAction -- stay
+  SR  : SAction -- right
 \end{code}
 
 %
@@ -38,9 +43,9 @@ When the state is zero, it is not possible to take a step to the left, and so th
 %
 
 \begin{code}
-  data ZAction : Set where
-    ZS  : ZAction -- stay
-    SR  : ZAction -- right
+data ZAction : Set where
+  ZS  : ZAction -- stay
+  SR  : ZAction -- right
 \end{code}
 
 %
@@ -52,28 +57,27 @@ Otherwise the available controls are those defined in the |SAction| data type.
 %
 
 \begin{code}
-  oned-control  :  oned-state -> Set
-  oned-control zero     = ZAction
-  oned-control (suc n)  = SAction
+oned-control  :  oned-state -> Set
+oned-control zero     = ZAction
+oned-control (suc n)  = SAction
 \end{code}
 
 %
 The step functions is swiftly implemented, pattern matching on the states and controls.
 %
 \begin{code}
-  oned-step  :  (x : oned-state) -> oned-control x -> oned-state
-  oned-step  zero     ZR  = 1
-  oned-step  zero     ZS  = 0
-  oned-step  (suc n)  SL  = n
-  oned-step  (suc n)  SS  = suc n
-  oned-step  (suc n)  SR  = suc (suc n)
+oned-step  :  (x : oned-state) -> oned-control x -> oned-state
+oned-step  zero     ZR  = 1
+oned-step  (suc n)  SL  = n
+oned-step  (suc n)  SS  = suc n
+oned-step  (suc n)  SR  = suc (suc n)
 \end{code}
 %
 Finally, a sequential decision process can be defined.
 %
 \begin{code}
-  system  :  SDProc
-  system  =  SDP oned-state oned-control oned-step
+system  :  SDProc
+system  =  SDP oned-state oned-control oned-step
 \end{code}
 
 %
@@ -85,19 +89,30 @@ For our example we define the reward function to be parameterised over a target 
 %
 The reward function could then reward a proposed step based on how close to the target it lands.
 %
-\begin{code}
-  large-number : Nat
-  large-number = 10000
 
-  oned-reward :  oned-state ->
-                 (x : oned-state) -> oned-control x -> oned-state -> Nat
-  oned-reward target x0 y x1 = large-number - (distance target x1)
+%if false
+\begin{code}
+distance : ℕ → ℕ → ℕ    -- distance m n = abs (m-n)  informally
+distance zero zero       = 0
+distance zero (suc m)    = 1 + distance zero m
+distance (suc n) zero    = 1 + distance n zero
+distance (suc n) (suc m) = distance n m
+\end{code}
+%endif
+
+\begin{code}
+large-number : ℕ
+large-number = 10000
+
+oned-reward :  oned-state ->
+               (x : oned-state) -> oned-control x -> oned-state -> ℕ
+oned-reward target x0 y x1 = large-number  ∸ (distance target x1)
 \end{code}
 %
 We can redefine the sequential decision process above to be a sequential decision problem simply by instantiating the |SDProb| record.
 %
 
 \begin{code}
-  problem : oned-state -> SDProb
-  problem target = SDProb oned-state oned-control oned-step (oned-reward target)
+problem : oned-state -> SDProblem
+problem target = SDProb oned-state oned-control oned-step (oned-reward target)
 \end{code}

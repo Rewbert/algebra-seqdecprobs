@@ -56,3 +56,12 @@ In this case the only change in each step is exactly that of the singleton proce
 %
 No change at all.
 %
+
+%
+Looking back at our example with the one dimensional coordinate system, imagine we wish to define a process that acts in two dimensions.
+%
+This is now simply achieved by reusing the one dimensional process, supplying it twice to the product combinator.
+% format this tomorrow morning
+%> 2d-problem : SDProc
+%> 2d-problem = productSDProc problem problem
+%

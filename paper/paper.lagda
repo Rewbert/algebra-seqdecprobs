@@ -19,7 +19,6 @@
 %%% Put your own formatting directives in a separate file
 %include paper.format
 
-
 \usepackage{graphicx}
 \usepackage{hyperref}
 % \usepackage{color}
@@ -30,6 +29,26 @@
 \RequirePackage[T1]{fontenc}
 \RequirePackage[utf8x]{inputenc}
 \RequirePackage{ucs}
+
+% macro for monus operator (credit: https://tex.stackexchange.com/questions/147788/monus-operator-macro)
+\providecommand{\dotdiv}{% Don't redefine it if available
+  \mathbin{% We want a binary operation
+    \vphantom{+}% The same height as a plus or minus
+    \text{% Change size in sub/superscripts
+      \mathsurround=0pt % To be on the safe side
+      \ooalign{% Superimpose the two symbols
+        \noalign{\kern-.35ex}% but the dot is raised a bit
+        \hidewidth$\smash{\cdot}$\hidewidth\cr % Dot
+        \noalign{\kern.35ex}% Backup for vertical alignment
+        $-$\cr % Minus
+      }%
+    }%
+  }%
+}
+
+%manually added unicode characters
+\DeclareUnicodeCharacter{8759}{::}
+\DeclareUnicodeCharacter{8760}{\dotdiv}
 
 \usepackage{amssymb}
 \usepackage{bbm}
@@ -84,11 +103,11 @@
 %\newpage
 
 %------------------------------------------------------------------------------
-%include sections/background/background.lagda
+%include sections/background.lagda
 %------------------------------------------------------------------------------
-%include sections/examples/examples.lagda
+%include sections/examples.lagda
 %------------------------------------------------------------------------------
-%include sections/combinators/combinators.lagda
+%include sections/combinators.lagda
 %------------------------------------------------------------------------------
 
 % \paragraph{Acknowledgements.}

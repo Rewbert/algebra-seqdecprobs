@@ -14,7 +14,7 @@ default : $(NAME).pdf
 %.pdf : %.tex %.bib
 	$(LATEXMK) -pdf $<
 
-paper.tex :: sections/background/dynamicsystem.lagda sections/background/seqdecproc.lagda sections/background/seqdecprob.lagda sections/background/background.lagda sections/combinators/combinators.lagda sections/combinators/product.lagda sections/combinators/coproduct.lagda sections/combinators/interleave.lagda sections/combinators/swapcoproduct.lagda sections/examples/examples.lagda
+paper.tex :: sections/core/dynamicsystem.lagda sections/core/seqdecproc.lagda sections/core/seqdecprob.lagda sections/background.lagda sections/combinators.lagda sections/examples.lagda
 
 clean:
 	latexmk -C $(NAME).tex

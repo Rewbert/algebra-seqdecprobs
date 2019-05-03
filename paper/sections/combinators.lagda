@@ -7,6 +7,8 @@
 module combinators where
 
 open import core.seqdecproc
+open import examples
+
 open import Data.Nat
 open import Data.Bool
 open import Data.Product hiding (swap)
@@ -29,20 +31,70 @@ This section will explore different ways sequential decision processes can be co
 %
 A first example of how two problems can be combined is to create their product.
 %
+Naturally the new state is just the product of the two prior states.
+%
+The other components, the |Control| and the |step| must be described and combined more thoroughly.
+%
+The control is a predicate on the state, and if we consider the control as such we can consider the state to be a term.
+%
 \TODO{Use consistent constructor/variable names/cases also elsewhere}
 %
 \begin{code}
-productSDProc : SDProc → SDProc → SDProc
-productSDProc (SDP S₁ C₁ sf₁)  (SDP S₂ C₂ sf₂) = record {
-  State    = S₁ × S₂;
-  Control  = \ { (s₁ , s₂) → C₁ s₁ × C₂ s₂ };
-  step     = \ { (s₁ , s₂) → \ { (c₁ , c₂) → (sf₁ s₁ c₁ , sf₂ s₂ c₂) } }
-  }
+Pred : Set → Set₁
+Pred S = S → Set
 \end{code}
 %
-As the new state, the cartesian product of the two prior states is chosen.
+Given two terms and two predicates, one on each term, we compute the predicate on the product of the two terms.
 %
-The new control is the cartesian product of the prior controls.
+The inhabitants of this product predicate are pairs of the inhabitants of the prior predicates.
+%
+\begin{code}
+_×C_ :  {S₁ S₂ : Set} -> Pred S₁ -> Pred S₂ -> Pred (S₁ × S₂)
+(C₁ ×C C₂) (s₁ , s₂) = C₁ s₁ × C₂ s₂
+\end{code}
+%
+% insert connor mcbride discussion here i suppose.
+%
+After defining what State and Controls are, terms and predicates, we want to relate to the step function in a similar manner.
+%
+From predicate logic we recall that functions are also terms. % they are terms if they are applied to n terms (the predicate is not a term?)
+%
+Given a term and a predicate on that term, the step function produces a new term of the same type.
+%
+\begin{code}
+Step : (S : Set) -> Pred S -> Set
+Step S C = (s : S) -> C s -> S
+\end{code}
+%
+Next we want to compute the product of two such step functions.
+%
+The function is given two terms |S₁| and |S₂|.
+%
+Two predicates |C₁ : Pred S₁| and |C₂ : Pred S₂|, and lastly two functions |Step S₁ C₁| and |Step S₂ C₂|.
+%
+From this input we must define a function that given an element of the product of the terms |S₁ × S₂| and the product of the predicates |C₁ ×C C₂"| produces a new term.
+%
+The result is a product of terms that are computed by componentwise calling the prior step functions.
+%
+\begin{code}
+_×sf_  :  {S₁ S₂ : Set}
+       -> {C₁ : Pred S₁} -> {C₂ : Pred S₂}
+       -> Step S₁ C₁ -> Step S₂ C₂
+       -> Step (S₁ × S₂) (C₁ ×C C₂)
+(sf₁ ×sf sf₂) (s₁ , s₂) (c₁ , c₂) = (sf₁ s₁ c₁ , sf₂ s₂ c₂)
+\end{code}
+
+%
+Seeing how we know how to combine all components on the bases of a product, computing the product of two sequential decision processes becomes easy.
+%
+We componentwise apply the product operations.
+%
+\begin{code}
+_×SDP_ : SDProc → SDProc → SDProc
+(SDP S₁ C₁ sf₁) ×SDP (SDP S₂ C₂ sf₂)
+  = SDP (S₁ × S₂) (C₁ ×C C₂) (sf₁ ×sf sf₂)
+\end{code}
+
 %
 An observation to be made here is that in order for the new system to exist in any state, it has to hold components of both prior states.
 %
@@ -53,64 +105,93 @@ Similarly, if one of the components reaches a point where there are no available
 % maybe some diagram here (i can whip up some examples on my ipad later)
 
 %
-The functional programmer will often find himself needing a unit, e.g when using |reduce| or other frequently appearing constructs from the functional paradigm.
+Functional programmers will often find they are in need of a unit, e.g when using |reduce| or other frequently appearing constructs from the functional paradigm.
 %
 Naturally, it would be convenient to define units for the combinators described in this script.
 %
 
 %
-Consider a process that has only one state, one control for that state and a step function which takes the only state and the only control, and from that computes the same state.
+What we are after is a process that will not carry any extra information, or rather one that can not alter the information it carries.
+%
+Recall that in order for the product of two states to exist in any state, both state spaces has to be inhabited.
+%
+In order to call the step function the control space also has to be inhabited.
+%
+In an effort to minimise the information the unit carries we declare its state space and control space to be singletons.
+%
+The step function becomes a constant function that given the only state and the only control, will return the only state.
 %
 \begin{code}
 singleton : SDProc
 singleton = record {
   State    =  ⊤;
-  Control  =  \ state -> ⊤;
-  step     =  \ state -> \ control -> tt}
+  Control  =  λ state -> ⊤;
+  step     =  λ state -> λ control -> tt}
 \end{code}
-%
-This could be considered to be a constant process, since the state is constant and the control space never changes.
-%
 
 %
-Taking the product of any process and the singleton process would produce a system where the only change during each step is that of the process which is not the singleton.
+Taking the product of any process and the singleton process would produce a process where the only change of information during each step is that of the process which is not the singleton.
 %
 Of course, the other process could itself be the singleton process also.
 %
-In this case the only change in each step is exactly that of the singleton process.
-%
-No change at all.
+In this case the only change in each step is exactly that of the singleton process, which is no change at all.
 %
 
 %
-Looking back at our example with the one dimensional coordinate system, imagine we wish to define a process that acts in two dimensions.
+Looking back at the example of the one dimensional coordinate system, we find ourselves wondering if we would now get a process of a two dimensional coordinate system for free.
 %
-This is now simply achieved by reusing the one dimensional process, supplying it twice to the product combinator.
-% format this tomorrow morning
-%> 2d-problem : SDProc
-%> 2d-problem = productSDProc problem problem
+The answer, unsurprisingly, is yes.
 %
+\begin{code}
+twod-system = system ×SDP system
+\end{code}
+
+% maybe some actual discussion here of why this is the case.
 
 %-----------------------------------------------------------------------
 \subsection{Coproduct}
 \label{subsec:coproductseqdecproc}
+
 %
-The coproduct of two processes can be created by taking the new state to be the coproduct of the prior states.
+Seeing how we could define the product of two processes, we are left wondering if we can compute the sum of two processes.
 %
-The control is depending on what injection the given state was constructed with.
+The approach is similar to that of the product case.
 %
-If it was constructed using the first injection the new control is that of the corresponding prior control.
+
 %
-Similarly if it was constructed using the second injection, the control is that of the corresponding prior control.
+The control, here considered a predicate, is a predicate on the sum of the terms.
+%
+The inhabitants of this sum predicate is the sum of the inhabitants of the prior predicates.
 %
 \begin{code}
-sumSDProc : SDProc -> SDProc -> SDProc
-sumSDProc (SDP S1 C1 sf1) (SDP S2 C2 sf2) = record {
-    State    = S1 ⊎ S2;
-    Control  = \ {  (inj₁ s)    -> (C1 s);
-                    (inj₂ s)    -> (C2 s)};
-    step     = \ {  (inj₁ s) c  -> inj₁ (sf1 s c);
-                    (inj₂ s) c  -> inj₂ (sf2 s c)}}
+_⊎C_ : {S₁ S₂ : Set} → Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
+(C₁ ⊎C C₂) (inj₁ s₁) = C₁ s₁
+(C₁ ⊎C C₂) (inj₂ s₂) = C₂ s₂
+\end{code}
+%
+Calculating a new step function from two prior step functions is relatively straight forward.
+%
+The first input is the sum of the two terms.
+%
+Depending on which term the first argument belongs to, one of the prior step functions is applied to it and the second argument, the predicate on that term.
+%
+The result of the application is then injected into the sum type using the same injection as the input.
+%
+\begin{code}
+_⊎sf_  :  {S₁ S₂ : Set}
+       -> {C₁ : Pred S₁} -> {C₂ : Pred S₂}
+       -> Step S₁ C₁ -> Step S₂ C₂
+       -> Step (S₁ ⊎ S₂) (C₁ ⊎C C₂)
+(sf₁ ⊎sf sf₂) (inj₁ s₁) c₁ = inj₁ (sf₁ s₁ c₁)
+(sf₁ ⊎sf sf₂) (inj₂ s₂) c₂ = inj₂ (sf₂ s₂ c₂)
+\end{code}
+%
+The sum of two problems is now computed by applying the sum operators componentwise.
+%
+\begin{code}
+_⊎SDP_ : SDProc → SDProc → SDProc
+SDP S₁ C₁ sf₁ ⊎SDP SDP S₂ C₂ sf₂
+  = SDP (S₁ ⊎ S₂) (C₁ ⊎C C₂) (sf₁ ⊎sf sf₂)
 \end{code}
 
 %
@@ -133,8 +214,8 @@ However, we will never be able to call the step function since we can not supply
 empty : SDProc
 empty = record {
   State    = ⊥;
-  Control  = \ state -> ⊥;
-  step     = \ state -> \ control -> state }
+  Control  = λ state -> ⊥;
+  step     = λ state -> λ control -> state }
 \end{code}
 
 %
@@ -169,6 +250,11 @@ surrCoproduct (SDP S1 C1 sf1) (SDP S2 C2 sf2) sw1 sw2 = record {
                   (inj₁ s) (just c)  -> inj₁ (sf1 s c);
                   (inj₂ s) nothing   -> inj₁ (sw2 s);
                   (inj₂ s) (just c)  -> inj₂ (sf2 s c)}}
+\end{code}
+
+\begin{code}
+swap' : (S₁ S₂ : Set) → Set
+swap' s₁ s₂ = s₁ → s₂
 \end{code}
 
 %

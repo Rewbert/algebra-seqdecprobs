@@ -9,7 +9,7 @@
 %format S2 = S "_2"
 %format C1 = C "_1"
 %format C2 = C "_2"
-%format \bot = ⊥
+%format λ = "\lambda"
 %format sumuni = ⊎
 %format proj1 = proj "_1"
 %format proj2 = proj "_2"
@@ -23,8 +23,21 @@
 %format oned-step     = "\Varid{1d\text{-}step}"
 %format oned-reward   = "\Varid{1d\text{-}reward}"
 %format large-number = large "\text{-}" number
+%format twod-system   = "\Varid{2d\text{-}system}"
 
 \newcommand{\un}{\mbox{\texttt{\_}}}   % short underscore
 \newcommand{\unopun}[1]{\ensuremath{\,\un{#1}\un\,}}
 
-%format _×sf_ = "\unopun{×_{\!\Varid{sf}}}"
+%format _×sf_  = "\unopun{×_{\!\Varid{sf}}}"
+%format ×sf    =         "×_{\!\Varid{sf}}"
+%format _×C_   = "\unopun{×_{\!\Varid{C}}}"
+%format ×C     =         "×_{\!\Varid{C}}"
+%format _×SDP_ = "\unopun{×_{\!\Varid{SDP}}}"
+%format ×SDP   =         "×_{\!\Varid{SDP}}"
+
+%format _⊎C_   = "\unopun{⊎_{\!\Varid{C}}}"
+%format ⊎C     =         "⊎_{\!\Varid{C}}"
+%format _⊎sf_  = "\unopun{⊎_{\!\Varid{sf}}}"
+%format ⊎sf    =         "⊎_{\!\Varid{sf}}"
+%format _⊎SDP_ = "\unopun{⊎_{\!\Varid{SDP}}}"
+%format ⊎SDP   =         "⊎_{\!\Varid{SDP}}"

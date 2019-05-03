@@ -76,7 +76,7 @@
 % -------------------------------------------------------------------------------
 \begin{document}
 \title{An Algebra of Sequential Decision Problems}
-\author{Robert Krook\inst{1}\orcidID{TODO}
+\author{Robert Krook\inst{1}\orcidID{0000-0003-3619-2975}
    \and Patrik Jansson\inst{1,2}\orcidID{0000-0003-3078-1437}}
 
 %Note: double "@" in email to please lhs2tex

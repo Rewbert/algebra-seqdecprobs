@@ -23,3 +23,8 @@
 %format oned-step     = "\Varid{1d\text{-}step}"
 %format oned-reward   = "\Varid{1d\text{-}reward}"
 %format large-number = large "\text{-}" number
+
+\newcommand{\un}{\mbox{\texttt{\_}}}   % short underscore
+\newcommand{\unopun}[1]{\ensuremath{\,\un{#1}\un\,}}
+
+%format _×sf_ = "\unopun{×_{\!\Varid{sf}}}"

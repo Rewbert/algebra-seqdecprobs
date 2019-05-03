@@ -36,5 +36,6 @@ trajectory system x0 (suc n)  = x0 :: trajectory system x1 n
          x1  =  getstep system x0
 \end{code}
 
+\cite{ionescu2009vulnerability}
 \TODO{cite cezar ionescu thesis}
 % reference to Cezars thesis (ask patrik how to reference it properly)  https://refubium.fu-berlin.de/handle/fub188/5259

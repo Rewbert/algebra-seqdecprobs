@@ -1,0 +1,10 @@
+TODO: cite
+  http://www.cs.nott.ac.uk/~psztxa/publ/jcont.pdf
+or
+  http://strictlypositive.org/indexed-containers.pdf
+
+  for the S<|P ~= State and Control
+
+TODO (later) relate more closely the operations.
+
+TODO perhaps check the Agda code

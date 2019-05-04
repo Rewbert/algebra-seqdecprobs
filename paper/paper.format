@@ -41,3 +41,10 @@
 %format ⊎sf    =         "⊎_{\!\Varid{sf}}"
 %format _⊎SDP_ = "\unopun{⊎_{\!\Varid{SDP}}}"
 %format ⊎SDP   =         "⊎_{\!\Varid{SDP}}"
+
+%format _⊎C+_   = "\unopun{⊎_{\!\Varid{C+}}}"
+%format ⊎C+     =         "⊎_{\!\Varid{C+}}"
+%format _⊎sf+_  = "\unopun{⊎_{\!\Varid{sf+}}}"
+%format ⊎sf+    =         "⊎_{\!\Varid{sf+}}"
+%format _⊎SDP+_ = "\unopun{⊎_{\!\Varid{SDP+}}}"
+%format ⊎SDP+   =         "⊎_{\!\Varid{SDP+}}"

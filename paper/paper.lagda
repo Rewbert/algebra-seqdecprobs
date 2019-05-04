@@ -49,6 +49,7 @@
 %manually added unicode characters
 \DeclareUnicodeCharacter{8759}{::}
 \DeclareUnicodeCharacter{8760}{\dotdiv}
+\DeclareUnicodeCharacter{8644}{\rightleftarrows}
 
 \usepackage{amssymb}
 \usepackage{bbm}

@@ -9,13 +9,15 @@ module combinators where
 open import core.seqdecproc
 open import examples
 
-open import Data.Nat
+open import Data.Nat hiding (_^_)
 open import Data.Bool
 open import Data.Product hiding (swap)
 open import Data.Sum
 open import Data.Unit
 open import Data.Empty
+open import Data.Fin
 open import Data.Maybe
+open import Data.Vec
 
 \end{code}
 %endif
@@ -307,30 +309,52 @@ Further more, we would not be able to give a definition for |S₁ ↦ S₂|.
 %
 The next combinator is one that interleaves processes, allowing each of the two prior processes to progress one step at a time each.
 %
-This behaviour is similar to that of a game where two users take turns making their next move.
+This behaviour could be similar to that of a game, where two players take turns making their next move.
 %
-However, the users do not know what moves the other user has made, and can therefore not make particularly smart moves.
+However, the users do not know what moves the other player has made, and can therefore not make particularly smart moves.
 %
 In section -insert section with policies- it is shown how computing optimal policies produce controls which do know of the other users move.
 
 %
-In the simplest case the number of combined processes is two, and a boolean can be used to see which of the two should be allowed to progress.
+Given two states, how can we produce a new state which not only captures all inhabitants of the separate states, but also knows which process should be allowed to advance next?
+%
+The most natural way seems to be to create a 3-ary product, where one of the components is an index indicating which of the two processes turn it is to advance.
+\begin{code}
+_⇄S_ : Set → Set → Set
+S₁ ⇄S S₂ = Fin 2 × S₁ × S₂
+\end{code}
+%
+The predicate on this new state, defined in terms of the two previous predicates, is defined as follows.
+%
+If the value of the first component is zero, we select the first predicate.
+%
+If the value is one, we select the second predicate.
+%
+Agda require us to include a case for when the first component has any other value also, but quickly realises that this is an unreachable case.
 %
 \begin{code}
-interleaveSDProc : SDProc -> SDProc -> SDProc
-interleaveSDProc (SDP S1 C1 sf1) (SDP S2 C2 sf2) =
-  record {
-  State    = Bool × (S1 × S2);
-  Control  = \ {  (false , x1 , x2) -> C1 x1;
-                  (true ,  x1 , x2) -> C2 x2};
-  step     = \ {  (false , x1 , x2) -> \ control ->
-                    true , sf1 x1 control , x2;
-                  (true , x1 , x2) -> \ control ->
-                    false , x1 , sf2 x2 control}}  
+_⇄C_ : {S₁ S₂ : Set} → Pred S₁ → Pred S₂ → Pred (S₁ ⇄S S₂)
+(C₁ ⇄C C₂) (zero , s₁ , s₂)      = C₁ s₁
+(C₁ ⇄C C₂) (suc zero , s₁ , s₂)  = C₂ s₂
+(C₁ ⇄C C₂) (suc (suc ()) , _)
+\end{code}
+%
+The step function will inspect this first component and based on what value it has, it is going to invoke one of the prior step functions on the appropriate component.
+%
+The other component that is not the index is left unchanged, while the index is changed to indicate that the other process is the one to advance next.
+%
+\begin{code}
+_⇄sf_ : {S₁ S₂ : Set} → {C₁ : Pred S₁} → {C₂ : Pred S₂} → Step S₁ C₁ → Step S₂ C₂ → Step (S₁ ⇄S S₂) (C₁ ⇄C C₂)
+(sf₁ ⇄sf sf₂) (zero , s₁ , s₂) c      = suc zero , sf₁ s₁ c , s₂
+(sf₁ ⇄sf sf₂) (suc zero , s₁ , s₂) c  = zero , s₁ , sf₂ s₂ c
+(sf₁ ⇄sf sf₂) (suc (suc ()) , _)
+\end{code}
+Combining two processes to capture this interleaved behaviour is once again simply done by combining the components componentwise.
+\begin{code}
+_⇄SDP_ : SDProc → SDProc → SDProc
+SDP S₁ C₁ sf₁ ⇄SDP SDP S₂ C₂ sf₂ = SDP (S₁ ⇄S S₂) (C₁ ⇄C C₂) (sf₁ ⇄sf sf₂)
 \end{code}
 
-%
-In this case the boolean acts as an index into the product, determining which system to progress.
 %
 This way of modeling the interleaved problem is not optimal, is combining more than two processes with it will produce undesired behaviour.
 %

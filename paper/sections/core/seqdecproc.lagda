@@ -30,9 +30,14 @@ record SDProc : Set1 where
 
 %if false
 \begin{code}
-getstate = SDProc.State
-getcontrol = SDProc.Control
-getstep = SDProc.step
+#st_ : SDProc → Set
+#st SDP State Control step = State
+
+#c_ : (s : SDProc) → (#st s → Set)
+#c SDP State Control step = Control
+
+#sf_ : (s : SDProc) → ((x : #st s) → (y : (#c s) x) → #st s)
+#sf SDP State Control step = step
 \end{code}
 %endif
 
@@ -57,10 +62,10 @@ Now we have all the definitions we need in order to implement the trajectory fun
 %
 \begin{code}
 trajectory : {n : ℕ} -> (p : SDProc) -> PolicySeq p n ->
-              getstate p -> Vec (getstate p) n
+              #st p -> Vec (#st p) n
 trajectory sdp [] x0 = []
 trajectory sdp (p ∷ ps) x0 = x0 ∷ trajectory sdp ps x1
-  where x1 : getstate sdp
-        x1 = getstep sdp x0 (p x0)
+  where x1 : #st sdp
+        x1 = (#sf sdp) x0 (p x0)
 \end{code}
 %

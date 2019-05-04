@@ -225,50 +225,80 @@ There is no way to begin advancing the empty process, and so the only available 
 %
 
 %-----------------------------------------------------------------------
-\subsection{Surrendering Coproduct}
-\label{subsec:surrcoproductseqdecproc}
+\subsection{Yielding Coproduct}
+\label{subsec:yieldingcoproductseqdecproc}
+
 %
-The example of the coproduct combinator gives rise to an idea of a combinator which act similarly but that is able to release control to the other process.
+Computing the coproduct of two processes and getting a process that evaluates either of the two, without actually considering the other process, leaves us wondering what this is useful for.
 %
-The coproduct begun progressing in a state belonging to one of the prior processes, and could never switch to the other process.
+It would be more useful if we could jump between the two processes.
 %
-Considering a function that could map a state in one of the prior processes to one in the other prior process, the coproduct could be redesigned to allow one process to release control to the other.
+To do this, we first need to define a relation between states.
 %
-This can be done by having the control be of the |Maybe| type.
+We define a relation on two terms, and define it to be a mapping from an inhabitant of one term to an inhabitant of the other.
 %
 \begin{code}
-swap : SDProc -> SDProc -> Set
-swap p1 p2 = getstate p1 -> getstate p2
-
-surrCoproduct :  (p1 : SDProc) -> (p2 : SDProc) ->
-                swap p1 p2 -> swap p2 p1 -> SDProc
-surrCoproduct (SDP S1 C1 sf1) (SDP S2 C2 sf2) sw1 sw2 = record {
-  State    = S1 ⊎ S2;
-  Control  = \ {  (inj₁ s)           -> Maybe (C1 s);
-                  (inj₂ s)           -> Maybe (C2 s)};
-  step     = \ {  (inj₁ s) nothing   -> inj₂ (sw1 s);
-                  (inj₁ s) (just c)  -> inj₁ (sf1 s c);
-                  (inj₂ s) nothing   -> inj₁ (sw2 s);
-                  (inj₂ s) (just c)  -> inj₂ (sf2 s c)}}
+_↦_ : (S₁ S₂ : Set) → Set
+s₁ ↦ s₂ = s₁ → s₂
 \end{code}
-
+%
+Combining the two predicates on the terms look similar to that of the coproduct case, when looking at the type.
+%
+However, instead of the new predicate being defined as either of the two prior ones, it is now |Maybe| either of the two previous ones.
+%
+The idea is that if the selected inhabitant from this predicate is Nothing, the process would like to yield in favour of the other process.
+%
 \begin{code}
-swap' : (S₁ S₂ : Set) → Set
-swap' s₁ s₂ = s₁ → s₂
+_⊎C+_ : {S₁ S₂ : Set} → Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
+(C₁ ⊎C+ C₂) (inj₁ s₁) = Maybe (C₁ s₁)
+(C₁ ⊎C+ C₂) (inj₂ s₂) = Maybe (C₂ s₂)
+\end{code}
+%
+In order to combine two step functions we need two additional pieces of information.
+%
+We need one relation from one term to the other, as well as an opposite relation. % opposite är helt fel old här.
+%
+If the predicate of the step function is ever Nothing, we will use the relation to map the value of the current term to a value of the other term.
+%
+\begin{code}
+_⊎sf+_ :  {S₁ S₂ : Set}
+         → {C₁ : Pred S₁} → {C₂ : Pred S₂}
+         → Step S₁ C₁ → Step S₂ C₂
+         → S₁ ↦ S₂ → S₂ ↦ S₁
+         → Step (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
+(sf₁ ⊎sf+ sf₂) r₁ r₂  (inj₁ s₁)  (just c)  = inj₁ (sf₁ s₁ c)
+(sf₁ ⊎sf+ sf₂) r₁ r₂  (inj₁ s₁)  nothing   = inj₂ (r₁ s₁)
+(sf₁ ⊎sf+ sf₂) r₁ r₂  (inj₂ s₂)  (just c)  = inj₂ (sf₂ s₂ c)
+(sf₁ ⊎sf+ sf₂) r₁ r₂  (inj₂ s₂)  nothing   = inj₁ (r₂ s₂)
+\end{code}
+%
+Now we can compute the yielding coproduct of two processes by applying the new operations componentwise.
+%
+\begin{code}
+_⊎SDP+_ :  (p₁ : SDProc) → (p₂ : SDProc)
+           → (#st p₁) ↦ (#st p₂)
+           → (#st p₂) ↦ (#st p₁)
+           → SDProc
+((SDP S₁ C₁ sf₁) ⊎SDP+ (SDP S₂ C₂ sf₂)) r₁ r₂
+  = SDP (S₁ ⊎ S₂) (C₁ ⊎C+ C₂) ((sf₁ ⊎sf+ sf₂) r₁ r₂)
 \end{code}
 
 %
-If the control at any step is nothing, the system will switch to a state belonging to the other prior process by calling the |swap| function.
+With a combinator such as this one you could describe e.g software.
+%
+As an example, one process could model the normal execution of some software, while the other could model the behaviour of an exception handler.
+%
+When the process modeling the software reaches a point where an exception is thrown, the process can yield control to the exception handler.
+%
+When the exception handler process is done, it will reach a state where it can yield in favour of the other process again.
 %
 
 %
-With a combinator as this one the system could model e.g software.
+A unit to the yielding coproduct combinator is the same one as that for the regular coproduct combinator.
 %
-As an example, one process could model the run of some software, while the other could model the execution of a garbage collector.
+If the state space is not inhabited, the process could never progress as we will not be able to call the step function.
 %
-When the process modeling the software reaches a point where garbage collection is required, there will be no controls available. The software will give up control to the garbage collector process.
-%
-When the garbage collector process is done, it will reach a state where there is nothing left for it to do, and it will surrender control to the software process again.
+Further more, we would not be able to give a definition for |S₁ ↦ S₂|.
 %
 
 %-----------------------------------------------------------------------

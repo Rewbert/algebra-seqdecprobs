@@ -18,6 +18,7 @@ open import Data.Maybe
 open import Data.Nat
 open import Data.Fin
 open import Data.Vec
+open import Relation.Binary.PropositionalEquality
 \end{code}
 %endif
 %
@@ -113,3 +114,14 @@ combineSeq seq₁ seq₂ comb = zipWith comb seq₁ seq₂
 --combine⊎+Seq r₁ r₂ seq₁ seq₂ = zipWith (λ p₁ → λ p₂ → (p₁ ⊎P+ p₂) r₁ r₂) seq₁ seq₂
 \end{code}
 %endif
+
+\begin{code}
+⊎↦× : (p₁ p₂ : SDProc) → Policy (p₁ ⊎SDP p₂) → Policy p₁ × Policy p₂
+⊎↦× _ _ policy = (λ s₁ → policy (inj₁ s₁)) , λ s₂ → policy (inj₂ s₂)
+
+×↦⊎ : (p₁ p₂ : SDProc) → Policy p₁ × Policy p₂ → Policy (p₁ ⊎SDP p₂)
+×↦⊎ _ _ (p₁ , p₂) = λ { (inj₁ s₁) → p₁ s₁ ; (inj₂ s₂) → p₂ s₂}
+
+∀⊎↦× : {p₁ p₂ : SDProc} → (p : Policy (p₁ ⊎SDP p₂)) → ×↦⊎ p₁ p₂ (⊎↦× p₁ p₂ p) ≡  p
+∀⊎↦× {x} {y} p = ?
+\end{code}

@@ -15,7 +15,7 @@ open import Data.Product hiding (swap)
 open import Data.Sum
 open import Data.Unit
 open import Data.Empty
-open import Data.Fin
+open import Data.Fin hiding (lift)
 open import Data.Maybe
 open import Data.Vec
 
@@ -97,6 +97,13 @@ _×SDP_ : SDProc → SDProc → SDProc
   = SDP (S₁ × S₂) (C₁ ×C C₂) (sf₁ ×sf sf₂)
 \end{code}
 
+\begin{figure}
+\label{images:product}
+\centering
+\includegraphics{images/product.png}
+\caption{Illustration of a product process}
+\end{figure}
+
 %
 An observation to be made here is that in order for the new system to exist in any state, it has to hold components of both prior states.
 %
@@ -104,7 +111,6 @@ This has the consequence that if one of the prior processes do not have any stat
 %
 Similarly, if one of the components reaches a point where there are no available controls, and thus can not progress, the other component will not be able to progress either.
 %
-% maybe some diagram here (i can whip up some examples on my ipad later)
 
 %
 Functional programmers will often find they are in need of a unit, e.g when using |reduce| or other frequently appearing constructs from the functional paradigm.
@@ -130,6 +136,13 @@ singleton = record {
   Control  =  λ state -> ⊤;
   step     =  λ state -> λ control -> tt}
 \end{code}
+
+\begin{figure}
+\label{images:singleton}
+\centering
+\includegraphics{images/singleton.png}
+\caption{Illustration of the singleton process}
+\end{figure}
 
 %
 Taking the product of any process and the singleton process would produce a process where the only change of information during each step is that of the process which is not the singleton.
@@ -195,6 +208,13 @@ _⊎SDP_ : SDProc → SDProc → SDProc
 SDP S₁ C₁ sf₁ ⊎SDP SDP S₂ C₂ sf₂
   = SDP (S₁ ⊎ S₂) (C₁ ⊎C C₂) (sf₁ ⊎sf sf₂)
 \end{code}
+
+\begin{figure}
+\label{images:coproduct}
+\centering
+\includegraphics{images/coproduct.png}
+\caption{Illustration of a coproduct process}
+\end{figure}
 
 %
 In the case of the product process the two prior processes were not entirely independent.
@@ -285,6 +305,13 @@ _⊎SDP+_ :  (p₁ : SDProc) → (p₂ : SDProc)
   = SDP (S₁ ⊎ S₂) (C₁ ⊎C+ C₂) ((sf₁ ⊎sf+ sf₂) r₁ r₂)
 \end{code}
 
+\begin{figure}
+\label{images:yieldcoproduct}
+\centering
+\includegraphics{images/yieldcoproduct.png}
+\caption{Illustration of a coproduct process}
+\end{figure}
+
 %
 With a combinator such as this one you could describe e.g software.
 %
@@ -355,15 +382,39 @@ _⇄SDP_ : SDProc → SDProc → SDProc
 SDP S₁ C₁ sf₁ ⇄SDP SDP S₂ C₂ sf₂ = SDP (S₁ ⇄S S₂) (C₁ ⇄C C₂) (sf₁ ⇄sf sf₂)
 \end{code}
 
+\begin{figure}
+\label{images:interleave}
+\centering
+\includegraphics{images/interleave.png}
+\caption{Illustration of a coproduct process}
+\end{figure}
+
 %
-This way of modeling the interleaved problem is not optimal, is combining more than two processes with it will produce undesired behaviour.
+This way of modeling the interleaved problem is not optimal, as combining more than two processes with it will produce undesired behaviour.
 %
 If we combine three processes using this combinator the resulting system would be one where one of the processes advance half the time, and the other two only a quarter of the time each.
 %
+
+\begin{figure}
+\label{images:badinterleave}
+\centering
+\includegraphics{images/badinterleave.png}
+\caption{Illustration of a coproduct process}
+\end{figure}
+
+%
 If we instead consider an implementation where the input to the combinator is a vector of processes, we would construct a more clever process with a better indexing behaviour.
+%
+
+\begin{figure}
+\label{images:wantedinterleave}
+\centering
+\includegraphics{images/wantedinterleave.png}
+\caption{Illustration of a coproduct process}
+\end{figure}
+
 %
 A system like this would let all the processes advance equally much.
 %
 \TODO{implement this - A general product type with an indexing function}
 %-----------------------------------------------------------------------
-

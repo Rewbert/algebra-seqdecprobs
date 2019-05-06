@@ -31,11 +31,11 @@
 \newcommand{\un}{\mbox{\texttt{\_}}}   % short underscore
 \newcommand{\unopun}[1]{\ensuremath{\,\un{#1}\un\,}}
 
-%format _×sf_  = "\unopun{×_{\!\Varid{sf}}}"
+%format _×sf_  = "\unopun{" ×sf "}"
 %format ×sf    =         "×_{\!\Varid{sf}}"
-%format _×C_   = "\unopun{×_{\!\Varid{C}}}"
-%format ×C     =         "×_{\!\Varid{C}}"
-%format _×SDP_ = "\unopun{×_{\!\Varid{SDP}}}"
+%format _×C_   = "\unopun{" ×C "}"
+%format ×C     =         "\mathop{×_{\!\Varid{C}}}"
+%format _×SDP_ = "\unopun{" ×SDP "}"
 %format ×SDP   =         "×_{\!\Varid{SDP}}"
 
 %format _⊎C_   = "\unopun{⊎_{\!\Varid{C}}}"
@@ -63,3 +63,6 @@
 
 %format _⇄SDP_   = "\unopun{" ⇄SDP "}"
 %format ⇄SDP     =          "\mathop{⇄_{\text{SDP}}}"
+
+%format _×P_   = "\unopun{" ×P "}"
+%format ×P     =         "\mathop{×_{\!\Varid{P}}}"

@@ -14,7 +14,7 @@ open import core.seqdecproc
 open import combinators
 open import Data.Product
 open import Data.Sum
-open import Data.Maybe
+open import Data.Maybe using (just) -- hiding zipWith
 open import Data.Nat
 open import Data.Fin
 open import Data.Vec
@@ -33,8 +33,9 @@ Given a state, the policy must return a control.
 The control space for a product process is the product of the two separate control spaces.
 %
 \begin{code}
-_×P_ : {p₁ p₂ : SDProc} → Policy p₁ → Policy p₂ → Policy (p₁ ×SDP p₂)
-p₁ ×P p₂ = λ state → p₁ (proj₁ state) , p₂ (proj₂ state)
+_×P_  :   {p₁ p₂ : SDProc}
+      →   Policy p₁ → Policy p₂ → Policy (p₁ ×SDP p₂)
+(p₁ ×P p₂) (fst , snd) = (p₁ fst , p₂ snd)
 \end{code}
 %
 A policy for the sum of two processes is defined by pattern matching on the state.
@@ -45,9 +46,8 @@ Similarly, if the pattern matches on the right injection we can reuse the given 
 %
 \begin{code}
 _⊎P_ : {p₁ p₂ : SDProc} → Policy p₁ → Policy p₂ → Policy (p₁ ⊎SDP p₂)
-p₁ ⊎P p₂ =
-  λ { (inj₁ s₁) → p₁ s₁;
-      (inj₂ s₂) → p₂ s₂}
+p₁ ⊎P p₂ =   λ {  (inj₁  s₁) →  p₁  s₁;
+                  (inj₂  s₂) →  p₂  s₂}
 \end{code}
 %
 Reusing policies for the yielding coproduct is similar to that of the regular coproduct.
@@ -123,5 +123,5 @@ combineSeq seq₁ seq₂ comb = zipWith comb seq₁ seq₂
 ×↦⊎ _ _ (p₁ , p₂) = λ { (inj₁ s₁) → p₁ s₁ ; (inj₂ s₂) → p₂ s₂}
 
 ∀⊎↦× : {p₁ p₂ : SDProc} → (p : Policy (p₁ ⊎SDP p₂)) → ×↦⊎ p₁ p₂ (⊎↦× p₁ p₂ p) ≡  p
-∀⊎↦× {x} {y} p = ?
+∀⊎↦× {x} {y} p = {!!}
 \end{code}

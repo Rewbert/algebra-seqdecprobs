@@ -61,11 +61,11 @@ PolicySeq system n = Vec (Policy system) n
 Now we have all the definitions we need in order to implement the trajectory function for sequential decision processes.
 %
 \begin{code}
-trajectory : {n : ℕ} -> (p : SDProc) -> PolicySeq p n ->
+trajectory :  {n : ℕ} -> (p : SDProc) -> PolicySeq p n ->
               #st p -> Vec (#st p) n
-trajectory sdp [] x0 = []
-trajectory sdp (p ∷ ps) x0 = x0 ∷ trajectory sdp ps x1
-  where x1 : #st sdp
-        x1 = (#sf sdp) x0 (p x0)
+trajectory sys []        x0  = []
+trajectory sys (p ∷ ps)  x0  = x0 ∷ trajectory sys ps x1
+  where  x1  :  #st sys
+         x1  =  (#sf sys) x0 (p x0)
 \end{code}
 %

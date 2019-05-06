@@ -116,3 +116,5 @@ We can redefine the sequential decision process above to be a sequential decisio
 problem : oned-state -> SDProblem
 problem target = SDProb oned-state oned-control oned-step (oned-reward target)
 \end{code}
+
+\TODO{Example ``run'' would be instructive}

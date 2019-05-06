@@ -79,10 +79,9 @@ From this input we must define a function that given an element of the product o
 The result is a product of terms that are computed by componentwise calling the prior step functions.
 %
 \begin{code}
-_×sf_  :  {S₁ S₂ : Set}
-       -> {C₁ : Pred S₁} -> {C₂ : Pred S₂}
-       -> Step S₁ C₁ -> Step S₂ C₂
-       -> Step (S₁ × S₂) (C₁ ×C C₂)
+_×sf_  :   {S₁ S₂ : Set}
+       ->  {C₁ : Pred S₁} -> {C₂ : Pred S₂}
+       ->  Step S₁ C₁ -> Step S₂ C₂ ->  Step (S₁ × S₂) (C₁ ×C C₂)
 (sf₁ ×sf sf₂) (s₁ , s₂) (c₁ , c₂) = (sf₁ s₁ c₁ , sf₂ s₂ c₂)
 \end{code}
 
@@ -161,6 +160,8 @@ The answer, unsurprisingly, is yes.
 twod-system = system ×SDP system
 \end{code}
 
+\TODO{Example ``run'' would be instructive}
+\TODO{This part could come before the singleton}
 % maybe some actual discussion here of why this is the case.
 
 %-----------------------------------------------------------------------
@@ -180,8 +181,8 @@ The inhabitants of this sum predicate is the sum of the inhabitants of the prior
 %
 \begin{code}
 _⊎C_ : {S₁ S₂ : Set} → Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
-(C₁ ⊎C C₂) (inj₁ s₁) = C₁ s₁
-(C₁ ⊎C C₂) (inj₂ s₂) = C₂ s₂
+(C₁ ⊎C C₂) (inj₁ s₁)  = C₁ s₁
+(C₁ ⊎C C₂) (inj₂ s₂)  = C₂ s₂
 \end{code}
 %
 Calculating a new step function from two prior step functions is relatively straight forward.
@@ -193,12 +194,11 @@ Depending on which term the first argument belongs to, one of the prior step fun
 The result of the application is then injected into the sum type using the same injection as the input.
 %
 \begin{code}
-_⊎sf_  :  {S₁ S₂ : Set}
-       -> {C₁ : Pred S₁} -> {C₂ : Pred S₂}
-       -> Step S₁ C₁ -> Step S₂ C₂
-       -> Step (S₁ ⊎ S₂) (C₁ ⊎C C₂)
-(sf₁ ⊎sf sf₂) (inj₁ s₁) c₁ = inj₁ (sf₁ s₁ c₁)
-(sf₁ ⊎sf sf₂) (inj₂ s₂) c₂ = inj₂ (sf₂ s₂ c₂)
+_⊎sf_  :   {S₁ S₂ : Set}
+       ->  {C₁ : Pred S₁} -> {C₂ : Pred S₂}
+       ->  Step S₁ C₁ -> Step S₂ C₂ ->  Step (S₁ ⊎ S₂) (C₁ ⊎C C₂)
+(sf₁ ⊎sf sf₂) (inj₁ s₁) c₁  = inj₁ (sf₁ s₁ c₁)
+(sf₁ ⊎sf sf₂) (inj₂ s₂) c₂  = inj₂ (sf₂ s₂ c₂)
 \end{code}
 %
 The sum of two problems is now computed by applying the sum operators componentwise.
@@ -215,6 +215,7 @@ SDP S₁ C₁ sf₁ ⊎SDP SDP S₂ C₂ sf₂
 \includegraphics{images/coproduct.png}
 \caption{Illustration of a coproduct process}
 \end{figure}
+\TODO{Perhaps split into two sub-images with an ``OR'' inbetween as text}
 
 %
 In the case of the product process the two prior processes were not entirely independent.
@@ -259,6 +260,8 @@ To do this, we first need to define a relation between states.
 %
 We define a relation on two terms, and define it to be a mapping from an inhabitant of one term to an inhabitant of the other.
 %
+\TODO{Lägg in båda riktningarna i ett par - operator <-> ca.}
+%
 \begin{code}
 _↦_ : (S₁ S₂ : Set) → Set
 s₁ ↦ s₂ = s₁ → s₂
@@ -282,12 +285,13 @@ We need one relation from one term to the other, as well as an opposite relation
 %
 If the predicate of the step function is ever Nothing, we will use the relation to map the value of the current term to a value of the other term.
 %
+\TODO{Kanske en 3-ställig operator _<|_|>_ eller liknande? Om trassligt, låt bli, eller använd syntax directive för att kunna lägga <->-argumentet före alla Step}
 \begin{code}
-_⊎sf+_ :  {S₁ S₂ : Set}
-         → {C₁ : Pred S₁} → {C₂ : Pred S₂}
-         → Step S₁ C₁ → Step S₂ C₂
-         → S₁ ↦ S₂ → S₂ ↦ S₁
-         → Step (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
+_⊎sf+_  :  {S₁ S₂ : Set}
+        →  {C₁ : Pred S₁} → {C₂ : Pred S₂}
+        →  Step S₁ C₁ → Step S₂ C₂
+        →  (S₁ ↦ S₂) → (S₂ ↦ S₁)
+        →  Step (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
 (sf₁ ⊎sf+ sf₂) r₁ r₂  (inj₁ s₁)  (just c)  = inj₁ (sf₁ s₁ c)
 (sf₁ ⊎sf+ sf₂) r₁ r₂  (inj₁ s₁)  nothing   = inj₂ (r₁ s₁)
 (sf₁ ⊎sf+ sf₂) r₁ r₂  (inj₂ s₂)  (just c)  = inj₂ (sf₂ s₂ c)
@@ -297,10 +301,10 @@ _⊎sf+_ :  {S₁ S₂ : Set}
 Now we can compute the yielding coproduct of two processes by applying the new operations componentwise.
 %
 \begin{code}
-_⊎SDP+_ :  (p₁ : SDProc) → (p₂ : SDProc)
-           → (#st p₁) ↦ (#st p₂)
-           → (#st p₂) ↦ (#st p₁)
-           → SDProc
+_⊎SDP+_  :  (p₁ : SDProc) → (p₂ : SDProc)
+         →  (#st p₁) ↦ (#st p₂)
+         →  (#st p₂) ↦ (#st p₁)
+         →  SDProc
 ((SDP S₁ C₁ sf₁) ⊎SDP+ (SDP S₂ C₂ sf₂)) r₁ r₂
   = SDP (S₁ ⊎ S₂) (C₁ ⊎C+ C₂) ((sf₁ ⊎sf+ sf₂) r₁ r₂)
 \end{code}
@@ -346,6 +350,7 @@ In section -insert section with policies- it is shown how computing optimal poli
 Given two states, how can we produce a new state which not only captures all inhabitants of the separate states, but also knows which process should be allowed to advance next?
 %
 The most natural way seems to be to create a 3-ary product, where one of the components is an index indicating which of the two processes turn it is to advance.
+%\TODO{Add format directiove to subscript S, etc. _\text{S}}
 \begin{code}
 _⇄S_ : Set → Set → Set
 S₁ ⇄S S₂ = Fin 2 × S₁ × S₂
@@ -359,6 +364,7 @@ If the value is one, we select the second predicate.
 %
 Agda require us to include a case for when the first component has any other value also, but quickly realises that this is an unreachable case.
 %
+\TODO{name for suc zero: one}
 \begin{code}
 _⇄C_ : {S₁ S₂ : Set} → Pred S₁ → Pred S₂ → Pred (S₁ ⇄S S₂)
 (C₁ ⇄C C₂) (zero , s₁ , s₂)      = C₁ s₁
@@ -394,6 +400,8 @@ This way of modeling the interleaved problem is not optimal, as combining more t
 %
 If we combine three processes using this combinator the resulting system would be one where one of the processes advance half the time, and the other two only a quarter of the time each.
 %
+
+\TODO{Perhaps code up with i : FIn n times Vec n S or similar (don't bother with different S)}
 
 \begin{figure}
 \label{images:badinterleave}

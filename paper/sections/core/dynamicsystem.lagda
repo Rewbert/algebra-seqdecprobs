@@ -30,12 +30,12 @@ record DynamicSystem : Set1 where
 To make further type signatures more convenient it is handy to define helper functions which extract the different components of the record.
 %
 \begin{code}
-getstate : DynamicSystem -> Set
-getstate system = DynamicSystem.State system
+# : DynamicSystem -> Set
+# system = DynamicSystem.State system
 \end{code}
 %if false
 \begin{code}
-getstep : (x : DynamicSystem) → (getstate x → getstate x)
+getstep : (x : DynamicSystem) → (# x → # x)
 getstep = DynamicSystem.step
 \end{code}
 %endif
@@ -49,12 +49,12 @@ We define a recursive function that at each step computes the next state.
 %
 
 \begin{code}
-trajectory :   (sys : DynamicSystem) ->  (getstate sys)  ->
-               (n : ℕ) -> Vec (getstate sys) n
-trajectory system x0 zero     = []
-trajectory system x0 (suc n)  = x0 ∷ trajectory system x1 n
-  where  x1  :  getstate system
-         x1  =  getstep system x0
+trajectory :   (sys : DynamicSystem) ->  # sys  ->
+               (n : ℕ) -> Vec (# sys) n
+trajectory sys x0 zero     = []
+trajectory sys x0 (suc n)  = x0 ∷ trajectory sys x1 n
+  where  x1  :  # sys
+         x1  =  getstep sys x0
 \end{code}
 
 \cite{ionescu2009vulnerability}

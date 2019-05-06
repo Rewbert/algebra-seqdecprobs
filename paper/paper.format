@@ -25,6 +25,9 @@
 %format large-number = large "\text{-}" number
 %format twod-system   = "\Varid{2d\text{-}system}"
 
+%format #st = # "\ensuremath{_{\text{st}}}"
+%format #sf = # "\ensuremath{_{\text{sf}}}"
+
 \newcommand{\un}{\mbox{\texttt{\_}}}   % short underscore
 \newcommand{\unopun}[1]{\ensuremath{\,\un{#1}\un\,}}
 
@@ -42,9 +45,9 @@
 %format _⊎SDP_ = "\unopun{⊎_{\!\Varid{SDP}}}"
 %format ⊎SDP   =         "⊎_{\!\Varid{SDP}}"
 
-%format _⊎C+_   = "\unopun{⊎_{\!\Varid{C+}}}"
-%format ⊎C+     =         "⊎_{\!\Varid{C+}}"
-%format _⊎sf+_  = "\unopun{⊎_{\!\Varid{sf+}}}"
-%format ⊎sf+    =         "⊎_{\!\Varid{sf+}}"
-%format _⊎SDP+_ = "\unopun{⊎_{\!\Varid{SDP+}}}"
-%format ⊎SDP+   =         "⊎_{\!\Varid{SDP+}}"
+%format _⊎C+_   = "\unopun{⊎_{\!\Varid{C}}^m}"
+%format ⊎C+     =         "⊎_{\!\Varid{C}}^m"
+%format _⊎sf+_  = "\unopun{⊎_{\!\Varid{sf}}^m}"
+%format ⊎sf+    =         "⊎_{\!\Varid{sf}}^m"
+%format _⊎SDP+_ = "\unopun{⊎_{\!\Varid{SDP}}^m}"
+%format ⊎SDP+   =         "⊎_{\!\Varid{SDP}}^m"

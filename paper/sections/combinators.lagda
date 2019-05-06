@@ -377,15 +377,17 @@ The step function will inspect this first component and based on what value it h
 The other component that is not the index is left unchanged, while the index is changed to indicate that the other process is the one to advance next.
 %
 \begin{code}
-_⇄sf_ : {S₁ S₂ : Set} → {C₁ : Pred S₁} → {C₂ : Pred S₂} → Step S₁ C₁ → Step S₂ C₂ → Step (S₁ ⇄S S₂) (C₁ ⇄C C₂)
-(sf₁ ⇄sf sf₂) (zero , s₁ , s₂) c      = suc zero , sf₁ s₁ c , s₂
-(sf₁ ⇄sf sf₂) (suc zero , s₁ , s₂) c  = zero , s₁ , sf₂ s₂ c
+_⇄sf_  :  {S₁ S₂ : Set} → {C₁ : Pred S₁} → {C₂ : Pred S₂} →
+          Step S₁ C₁ → Step S₂ C₂ → Step (S₁ ⇄S S₂) (C₁ ⇄C C₂)
+(sf₁ ⇄sf sf₂) (zero , s₁ , s₂)      c  = (suc zero  , sf₁ s₁ c  , s₂        )
+(sf₁ ⇄sf sf₂) (suc zero , s₁ , s₂)  c  = (zero      , s₁        , sf₂ s₂ c  )
 (sf₁ ⇄sf sf₂) (suc (suc ()) , _)
 \end{code}
 Combining two processes to capture this interleaved behaviour is once again simply done by combining the components componentwise.
 \begin{code}
 _⇄SDP_ : SDProc → SDProc → SDProc
-SDP S₁ C₁ sf₁ ⇄SDP SDP S₂ C₂ sf₂ = SDP (S₁ ⇄S S₂) (C₁ ⇄C C₂) (sf₁ ⇄sf sf₂)
+SDP S₁ C₁ sf₁ ⇄SDP SDP S₂ C₂ sf₂
+  = SDP (S₁ ⇄S S₂) (C₁ ⇄C C₂) (sf₁ ⇄sf sf₂)
 \end{code}
 
 \begin{figure}

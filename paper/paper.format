@@ -45,9 +45,21 @@
 %format _⊎SDP_ = "\unopun{⊎_{\!\Varid{SDP}}}"
 %format ⊎SDP   =         "⊎_{\!\Varid{SDP}}"
 
-%format _⊎C+_   = "\unopun{⊎_{\!\Varid{C}}^m}"
+%format _⊎C+_   = "\unopun{" ⊎C+ "}"
 %format ⊎C+     =         "⊎_{\!\Varid{C}}^m"
 %format _⊎sf+_  = "\unopun{⊎_{\!\Varid{sf}}^m}"
 %format ⊎sf+    =         "⊎_{\!\Varid{sf}}^m"
 %format _⊎SDP+_ = "\unopun{⊎_{\!\Varid{SDP}}^m}"
 %format ⊎SDP+   =         "⊎_{\!\Varid{SDP}}^m"
+
+%format _⇄S_   = "\unopun{" ⇄S "}"
+%format ⇄S     =          "\mathop{⇄_{\!S}}"
+
+%format _⇄C_   = "\unopun{" ⇄C "}"
+%format ⇄C     =          "\mathop{⇄_C}"
+
+%format _⇄sf_   = "\unopun{" ⇄sf "}"
+%format ⇄sf     =          "\mathop{⇄_{\text{sf}}}"
+
+%format _⇄SDP_   = "\unopun{" ⇄SDP "}"
+%format ⇄SDP     =          "\mathop{⇄_{\text{SDP}}}"

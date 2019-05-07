@@ -33,6 +33,8 @@ record SDProc : Set1 where
 #st_ : SDProc → Set
 #st SDP State Control step = State
 
+infix 30 #st_
+
 #c_ : (s : SDProc) → (#st s → Set)
 #c SDP State Control step = Control
 

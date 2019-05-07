@@ -215,14 +215,14 @@ SDP S₁ C₁ sf₁ ⊎SDP SDP S₂ C₂ sf₂
 \begin{subfigure}{.5\textwidth}
   \centering
   % include first image
-  \includegraphics[width=.8\linewidth]{images/coproduct-inj1.png}  
+  \includegraphics[width=.8\linewidth]{images/coproduct-inj1.png}
   \caption{Left injection} % write better captions
   \label{images:coproduct-inj1}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
   \centering
   % include second image
-  \includegraphics[width=.8\linewidth]{images/coproduct-inj2.png}  
+  \includegraphics[width=.8\linewidth]{images/coproduct-inj2.png}
   \caption{Right injection}
   \label{images:coproduct-inj2}
 \end{subfigure}
@@ -273,8 +273,6 @@ To do this, we first need to define a relation between states.
 %
 We define a relation on two terms, and define it to be a mapping from an inhabitant of one term to an inhabitant of the other.
 %
-\TODO{Lägg in båda riktningarna i ett par - operator <-> ca.}
-%
 \begin{code}
 _↦_ : (S₁ S₂ : Set) → Set
 s₁ ↦ s₂ = s₁ → s₂
@@ -306,24 +304,23 @@ If the predicate of the step function is ever Nothing, we will use the relation 
 ⊎sf+  :  {S₁ S₂ : Set}
       →  {C₁ : Pred S₁} → {C₂ : Pred S₂}
       →  (S₁ ⇄ S₂)
-      →  Step S₁ C₁ → Step S₂ C₂ →  Step (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
-⊎sf+ (r₁ , r₂) sf₁ sf₂  (inj₁ s₁)  (just c)  = inj₁ (sf₁ s₁ c)
-⊎sf+ (r₁ , r₂) sf₁ sf₂  (inj₁ s₁)  nothing   = inj₂ (r₁ s₁)
-⊎sf+ (r₁ , r₂) sf₁ sf₂  (inj₂ s₂)  (just c)  = inj₂ (sf₂ s₂ c)
-⊎sf+ (r₁ , r₂) sf₁ sf₂  (inj₂ s₂)  nothing   = inj₁ (r₂ s₂)
+      →  Step S₁ C₁ → Step S₂ C₂ → Step (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
+⊎sf+ _          sf₁ sf₂  (inj₁ s₁)  (just c)  = inj₁ (sf₁ s₁ c)
+⊎sf+ _          sf₁ sf₂  (inj₂ s₂)  (just c)  = inj₂ (sf₂ s₂ c)
+⊎sf+ (r₁ , _ )  sf₁ sf₂  (inj₁ s₁)  nothing   = inj₂ (r₁ s₁)
+⊎sf+ (_  , r₂)  sf₁ sf₂  (inj₂ s₂)  nothing   = inj₁ (r₂ s₂)
 
-syntax ⊎sf+ r sf₁ sf₂ = sf₁ ⟨ r ⟩ sf₂
+syntax ⊎sf+ r sf₁ sf₂  =  sf₁ ⟨ r ⟩ sf₂
 \end{code}
 %
 Now we can compute the yielding coproduct of two processes by applying the new operations componentwise.
 %
 \begin{code}
 _⊎SDP+_  :  (p₁ : SDProc) → (p₂ : SDProc)
-         →  (#st p₁) ↦ (#st p₂)
-         →  (#st p₂) ↦ (#st p₁)
+         →  (#st p₁  ⇄  #st p₂)
          →  SDProc
-((SDP S₁ C₁ sf₁) ⊎SDP+ (SDP S₂ C₂ sf₂)) r₁ r₂
-  = SDP (S₁ ⊎ S₂) (C₁ ⊎C+ C₂) (sf₁ ⟨ (r₁ , r₂) ⟩ sf₂)
+((SDP S₁ C₁ sf₁) ⊎SDP+ (SDP S₂ C₂ sf₂)) rel
+  = SDP (S₁ ⊎ S₂) (C₁ ⊎C+ C₂) (sf₁ ⟨ rel ⟩ sf₂)
 \end{code}
 
 \begin{figure}

@@ -25,6 +25,12 @@ record SDProcT : Set₁ where
     Control  : (t : ℕ) → State t → Set
     step     : (t : ℕ) → (x : State t) → Control t x → State (suc t)
 \end{code}
+%if false
+\begin{code}
+#stᵗ = SDProcT.State
+#sfᵗ = SDProcT.step
+\end{code}
+%endif
 %
 What are we actually saying here?
 %

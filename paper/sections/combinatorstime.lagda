@@ -9,6 +9,7 @@ module combinatorstime where
 open import core.seqdecproctime
 open import combinators
 open import Data.Nat
+open import Data.Maybe
 open import Data.Product
 open import Data.Sum
 \end{code}
@@ -52,4 +53,24 @@ sf₁ ⊎sft sf₂ = λ time → λ {  (inj₁ s₁) → λ control → inj₁ (
 
 _⊎SDPT_ : SDProcT → SDProcT → SDProcT
 SDPT S₁ C₁ sf₁ ⊎SDPT SDPT S₂ C₂ sf₂ = SDPT (S₁ ⊎St S₂) (C₁ ⊎Ct C₂) (sf₁ ⊎sft sf₂)
+\end{code}
+
+\begin{code}
+_⇄t_ : (S₁ S₂ : Pred ℕ) → Set
+s₁ ⇄t s₂ = ((n : ℕ) → s₁ n → s₂ (suc n)) × ((n : ℕ) → s₂ n → s₁ (suc n))
+
+_⊎Ctᵐ_ : {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂ → Pred' (S₁ ⊎St S₂)
+C₁ ⊎Ctᵐ C₂ = λ time → λ {  (inj₁ s₁) → Maybe (C₁ time s₁) ;
+                            (inj₂ s₂) → Maybe (C₂ time s₂)}
+
+⊎sftᵐ : {S₁ S₂ : Pred ℕ} → {C₁ : Pred' S₁} → {C₂ : Pred' S₂} → S₁ ⇄t S₂ → Step' S₁ C₁ → Step' S₂ C₂ → Step' (S₁ ⊎St S₂) (C₁ ⊎Ctᵐ C₂)
+⊎sftᵐ _         sf₁ sf₂ time (inj₁ s₁) (just c₁)  = inj₁ (sf₁ time s₁ c₁)
+⊎sftᵐ (r₁ , _)  sf₁ sf₂ time (inj₁ s₁) nothing    = inj₂ (r₁ time s₁)
+⊎sftᵐ _         sf₁ sf₂ time (inj₂ s₂) (just c₂)  = inj₂ (sf₂ time s₂ c₂)
+⊎sftᵐ (_ , r₂)  sf₁ sf₂ time (inj₂ s₂) nothing    = inj₁ (r₂ time s₂)
+
+syntax ⊎sftᵐ r sf₁ sf₂ = sf₁ ⟨ r ⟩ᵗ sf₂
+
+⊎SDPTᵐ : (p₁ : SDProcT) → (p₂ : SDProcT) → (#stᵗ p₁) ⇄t (#stᵗ p₂) → SDProcT
+⊎SDPTᵐ (SDPT S₁ C₁ sf₁) (SDPT S₂ C₂ sf₂) r = SDPT (S₁ ⊎St S₂) (C₁ ⊎Ctᵐ C₂) (sf₁ ⟨ r ⟩ᵗ sf₂)
 \end{code}

@@ -45,7 +45,8 @@ If the pattern matches on the left injection, we can reuse the previous policy d
 Similarly, if the pattern matches on the right injection we can reuse the given policy for the other process.
 %
 \begin{code}
-_⊎P_ : {p₁ p₂ : SDProc} → Policy p₁ → Policy p₂ → Policy (p₁ ⊎SDP p₂)
+_⊎P_ :  {p₁ p₂ : SDProc} →
+        Policy p₁ → Policy p₂ → Policy (p₁ ⊎SDP p₂)
 p₁ ⊎P p₂ =   λ {  (inj₁  s₁) →  p₁  s₁;
                   (inj₂  s₂) →  p₂  s₂}
 \end{code}
@@ -57,14 +58,12 @@ One difference is that in order to satisfy the Agda typechecker we need to also 
 The only other difference is that when reusing the old policy the result must be wrapped in the |just| constructor.
 %
 \begin{code}
-_⊎P+_ :  {p₁ p₂ : SDProc}
-       → Policy p₁ → Policy p₂
-       → (r₁ : (#st p₁) ↦ (#st p₂))
-       → (r₂ : (#st p₂) ↦ (#st p₁))
-       → Policy ((p₁ ⊎SDP+ p₂) r₁ r₂)
-(p₁ ⊎P+ p₂) r₁ r₂ =
-  λ { (inj₁ s₁) → just (p₁ s₁);
-      (inj₂ s₂) → just (p₂ s₂)}
+_⊎P+_  :  {p₁ p₂ : SDProc}
+       →  Policy p₁ → Policy p₂
+       →  (rel :  #st p₁  ⇄  #st p₂)
+       →  Policy ((p₁ ⊎SDP+ p₂) rel)
+(p₁ ⊎P+ p₂) rel =  λ {  (inj₁ s₁)  → just (p₁ s₁);
+                        (inj₂ s₂)  → just (p₂ s₂)}
 \end{code}
 %
 To combine two policies for the interleaved system we recall that the control space changes when the index changes.
@@ -78,12 +77,12 @@ If the index is |zero|, we reuse the first policy.
 If it is |suc zero|, we reuse the other policy.
 %
 \begin{code}
-_⇄P_ :  {p₁ p₂ : SDProc} → Policy p₁ → Policy p₂
-       → Policy (p₁ ⇄SDP p₂)
+_⇄P_  :  {p₁ p₂ : SDProc}
+      →  Policy p₁ → Policy p₂ → Policy (p₁ ⇄SDP p₂)
 p₁ ⇄P p₂ =
   λ { (zero , state)      → p₁ (proj₁ state);
       (suc zero , state)  → p₂ (proj₂ state);
-      (suc (suc ()) , proj₄)}
+      (suc (suc ()) , _)}
 \end{code}
 
 %
@@ -96,13 +95,11 @@ We leverage Agdas typesystem to define a function that is as precise as possible
 Then the defining equation of the function is a |zipWith|, applying the policy combinator pairwise on the two sequences.
 %
 \begin{code}
-combineSeq :  {p₁ p₂ : SDProc} {n : ℕ}
-              {_:comb:_ : SDProc → SDProc → SDProc}
-             → PolicySeq p₁ n
-             → PolicySeq p₂ n
-             → (Policy p₁ → Policy p₂ → Policy (p₁ :comb: p₂))
-             → PolicySeq (p₁ :comb: p₂) n
-combineSeq seq₁ seq₂ comb = zipWith comb seq₁ seq₂
+combineSeq  :  {p₁ p₂ : SDProc} {n : ℕ}
+               {_:comb:_ : SDProc → SDProc → SDProc}
+            →  (Policy p₁ → Policy p₂ → Policy (p₁ :comb: p₂))
+            →  PolicySeq p₁ n → PolicySeq p₂ n → PolicySeq (p₁ :comb: p₂) n
+combineSeq = zipWith
 \end{code}
 
 %if false

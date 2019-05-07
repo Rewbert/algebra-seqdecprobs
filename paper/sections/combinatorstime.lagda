@@ -9,6 +9,7 @@ module combinatorstime where
 open import core.seqdecproctime
 open import combinators
 open import Data.Nat
+open import Data.Fin
 open import Data.Maybe
 open import Data.Product
 open import Data.Sum
@@ -74,3 +75,21 @@ syntax ⊎sftᵐ r sf₁ sf₂ = sf₁ ⟨ r ⟩ᵗ sf₂
 ⊎SDPTᵐ : (p₁ : SDProcT) → (p₂ : SDProcT) → (#stᵗ p₁) ⇄t (#stᵗ p₂) → SDProcT
 ⊎SDPTᵐ (SDPT S₁ C₁ sf₁) (SDPT S₂ C₂ sf₂) r = SDPT (S₁ ⊎St S₂) (C₁ ⊎Ctᵐ C₂) (sf₁ ⟨ r ⟩ᵗ sf₂)
 \end{code}
+
+\begin{code}
+_⇄St_ : (S₁ S₂ : Pred ℕ) → Pred ℕ
+s₁ ⇄St s₂ = λ n → Fin 2 × s₁ n × s₂ n
+
+_⇄Ct_ : {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂ → Pred' (S₁ ⇄St S₂)
+C₁ ⇄Ct C₂ = λ time → λ {  (zero , state)      → C₁ time (proj₁ state) ;
+                            (one , state)  → C₂ time (proj₂ state)}
+
+_⇄sft_ : {S₁ S₂ : Pred ℕ} → {C₁ : Pred' S₁} → {C₂ : Pred' S₂} → Step' S₁ C₁ → Step' S₂ C₂ → Step' (S₁ ⇄St S₂) (C₁ ⇄Ct C₂)
+sf₁ ⇄sft sf₂ = λ time → λ {  (zero , state)  → λ control  → suc zero , sf₁ time (proj₁ state) control , {!not possible AFAIK!} ;
+                               (one , state)  → λ control  → zero , {!!} , sf₂ time (proj₂ state) {!!}}
+\end{code}
+
+
+
+
+

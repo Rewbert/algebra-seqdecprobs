@@ -274,11 +274,8 @@ To do this, we first need to define a relation between states.
 We define a relation on two terms, and define it to be a mapping from an inhabitant of one term to an inhabitant of the other.
 %
 \begin{code}
-_↦_ : (S₁ S₂ : Set) → Set
-s₁ ↦ s₂ = s₁ → s₂
-
 _⇄_ : (S₁ S₂ : Set) → Set
-s₁ ⇄ s₂ = (s₁ ↦ s₂) × (s₂ ↦ s₁)
+s₁ ⇄ s₂ = (s₁ -> s₂) × (s₂ -> s₁)
 \end{code}
 %
 Combining the two predicates on the terms look similar to that of the coproduct case, when looking at the type.
@@ -345,7 +342,7 @@ A unit to the yielding coproduct combinator is the same one as that for the regu
 %
 If the state space is not inhabited, the process could never progress as we will not be able to call the step function.
 %
-Further more, we would not be able to give a definition for |S₁ ↦ S₂|.
+Further more, we would not be able to give a definition for a function |S₁ -> S₂|.
 %
 
 %-----------------------------------------------------------------------

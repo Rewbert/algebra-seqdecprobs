@@ -11,6 +11,8 @@ module examples where
 open import core.seqdecproc
 open import core.seqdecprob hiding (Policy; PolicySeq)
 open import Data.Nat
+open import Data.Vec
+open import Relation.Binary.PropositionalEquality
 \end{code}
 
 %endif
@@ -45,7 +47,7 @@ When the state is zero, it is not possible to take a step to the left, and so th
 \begin{code}
 data ZAction : Set where
   ZS  : ZAction -- stay
-  SR  : ZAction -- right
+  ZR  : ZAction -- right
 \end{code}
 
 %
@@ -67,7 +69,8 @@ The step functions is swiftly implemented, pattern matching on the states and co
 %
 \begin{code}
 oned-step  :  (x : oned-state) -> oned-control x -> oned-state
-oned-step  zero     ZR  = 1
+oned-step  zero ZS      = 0
+oned-step  zero ZR      = 1
 oned-step  (suc n)  SL  = n
 oned-step  (suc n)  SS  = suc n
 oned-step  (suc n)  SR  = suc (suc n)
@@ -78,6 +81,56 @@ Finally, a sequential decision process can be defined.
 \begin{code}
 system  :  SDProc
 system  =  SDP oned-state oned-control oned-step
+\end{code}
+%
+If we wish to run this system and see an example of a trajectory, we need to define some policies.
+%
+Based on what state the system is in a policy will return a control.
+%
+The first policy we define we will name |tryleft|.
+%
+We name it so since there is no way to move left if the state is zero.
+%
+If this is the case, the policy will return a control that does nothing.
+%
+\begin{code}
+tryleft : Policy system
+tryleft zero     = ZS
+tryleft (suc s)  = SL
+\end{code}
+%
+The policies for stay and right are easy, as there are no corner cases.
+%
+\begin{code}
+stay : Policy system
+stay zero     = ZS
+stay (suc s)  = SS
+
+right : Policy system
+right zero     = ZR
+right (suc s)  = SR
+\end{code}
+%
+A policy sequence is now just a vector of plicies.
+%
+\begin{code}
+sequence : Vec (Policy system) 5
+sequence = right ∷ right ∷ stay ∷ tryleft ∷ tryleft ∷ []
+\end{code}
+%
+We can now evaluate the system using this sequence, starting from different points.
+%
+We can use |≡| and |refl| to assert that the system behaves as intended.
+%
+\begin{code}
+test1 : trajectory system sequence 0 ≡ 0 ∷ 1 ∷ 2 ∷ 2 ∷ 1 ∷ []
+test1 = refl
+
+test2 : trajectory system sequence 10 ≡ 10 ∷ 11 ∷ 12 ∷ 12 ∷ 11 ∷ []
+test2 = refl
+
+test3 : trajectory system sequence 7 ≡ 7 ∷ 8 ∷ 9 ∷ 9 ∷ 8 ∷ []
+test3 = refl
 \end{code}
 
 %

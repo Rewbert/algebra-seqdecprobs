@@ -4,6 +4,7 @@
 
 %if false
 \begin{code}
+{-# OPTIONS --allow-unsolved-metas #-}
 module combinators where
 
 open import core.seqdecproc
@@ -111,6 +112,8 @@ This has the consequence that if one of the prior processes do not have any stat
 Similarly, if one of the components reaches a point where there are no available controls, and thus can not progress, the other component will not be able to progress either.
 %
 
+%include policycombinators.lagda
+
 %
 Functional programmers will often find they are in need of a unit, e.g when using |reduce| or other frequently appearing constructs from the functional paradigm.
 %
@@ -150,15 +153,6 @@ Of course, the other process could itself be the singleton process also.
 %
 In this case the only change in each step is exactly that of the singleton process, which is no change at all.
 %
-
-%
-Looking back at the example of the one dimensional coordinate system, we find ourselves wondering if we would now get a process of a two dimensional coordinate system for free.
-%
-The answer, unsurprisingly, is yes.
-%
-\begin{code}
-twod-system = system ×SDP system
-\end{code}
 
 \TODO{Example ``run'' would be instructive}
 \TODO{This part could come before the singleton}
@@ -383,10 +377,12 @@ Agda require us to include a case for when the first component has any other val
 %
 \TODO{name for suc zero: one}
 \begin{code}
+one : Fin 2
+one = suc zero
+
 _⇄C_ : {S₁ S₂ : Set} → Pred S₁ → Pred S₂ → Pred (S₁ ⇄S S₂)
 (C₁ ⇄C C₂) (zero , s₁ , s₂)      = C₁ s₁
-(C₁ ⇄C C₂) (suc zero , s₁ , s₂)  = C₂ s₂
-(C₁ ⇄C C₂) (suc (suc ()) , _)
+(C₁ ⇄C C₂) (one , s₁ , s₂)  = C₂ s₂
 \end{code}
 %
 The step function will inspect this first component and based on what value it has, it is going to invoke one of the prior step functions on the appropriate component.
@@ -445,3 +441,16 @@ A system like this would let all the processes advance equally much.
 %
 \TODO{implement this - A general product type with an indexing function}
 %-----------------------------------------------------------------------
+\begin{code}
+⇄m : Set → ℕ → Set -- Fin n × Vec S₁ n
+⇄m S n = Fin n × Vec S n
+
+⇄C : {S : Set} → {n : ℕ} → Vec (Pred S) n → Pred (⇄m S n)
+⇄C c (index , states) = (lookup index c) (lookup index states)
+
+--⇄sf : {S : Set} → {n : ℕ} → {C : Vec (Pred S) n} → {!!} → Step (⇄m S n) (⇄C C)
+--⇄sf v = {!!}
+
+--⇄SDP' : {n : ℕ} → Vec SDProc n → SDProc
+--⇄SDP' {n} v = SDP (⇄m {!!} n) (⇄C {!!}) (⇄sf {!!})
+\end{code}

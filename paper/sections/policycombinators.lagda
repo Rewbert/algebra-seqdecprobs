@@ -98,11 +98,9 @@ Then the defining equation of the function is a |zipWith|, applying the policy c
 \begin{code}
 combineSeq :  {p₁ p₂ : SDProc} {n : ℕ}
               {_:comb:_ : SDProc → SDProc → SDProc}
-             → PolicySeq p₁ n
-             → PolicySeq p₂ n
              → (Policy p₁ → Policy p₂ → Policy (p₁ :comb: p₂))
-             → PolicySeq (p₁ :comb: p₂) n
-combineSeq seq₁ seq₂ comb = zipWith comb seq₁ seq₂
+             → PolicySeq p₁ n → PolicySeq p₂ n → PolicySeq (p₁ :comb: p₂) n
+combineSeq comb seq₁ seq₂ = zipWith comb seq₁ seq₂
 \end{code}
 
 %if false

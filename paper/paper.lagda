@@ -20,6 +20,7 @@
 %include paper.format
 
 \usepackage{graphicx}
+\usepackage{subcaption}
 \usepackage{hyperref}
 % \usepackage{color}
 \renewcommand\UrlFont{\color{blue}\rmfamily}

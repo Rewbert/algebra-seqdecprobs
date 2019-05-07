@@ -209,13 +209,26 @@ SDP S₁ C₁ sf₁ ⊎SDP SDP S₂ C₂ sf₂
   = SDP (S₁ ⊎ S₂) (C₁ ⊎C C₂) (sf₁ ⊎sf sf₂)
 \end{code}
 
+% \TODO{Perhaps split into two sub-images with an ``OR'' inbetween as text}
+
 \begin{figure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include first image
+  \includegraphics[width=.8\linewidth]{images/coproduct-inj1.png}  
+  \caption{Left injection} % write better captions
+  \label{images:coproduct-inj1}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  % include second image
+  \includegraphics[width=.8\linewidth]{images/coproduct-inj2.png}  
+  \caption{Right injection}
+  \label{images:coproduct-inj2}
+\end{subfigure}
 \label{images:coproduct}
-\centering
-\includegraphics{images/coproduct.png}
-\caption{Illustration of a coproduct process}
+\caption{The coproduct of two processes. The process will take the shape of either of the two alternatives, but never both or a mix of the two.}
 \end{figure}
-\TODO{Perhaps split into two sub-images with an ``OR'' inbetween as text}
 
 %
 In the case of the product process the two prior processes were not entirely independent.
@@ -265,6 +278,9 @@ We define a relation on two terms, and define it to be a mapping from an inhabit
 \begin{code}
 _↦_ : (S₁ S₂ : Set) → Set
 s₁ ↦ s₂ = s₁ → s₂
+
+_⇄_ : (S₁ S₂ : Set) → Set
+s₁ ⇄ s₂ = (s₁ ↦ s₂) × (s₂ ↦ s₁)
 \end{code}
 %
 Combining the two predicates on the terms look similar to that of the coproduct case, when looking at the type.
@@ -287,15 +303,16 @@ If the predicate of the step function is ever Nothing, we will use the relation 
 %
 \TODO{Kanske en 3-ställig operator _<|_|>_ eller liknande? Om trassligt, låt bli, eller använd syntax directive för att kunna lägga <->-argumentet före alla Step}
 \begin{code}
-_⊎sf+_  :  {S₁ S₂ : Set}
-        →  {C₁ : Pred S₁} → {C₂ : Pred S₂}
-        →  Step S₁ C₁ → Step S₂ C₂
-        →  (S₁ ↦ S₂) → (S₂ ↦ S₁)
-        →  Step (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
-(sf₁ ⊎sf+ sf₂) r₁ r₂  (inj₁ s₁)  (just c)  = inj₁ (sf₁ s₁ c)
-(sf₁ ⊎sf+ sf₂) r₁ r₂  (inj₁ s₁)  nothing   = inj₂ (r₁ s₁)
-(sf₁ ⊎sf+ sf₂) r₁ r₂  (inj₂ s₂)  (just c)  = inj₂ (sf₂ s₂ c)
-(sf₁ ⊎sf+ sf₂) r₁ r₂  (inj₂ s₂)  nothing   = inj₁ (r₂ s₂)
+⊎sf+  :  {S₁ S₂ : Set}
+      →  {C₁ : Pred S₁} → {C₂ : Pred S₂}
+      →  (S₁ ⇄ S₂)
+      →  Step S₁ C₁ → Step S₂ C₂ →  Step (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
+⊎sf+ (r₁ , r₂) sf₁ sf₂  (inj₁ s₁)  (just c)  = inj₁ (sf₁ s₁ c)
+⊎sf+ (r₁ , r₂) sf₁ sf₂  (inj₁ s₁)  nothing   = inj₂ (r₁ s₁)
+⊎sf+ (r₁ , r₂) sf₁ sf₂  (inj₂ s₂)  (just c)  = inj₂ (sf₂ s₂ c)
+⊎sf+ (r₁ , r₂) sf₁ sf₂  (inj₂ s₂)  nothing   = inj₁ (r₂ s₂)
+
+syntax ⊎sf+ r sf₁ sf₂ = sf₁ ⟨ r ⟩ sf₂
 \end{code}
 %
 Now we can compute the yielding coproduct of two processes by applying the new operations componentwise.
@@ -306,7 +323,7 @@ _⊎SDP+_  :  (p₁ : SDProc) → (p₂ : SDProc)
          →  (#st p₂) ↦ (#st p₁)
          →  SDProc
 ((SDP S₁ C₁ sf₁) ⊎SDP+ (SDP S₂ C₂ sf₂)) r₁ r₂
-  = SDP (S₁ ⊎ S₂) (C₁ ⊎C+ C₂) ((sf₁ ⊎sf+ sf₂) r₁ r₂)
+  = SDP (S₁ ⊎ S₂) (C₁ ⊎C+ C₂) (sf₁ ⟨ (r₁ , r₂) ⟩ sf₂)
 \end{code}
 
 \begin{figure}

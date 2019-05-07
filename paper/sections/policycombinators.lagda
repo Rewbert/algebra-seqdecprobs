@@ -100,19 +100,7 @@ combineSeq  :  {p₁ p₂ : SDProc} {n : ℕ}
             →  (Policy p₁ → Policy p₂ → Policy (p₁ :comb: p₂))
             →  PolicySeq p₁ n → PolicySeq p₂ n → PolicySeq (p₁ :comb: p₂) n
 combineSeq = zipWith
-\end{code}
 
-%if false
-\begin{code}
---combine⊎+Seq : {p₁ p₂ : SDProc} {n : ℕ} (r₁ : (#st p₁) ↦ (#st p₂)) (r₂ : (#st p₂) ↦ (#st p₁))
---            → PolicySeq p₁ n
---            → PolicySeq p₂ n
---            → PolicySeq ((p₁ ⊎SDP+ p₂) r₁ r₂) n
---combine⊎+Seq r₁ r₂ seq₁ seq₂ = zipWith (λ p₁ → λ p₂ → (p₁ ⊎P+ p₂) r₁ r₂) seq₁ seq₂
-\end{code}
-%endif
-
-\begin{code}
 ⊎↦× : (p₁ p₂ : SDProc) → Policy (p₁ ⊎SDP p₂) → Policy p₁ × Policy p₂
 ⊎↦× _ _ policy = (λ s₁ → policy (inj₁ s₁)) , λ s₂ → policy (inj₂ s₂)
 

@@ -112,7 +112,7 @@ This has the consequence that if one of the prior processes do not have any stat
 Similarly, if one of the components reaches a point where there are no available controls, and thus can not progress, the other component will not be able to progress either.
 %
 
-%include policycombinators.lagda
+%include 2dexamples.lagda
 
 %
 Functional programmers will often find they are in need of a unit, e.g when using |reduce| or other frequently appearing constructs from the functional paradigm.
@@ -153,10 +153,6 @@ Of course, the other process could itself be the singleton process also.
 %
 In this case the only change in each step is exactly that of the singleton process, which is no change at all.
 %
-
-\TODO{Example ``run'' would be instructive}
-\TODO{This part could come before the singleton}
-% maybe some actual discussion here of why this is the case.
 
 %-----------------------------------------------------------------------
 \subsection{Coproduct}

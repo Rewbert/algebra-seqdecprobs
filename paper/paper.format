@@ -22,8 +22,13 @@
 %format oned-control  = "\Varid{1d\text{-}control}"
 %format oned-step     = "\Varid{1d\text{-}step}"
 %format oned-reward   = "\Varid{1d\text{-}reward}"
-%format large-number = large "\text{-}" number
+%format large-number  = large "\text{-}" number
 %format twod-system   = "\Varid{2d\text{-}system}"
+%format twodsequence  = "\Varid{2d\text{-}sequence}"
+%format runtwod       = "\Varid{run2d}"
+%format twodtest1     = "\Varid{2d\text{-}test1}"
+%format twodtest2     = "\Varid{2d\text{-}test2}"
+%format twodtest3     = "\Varid{2d\text{-}test3}"
 
 %format #st = # "\ensuremath{_{\text{st}}}"
 %format #sf = # "\ensuremath{_{\text{sf}}}"

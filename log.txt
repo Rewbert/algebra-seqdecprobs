@@ -8,3 +8,7 @@ or
 TODO (later) relate more closely the operations.
 
 TODO perhaps check the Agda code
+
+--
+Related discussion / implementation:
+  https://agentmodels.org/chapters/3a-mdp.html

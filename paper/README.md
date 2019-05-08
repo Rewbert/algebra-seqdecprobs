@@ -21,3 +21,12 @@ The idea was that the contents of sections should mirror the table of contents o
   + **policies/**
     + policy.lagda
  and so on.
+
+----------------
+
+Perhaps retarget to TyDe'19:
+
+  https://icfp19.sigplan.org/home/tyde-2019#Call-for-Papers
+
+Deadline 2019-05-19
+Page limit: 12 pages

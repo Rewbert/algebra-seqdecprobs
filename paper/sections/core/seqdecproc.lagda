@@ -64,8 +64,8 @@ Now we have all the definitions we need in order to implement the trajectory fun
 %
 \begin{code}
 trajectory :  {n : ℕ} -> (p : SDProc) -> PolicySeq p n ->
-              #st p -> Vec (#st p) n
-trajectory sys []        x0  = []
+              #st p -> Vec (#st p) (suc n)
+trajectory sys []        x0  = x0  ∷ []
 trajectory sys (p ∷ ps)  x0  = x0 ∷ trajectory sys ps x1
   where  x1  :  #st sys
          x1  =  (#sf sys) x0 (p x0)

@@ -63,6 +63,9 @@
 %format _⇄C_   = "\unopun{" ⇄C "}"
 %format ⇄C     =          "\mathop{⇄_C}"
 
+%format _⇄m_   = "\unopun{" ⇄m "}"
+%format ⇄m     =          "\mathop{⇄_m}"
+
 %format _⇄sf_   = "\unopun{" ⇄sf "}"
 %format ⇄sf     =          "\mathop{⇄_{\text{sf}}}"
 

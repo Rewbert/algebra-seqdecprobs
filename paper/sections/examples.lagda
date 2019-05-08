@@ -115,7 +115,7 @@ A policy sequence is now just a vector of plicies.
 %
 \begin{code}
 sequence : Vec (Policy system) 5
-sequence = right ∷ right ∷ stay ∷ tryleft ∷ tryleft ∷ []
+sequence = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
 \end{code}
 %
 We can now evaluate the system using this sequence, starting from different points.
@@ -123,14 +123,11 @@ We can now evaluate the system using this sequence, starting from different poin
 We can use |≡| and |refl| to assert that the system behaves as intended.
 %
 \begin{code}
-test1 : trajectory system sequence 0 ≡ 0 ∷ 1 ∷ 2 ∷ 2 ∷ 1 ∷ []
+test1 : trajectory system sequence 0  ≡ 0 ∷ 0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ []
 test1 = refl
 
-test2 : trajectory system sequence 10 ≡ 10 ∷ 11 ∷ 12 ∷ 12 ∷ 11 ∷ []
+test2 : trajectory system sequence 5  ≡ 5 ∷ 4 ∷ 3 ∷ 4 ∷ 4 ∷ 5 ∷ []
 test2 = refl
-
-test3 : trajectory system sequence 7 ≡ 7 ∷ 8 ∷ 9 ∷ 9 ∷ 8 ∷ []
-test3 = refl
 \end{code}
 
 %

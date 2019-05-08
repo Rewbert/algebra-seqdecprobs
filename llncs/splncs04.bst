@@ -445,13 +445,22 @@ FUNCTION {format.url}
   if$
 }
 
-FUNCTION {format.doi} % added in splncs04.bst
+% FUNCTION {format.doi} % added in splncs04.bst
+% { doi empty$
+%      { "" }
+%      { after.block 'output.state :=
+%        "\doi{" doi * "}" * }
+%   if$
+% }
+
+% Fix for strange doi chars: see https://tex.stackexchange.com/questions/149086/citation-with-doi-that-has-underscore-breaks-functionality-in-bibdesk
+FUNCTION {format.doi}
 { doi empty$
-     { "" }
-     { after.block 'output.state :=
-       "\doi{" doi * "}" * }
-  if$
+  { "" }
+  { "doi:~\href{http://dx.doi.org/" doi * "}{\detokenize{" * doi * "}}" * }
+if$
 }
+
 
 INTEGERS { nameptr namesleft numnames }
 

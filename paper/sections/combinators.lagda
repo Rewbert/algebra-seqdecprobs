@@ -432,7 +432,7 @@ A system like this would let all the processes advance equally much.
 \TODO{implement this - A general product type with an indexing function}
 %-----------------------------------------------------------------------
 \begin{code}
-⇄m : Set → ℕ → Set -- Fin n × Vec S₁ n
+⇄m : Set → ℕ → Set
 ⇄m S n = Fin n × Vec S n
 
 ⇄C : {S : Set} → {n : ℕ} → Vec (Pred S) n → Pred (⇄m S n)

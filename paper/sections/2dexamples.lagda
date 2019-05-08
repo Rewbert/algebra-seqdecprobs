@@ -38,18 +38,13 @@ And now we can evaluate this new process like we did with the oned system.
 \begin{code}
 runtwod = trajectory twod-system twodsequence
 
-twodtest1 :  runtwod (5 , 5)
+twodtest1 :  runtwod (0 , 5)
              ≡
-             (5 , 5) ∷ (6 , 6) ∷ (7 , 7) ∷ (7 , 7) ∷ (6 , 6) ∷ []
+             (0 , 5) ∷ (0 , 4) ∷ (0 , 3) ∷ (1 , 4) ∷ (1 , 4) ∷ (2 , 5) ∷ []
 twodtest1 = refl
 
-twodtest2 :  runtwod (2 , 7)
+twodtest2 :  runtwod (5 , 5)
              ≡
-             (2 , 7) ∷ (3 , 8) ∷ (4 , 9) ∷ (4 , 9) ∷ (3 , 8) ∷ []
+             (5 , 5) ∷ (4 , 4) ∷ (3 , 3) ∷ (4 , 4) ∷ (4 , 4) ∷ (5 , 5) ∷ []
 twodtest2 = refl
-
-twodtest3 :  runtwod (13 , 2)
-             ≡
-             (13 , 2) ∷ (14 , 3) ∷ (15 , 4) ∷ (15 , 4) ∷ (14 , 3) ∷ []
-twodtest3 = refl
 \end{code}

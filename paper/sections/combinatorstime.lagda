@@ -107,8 +107,8 @@ SDPT S₁ C₁ sf₁ ⊎SDPT SDPT S₂ C₂ sf₂ = SDPT (S₁ ⊎St S₂) (C₁
 To combine two time dependent processes into a yielding coproduct we begin by describing the component that relates the states in one process to states in the other.
 %
 \begin{code}
-_⇄t_ : (S₁ S₂ : Pred ℕ) → Set
-s₁ ⇄t s₂ = ((n : ℕ) → s₁ n → s₂ (suc n)) × ((n : ℕ) → s₂ n → s₁ (suc n))
+_⇄t_ : (S₁ S₂ : Pred ℕ) → Set -- change time parameter
+s₁ ⇄t s₂ = ((t : ℕ) → s₁ t → s₂ (suc t)) × ((t : ℕ) → s₂ t → s₁ (suc t))
 \end{code}
 %
 The first change from the coproduct combinator is again that the control space is extended to contain also the |nothing| constructor.
@@ -146,11 +146,13 @@ To create a yielding coproduct we use the same combinator for the state space, b
 
 %
 \begin{code}
-_⇄St_ : (S₁ S₂ : Pred ℕ) → Pred ℕ
-s₁ ⇄St s₂ = λ n → Fin 2 × s₁ n × s₂ n
+_⇄St_ : (S₁ S₂ : Pred ℕ) → Pred ℕ -- correct this type, s₁ n/2 × s₂ (n/2)+index
+s₁ ⇄St s₂ = λ t → Fin 2 × s₁ t × s₂ t
+-- divmod required
+-- new Fin t type for 1d example
 
 _⇄Ct_ : {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂ → Pred' (S₁ ⇄St S₂)
-C₁ ⇄Ct C₂ = λ time → λ {  (zero , state)      → C₁ time (proj₁ state) ;
+C₁ ⇄Ct C₂ = λ time → λ {  (zero , state) → C₁ time (proj₁ state) ;
                             (one , state)  → C₂ time (proj₂ state)}
 \end{code}
 %

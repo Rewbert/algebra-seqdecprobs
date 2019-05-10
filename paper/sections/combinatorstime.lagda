@@ -1,4 +1,4 @@
-% -*- latex -*-
+% -*- Latex -*-
 \section{Combinators for the Time Dependent Case}
 \label{sec:combinatorstime}
 %if false
@@ -12,6 +12,8 @@ open import Data.Fin hiding (_+_)
 open import Data.Maybe
 open import Data.Product
 open import Data.Sum
+
+open import Relation.Binary.PropositionalEquality
 \end{code}
 %endif
 %
@@ -155,15 +157,19 @@ rem (suc (suc n))  = rem n
 half : ℕ → ℕ
 half n = ⌊ n /2⌋
 \end{code}
+
+  0  ->  1  ->  2  ->  3  ->  4  ->
+(0,0)->(1,0)->(1,1)->(2,1)->(2,2)->...
+
 %endif
 \begin{code}
 _⇄St_ : (S₁ S₂ : Pred ℕ) → Pred ℕ
-s₁ ⇄St s₂ = λ t → Fin 2 × s₁ (half t + rem t) × s₂ (half t + 1)
+s₁ ⇄St s₂ = λ t → s₁ (half t + rem t) × s₂ (half t)
 -- new Fin t type for 1d example
 
 _⇄Ct_ : {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂ → Pred' (S₁ ⇄St S₂)
-C₁ ⇄Ct C₂ = λ time → λ {  (zero , s₁×s₂)  → C₁ (half time + rem time)  (proj₁ s₁×s₂) ;
-                            (one , s₁×s₂)   → C₂ (half time + 1)         (proj₂ s₁×s₂)}
+C₁ ⇄Ct C₂ = λ time → λ {  s₁×s₂  → C₁ (half time + rem time)  (proj₁ s₁×s₂) ;
+                          s₁×s₂  → C₂ (half time)             (proj₂ s₁×s₂)}
 \end{code}
 %
 When we try to combine the two step functions we run into some trouble.
@@ -178,11 +184,9 @@ Given that the state space at time |suc t| might not be the same as at time |t|,
 %
 \begin{code}
 _⇄sft_ : {S₁ S₂ : Pred ℕ} → {C₁ : Pred' S₁} → {C₂ : Pred' S₂} → Step' S₁ C₁ → Step' S₂ C₂ → Step' (S₁ ⇄St S₂) (C₁ ⇄Ct C₂)
-sf₁ ⇄sft sf₂ = λ time → λ {  (zero , s₁×s₂) → λ control → one  ,  {!!} , {!!} ;
-                               (one , s₁×s₂)  → λ control → zero ,  {!!} , {!!}}
+(sf₁ ⇄sft sf₂) time (s₁ , s₂) c with rem time | inspect rem time
+(sf₁ ⇄sft sf₂) time (s₁ , s₂) c | zero | p = ({!sf₁ s₁!} , {!!})
+(sf₁ ⇄sft sf₂) time (s₁ , s₂) c | one  | p = ({!!} , {!!})
+
 \end{code}
-
-
-
-
-
+-- , {!!} -- λ { (s₁ , s₂) → λ control → ({!!} , {!!}) }

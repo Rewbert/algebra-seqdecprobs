@@ -8,7 +8,7 @@ module combinatorstime where
 open import core.seqdecproctime
 open import combinators
 open import Data.Nat
-open import Data.Fin
+open import Data.Fin hiding (_+_)
 open import Data.Maybe
 open import Data.Product
 open import Data.Sum
@@ -144,16 +144,26 @@ To create a yielding coproduct we use the same combinator for the state space, b
 
 %
 
-%
+%if false
 \begin{code}
-_⇄St_ : (S₁ S₂ : Pred ℕ) → Pred ℕ -- correct this type, s₁ n/2 × s₂ (n/2)+index
-s₁ ⇄St s₂ = λ t → Fin 2 × s₁ t × s₂ t
--- divmod required
+-- rem when div with 2
+rem : ℕ → ℕ
+rem 0              = 0
+rem 1              = 1
+rem (suc (suc n))  = rem n
+
+half : ℕ → ℕ
+half n = ⌊ n /2⌋
+\end{code}
+%endif
+\begin{code}
+_⇄St_ : (S₁ S₂ : Pred ℕ) → Pred ℕ
+s₁ ⇄St s₂ = λ t → Fin 2 × s₁ (half t + rem t) × s₂ (half t + 1)
 -- new Fin t type for 1d example
 
 _⇄Ct_ : {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂ → Pred' (S₁ ⇄St S₂)
-C₁ ⇄Ct C₂ = λ time → λ {  (zero , state) → C₁ time (proj₁ state) ;
-                            (one , state)  → C₂ time (proj₂ state)}
+C₁ ⇄Ct C₂ = λ time → λ {  (zero , s₁×s₂)  → C₁ (half time + rem time)  (proj₁ s₁×s₂) ;
+                            (one , s₁×s₂)   → C₂ (half time + 1)         (proj₂ s₁×s₂)}
 \end{code}
 %
 When we try to combine the two step functions we run into some trouble.
@@ -168,8 +178,8 @@ Given that the state space at time |suc t| might not be the same as at time |t|,
 %
 \begin{code}
 _⇄sft_ : {S₁ S₂ : Pred ℕ} → {C₁ : Pred' S₁} → {C₂ : Pred' S₂} → Step' S₁ C₁ → Step' S₂ C₂ → Step' (S₁ ⇄St S₂) (C₁ ⇄Ct C₂)
-sf₁ ⇄sft sf₂ = λ time → λ {  (zero , state)  → λ control  → suc zero , sf₁ time (proj₁ state) control , {!!} ;
-                               (one , state)  → λ control  → zero , {!!} , sf₂ time (proj₂ state) {!!}}
+sf₁ ⇄sft sf₂ = λ time → λ {  (zero , s₁×s₂) → λ control → one  ,  {!!} , {!!} ;
+                               (one , s₁×s₂)  → λ control → zero ,  {!!} , {!!}}
 \end{code}
 
 

@@ -28,8 +28,8 @@ record SDProcT : Set₁ where
 \end{code}
 %if false
 \begin{code}
-#stᵗ = SDProcT.State
-#sfᵗ = SDProcT.step
+#st = SDProcT.State
+#sf = SDProcT.step
 \end{code}
 %endif
 %
@@ -106,7 +106,8 @@ The step function says the same thing as in the previous example, but it says it
 If the state is zero there is only two available controls, and we update the state like we did previously.
 %
 \begin{code}
-oned-step : (n : ℕ) → (x : oned-state n) → (y : oned-control n x) → oned-state (suc n)
+oned-step :   (n : ℕ)
+          →  (x : oned-state n) → (y : oned-control n x) → oned-state (suc n)
 oned-step n zero     ZS  = zero
 oned-step n zero     ZR  = suc zero
 \end{code}

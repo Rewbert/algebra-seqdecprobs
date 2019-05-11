@@ -165,7 +165,6 @@ half n = ⌊ n /2⌋
 \begin{code}
 _⇄St_ : (S₁ S₂ : Pred ℕ) → Pred ℕ
 s₁ ⇄St s₂ = λ t → s₁ (half t + rem t) × s₂ (half t)
--- new Fin t type for 1d example
 
 _⇄Ct_ : {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂ → Pred' (S₁ ⇄St S₂)
 C₁ ⇄Ct C₂ = λ time → λ {  s₁×s₂  → C₁ (half time + rem time)  (proj₁ s₁×s₂) ;
@@ -185,7 +184,7 @@ Given that the state space at time |suc t| might not be the same as at time |t|,
 \begin{code}
 _⇄sft_ : {S₁ S₂ : Pred ℕ} → {C₁ : Pred' S₁} → {C₂ : Pred' S₂} → Step' S₁ C₁ → Step' S₂ C₂ → Step' (S₁ ⇄St S₂) (C₁ ⇄Ct C₂)
 (sf₁ ⇄sft sf₂) time (s₁ , s₂) c with rem time | inspect rem time
-(sf₁ ⇄sft sf₂) time (s₁ , s₂) c | zero | p = ({!sf₁ s₁!} , {!!})
+(sf₁ ⇄sft sf₂) time (s₁ , s₂) c | zero | p = ({!!} , {!!})
 (sf₁ ⇄sft sf₂) time (s₁ , s₂) c | one  | p = ({!!} , {!!})
 
 \end{code}

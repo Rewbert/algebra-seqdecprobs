@@ -51,6 +51,7 @@
 \DeclareUnicodeCharacter{8759}{::}
 \DeclareUnicodeCharacter{8760}{\dotdiv}
 \DeclareUnicodeCharacter{8644}{\rightleftarrows}
+\DeclareUnicodeCharacter{7511}{^{t}}
 
 \usepackage{amssymb}
 \usepackage{bbm}
@@ -111,7 +112,9 @@
 %------------------------------------------------------------------------------
 %include sections/combinators.lagda
 %------------------------------------------------------------------------------
-% %include sections/combinatorstime.lagda
+%include sections/core/seqdecproctime.lagda
+%------------------------------------------------------------------------------
+%include sections/combinatorstime.lagda
 %------------------------------------------------------------------------------
 %include sections/policycombinators.lagda
 %------------------------------------------------------------------------------

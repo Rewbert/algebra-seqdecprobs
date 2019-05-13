@@ -371,8 +371,8 @@ one : Fin 2
 one = suc zero
 
 _⇄C_ : {S₁ S₂ : Set} → Pred S₁ → Pred S₂ → Pred (S₁ ⇄S S₂)
-(C₁ ⇄C C₂) (zero , s₁ , s₂)      = C₁ s₁
-(C₁ ⇄C C₂) (one , s₁ , s₂)  = C₂ s₂
+(C₁ ⇄C C₂) (zero , (s₁ , _))   = C₁ s₁
+(C₁ ⇄C C₂) (one  , (_  , s₂))  = C₂ s₂
 \end{code}
 %
 The step function will inspect this first component and based on what value it has, it is going to invoke one of the prior step functions on the appropriate component.

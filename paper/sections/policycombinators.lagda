@@ -37,7 +37,9 @@ _×P_  :   {p₁ p₂ : SDProc}
       →   Policy p₁ → Policy p₂ → Policy (p₁ ×SDP p₂)
 (p₁ ×P p₂) (fst , snd) = (p₁ fst , p₂ snd)
 \end{code}
-%
+%TODO perhaps generalise the type to
+%   {S₁ S₂ : Set} -> {S₁ S₂ : Set} -> {C₁ : Pred S₁} -> {C₂ : Pred S₂}
+%   →  P S₁ C₁ → P S₂ C₂ → P (S₁ × S₂) (C₁ ×C C₂)
 A policy for the sum of two processes is defined by pattern matching on the state.
 %
 If the pattern matches on the left injection, we can reuse the previous policy defined on that state.
@@ -107,6 +109,7 @@ combineSeq = zipWith
 ×↦⊎ : (p₁ p₂ : SDProc) → Policy p₁ × Policy p₂ → Policy (p₁ ⊎SDP p₂)
 ×↦⊎ _ _ (p₁ , p₂) = λ { (inj₁ s₁) → p₁ s₁ ; (inj₂ s₂) → p₂ s₂}
 
+\end{code}
+TODO
 ∀⊎↦× : {p₁ p₂ : SDProc} → (p : Policy (p₁ ⊎SDP p₂)) → ×↦⊎ p₁ p₂ (⊎↦× p₁ p₂ p) ≡  p
 ∀⊎↦× {x} {y} p = {!!}
-\end{code}

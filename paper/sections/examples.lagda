@@ -111,7 +111,7 @@ right zero     = ZR
 right (suc s)  = SR
 \end{code}
 %
-A policy sequence is now just a vector of plicies.
+A policy sequence is now just a vector of policies.
 %
 \begin{code}
 sequence : Vec (Policy system) 5

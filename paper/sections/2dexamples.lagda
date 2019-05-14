@@ -5,7 +5,7 @@
 open import core.seqdecproc
 open import examples
 open import combinators
--- open import policycombinators
+open import policycombinators
 
 open import Data.Product hiding (map; zip)
 open import Data.Nat
@@ -23,16 +23,34 @@ twod-system = system ×SDP system
 \end{code}
 %
 In section \ref{sec:policycombinators} we will introduce combinators for policy sequences, but here we will not use them.
-%
+%TODO: why not use them?
 We create a policy sequence for the twod-system by applying the previous policies componentwise to an inhabitant of the new product state.
 %
 \begin{code}
+<<<<<<< HEAD
 twodsequence : PolicySeq twod-system 5
 twodsequence
   =  map  (λ pair → λ state →
           proj₁ pair (proj₁ state) , proj₂ pair (proj₂ state))
      (zip sequence sequence)
+=======
+twodsequence :  PolicySeq twod-system 5
+twodsequence =  zipWith  (λ { p1 p2 (s1 , s2) → (p1 s1 , p2 s2) })
+                         sequence  sequence
 \end{code}
+%if False
+\begin{code}
+P : (S : Set) -> (S -> Set) -> Set
+P S C = (x : S) -> C x
+_×P'_  :  {S₁ S₂ : Set} -> {S₁ S₂ : Set} -> {C₁ : Pred S₁} -> {C₂ : Pred S₂}
+      →  P S₁ C₁ → P S₂ C₂ → P (S₁ × S₂) (C₁ ×C C₂)
+(p₁ ×P' p₂) (fst , snd) = (p₁ fst , p₂ snd)
+twodsequence' : PolicySeq twod-system 5
+twodsequence' =  zipWith (_×P'_) sequence sequence
+>>>>>>> Some edits in the 2d-example
+\end{code}
+%Some hidden argument problem: probably because |Policy system| does not evaluate which make it unclear to Agda at which types the ploci product is used..
+%endif
 %
 And now we can evaluate this new process like we did with the oned system.
 %

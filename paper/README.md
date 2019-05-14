@@ -30,3 +30,36 @@ Perhaps retarget to TyDe'19:
 
 Deadline 2019-05-19
 Page limit: 12 pages
+
+----------------
+
+1. Intro
+
++ TODO early example (of using combinators even before def. them)
+  (teaser on the first page)
+_×SDP_ : SDProc → SDProc → SDProc
+_+SDP_ : SDProc → SDProc → SDProc
+
+test = a + b * c
+
+2. Background
+
+2.1 DynSys (S, step)    + trajectory
+2.2 SDProc (S, C, step), Policy,
+2.3 SDProb (S, C, step, reward),
+
+3. Examples
+
+  (expand and explain the teaser on the first page)
+
+[If too much, put some code in appendix.]
+
+3.a SDProc example
+  1d-state, 1d-control, 1d-step, 1d-system (TODO name?)
+3.b Policy example + test runs
+3.c SDProb example
+  (Reviewer qustions, why not include SDProc as subfield?)
+
+4. [Core message] Combinators for SDProc
+4.1 Product
+TODO continue

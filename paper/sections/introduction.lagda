@@ -1,7 +1,11 @@
 % -*- Latex -*.
 \section{Introduction}
 \label{sec:introduction}
-%
+% (explain title) - zoom in from general to specific
+% identify a gap (some ref. to earlier work and explain why something is lacking)
+% fill the gap!
+% contributions of this paper / outline
+
 Sequential decision problems are a well established concept in decision theory.
 %
 Recently this theory have been applied to concepts of climate impact research with favourable results. % what nicola spoke about
@@ -15,6 +19,9 @@ The idea is to divide a problem into subproblems, and solve those separately bef
 %
 We try to apply a similar idea here where we build more complex problems by combining simpler ones.
 %
+
+
+
 \subsection{Related work}
 \label{subsec:relatedwork}
 

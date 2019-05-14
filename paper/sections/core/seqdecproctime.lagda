@@ -54,11 +54,11 @@ embed (SDP S C sf) = SDPT (λ _ → S) (λ _ → C) (λ _ → sf)
 %
 Before we move on to an example of a time dependent process, we need to briefly present the |Fin| type and its properties.
 %
-The |Fin| type when applied to a natural number |n|, is a type with at most |n| elements.
+The |Fin n| type (for any natural number |n|) has exactly |n| elements.
 %
 > data Fin : ℕ → Set where
->   zero  : {n : ℕ} → Fin (suc n)
->   suc   : {n : ℕ} (i : Fin n) → Fin (suc n)
+>   zero  : {n : ℕ}              → Fin (suc n)
+>   suc   : {n : ℕ} (i : Fin n)  → Fin (suc n)
 %
 From this definition we see that |zero| is an element of |Fin n| for any |n > zero|.
 %
@@ -67,35 +67,35 @@ The constructor |suc| takes an element of type |Fin n| and returns an element of
 Let's illustrate the type for a couple of different n's.
 %
 \begin{figure}
-\label{images:finn}
 \centering
 \includegraphics[scale=0.7]{images/finn.png}
 \caption{Illustration of the Fin type.}
+\label{images:finn}
 \end{figure}
 
 %
 Illustrating what |suc| does comes as no surprise.
 %
 It takes an element of |Fin n| and give us the sucessor in |Fin (suc n)|.
-%
+%TODO: cut the "middle two" n, n+1 to fit in the width. May need to use figure* for a 2col-wide figure in ACM style.
 \begin{figure}
-\label{images:suc}
 \centering
-\includegraphics[scale=0.8]{images/suc.png}
-\caption{suc takes an element of type |Fin n| and gives us the sucessor element of type |Fin (suc n)|.}
+\includegraphics[scale=0.8]{images/suc.png}\includegraphics[scale=0.8]{images/inject.png}\includegraphics[scale=0.8]{images/injectinject.png}
+\caption{|suc| takes an element of type |Fin n| and gives us the sucessor element of type |Fin (suc n)|.}
+\label{images:suc}
 \end{figure}
 
 %
 What if we want to change the type of an element?
-% \TODO{fix reference}
-In figure \ref{images:finn} it becomes clear that all elements of type |Fin n| are also elements of |Fin (suc n)|.
+%
+In figure \ref{images:embed} it becomes clear that all elements of type |Fin n| are also elements of |Fin (suc n)|.
 %
 We sould be able to embed any element from |Fin n| into |Fin (suc n)|.
 \begin{figure}
-\label{images:embed}
 \centering
 \includegraphics[scale=0.8]{images/embed.png}
 \caption{The sucessor type of |Fin n| only has one more element. We should have an embedding like this.}
+\label{images:embed}
 \end{figure}
 %
 To do this we use the function inject₁.
@@ -107,10 +107,10 @@ To do this we use the function inject₁.
 It should be clear here that the element is left intact while the type changes.
 %
 \begin{figure}
-\label{images:inject}
 \centering
 \includegraphics[scale=0.8]{images/inject.png}
 \caption{Inject takes any element of type |Fin n| and returns the same element of type |Fin (suc n)|.}
+\label{images:inject}
 \end{figure}
 
 % \TODO{clear this up a bit}
@@ -123,10 +123,10 @@ We can't do this as is since the element |suc x| is of type |Fin (suc n)|, the e
 To solve this problem we need to invoke |inject₁| twice.
 % \TODO{image does not align properly}
 \begin{figure}
-\label{images:injectinject}
 \centering
 \includegraphics[scale=0.8]{images/injectinject.png}
 \caption{One way to implement the predecessor function for |Fin (suc n)|, while returning an element of the sucessor type.}
+\label{images:injectinject}
 \end{figure}
 
 \subsection{Time dependent example} % need better section title
@@ -191,8 +191,8 @@ However, if the state is greater than |zero| we need to change the types as desc
 For the left control the result has to be injected twice, and for the stay control it has to be injected once.
 %
 \begin{code}
-oned-step :   (n : ℕ)
-          →  (x : oned-state n) → (y : oned-control n x) → oned-state (suc n)
+oned-step  :   (n : ℕ)
+           →  (x : oned-state n) → (y : oned-control n x) → oned-state (suc n)
 oned-step n zero     ZS  = zero
 oned-step n zero     ZR  = suc zero
 oned-step n (suc x)  SL  = inject₁ (inject₁ x)

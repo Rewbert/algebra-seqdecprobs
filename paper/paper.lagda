@@ -13,13 +13,28 @@
 %----------------------------------------------------------------------------
 
 %let submit = True
-\documentclass[runningheads]{llncs}
+\documentclass[sigplan,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+
+%% Conference information
+%% Supplied to authors by publisher for camera-ready submission;
+%% use defaults for review submission.
+\acmConference[TyDe'19]{ACM SIGPLAN TODO}{TODO}{TODO}
+\acmYear{2019}
+\acmISBN{} % \acmISBN{978-x-xxxx-xxxx-x/YY/MM}
+\acmDOI{} % \acmDOI{10.1145/nnnnnnn.nnnnnnn}
+\startPage{1}
+
+\setcopyright{none} %**TODO
+\bibliographystyle{ACM-Reference-Format}
+
 %%% Standard definitions from the lhs2TeX installation
 %include polycode.fmt
 %%% Put your own formatting directives in a separate file
 %include paper.format
 
 \usepackage{graphicx}
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
 \usepackage{subcaption}
 \usepackage{hyperref}
 % \usepackage{color}
@@ -84,11 +99,26 @@
 
 %Note: double "@" in email to please lhs2tex
 
-\institute{University of Gothenburg,
-             \email{guskrooro@@student.gu.se}
-      \and Chalmers University of Technology,
-             \email{patrik.jansson@@chalmers.se}%, Computer Science and Engineering, SE-412 96 Göteborg, Sweden
-}
+%TODO:
+% \orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+% \affiliation{
+%   \position{Position1}
+%   \department{Department1}              %% \department is recommended
+%   \institution{Institution1}            %% \institution is required
+%   \streetaddress{Street1 Address1}
+%   \city{City1}
+%   \state{State1}
+%   \postcode{Post-Code1}
+%   \country{Country1}                    %% \country is recommended
+% }
+% \email{first1.last1@inst1.edu}          %% \email is recommended
+
+
+% \institute{University of Gothenburg,
+%              \email{guskrooro@@student.gu.se}
+%       \and Chalmers University of Technology,
+%              \email{patrik.jansson@@chalmers.se}%, Computer Science and Engineering, SE-412 96 Göteborg, Sweden
+% }
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -127,7 +157,6 @@
 % The reviewers suggested many improvements to the paper.
 
 %------------------------------------------------------------------------------
-\bibliographystyle{splncs04}
 \bibliography{paper}
 
 \end{document}

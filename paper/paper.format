@@ -81,3 +81,6 @@
 
 %format _×P_   = "\unopun{" ×P "}"
 %format ×P     =         "\mathop{×_{\!\Varid{P}}}"
+
+%format _:comb:_ = "\unopun{" :comb: "}"
+%format :comb:   = "\mathop{{:}" comb "{:}}"

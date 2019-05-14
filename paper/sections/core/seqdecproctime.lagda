@@ -78,12 +78,12 @@ Illustrating what |suc| does comes as no surprise.
 %
 It takes an element of |Fin n| and give us the sucessor in |Fin (suc n)|.
 %TODO: cut the "middle two" n, n+1 to fit in the width. May need to use figure* for a 2col-wide figure in ACM style.
-\begin{figure}
+\begin{figure*}
 \centering
 \includegraphics[scale=0.8]{images/suc.png}\includegraphics[scale=0.8]{images/inject.png}\includegraphics[scale=0.8]{images/injectinject.png}
 \caption{|suc| takes an element of type |Fin n| and gives us the sucessor element of type |Fin (suc n)|.}
 \label{images:suc}
-\end{figure}
+\end{figure*}
 
 %
 What if we want to change the type of an element?

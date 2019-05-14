@@ -199,7 +199,7 @@ Given that the state space at time |suc t| might not be the same as at time |t|,
 _⇄sf_ :  {S₁ S₂ : Pred ℕ} → {C₁ : Pred' S₁} → {C₂ : Pred' S₂}
       →  Step S₁ C₁ → Step S₂ C₂ → Step (S₁ ⇄S S₂) (C₁ ⇄CC C₂)
 (sf₁ ⇄sf sf₂) time (s₁ , s₂) c with rem time | inspect rem time
-(sf₁ ⇄sf sf₂) time (s₁ , s₂) c | zero | p = {!!} , {!!}
+(sf₁ ⇄sf sf₂) time (s₁ , s₂) c | zero | p = {!!} , {!s₂!}
 (sf₁ ⇄sf sf₂) time (s₁ , s₂) c | one  | p = {!!} , {!!}
 
 \end{code}

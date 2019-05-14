@@ -13,9 +13,10 @@ Below we illustrate how this is defined in Agda.
 \begin{code}
 module core.seqdecproctime where
 
-open import core.seqdecproc
+open import core.seqdecproc hiding (Policy; PolicySeq; #st_; trajectory)
 open import Data.Nat
 open import Data.Fin
+open import Data.Vec
 \end{code}
 %endif
 \begin{code}
@@ -48,6 +49,86 @@ embed : SDProc → SDProcT
 embed (SDP S C sf) = SDPT (λ _ → S) (λ _ → C) (λ _ → sf)
 \end{code}
 
+\subsection{A discussion on the |Fin| type}
+\label{subsec:fintype}
+%
+Before we move on to an example of a time dependent process, we need to briefly present the |Fin| type and its properties.
+%
+The |Fin| type when applied to a natural number |n|, is a type with at most |n| elements.
+%
+> data Fin : ℕ → Set where
+>   zero  : {n : ℕ} → Fin (suc n)
+>   suc   : {n : ℕ} (i : Fin n) → Fin (suc n)
+%
+From this definition we see that |zero| is an element of |Fin n| for any |n > zero|.
+%
+The constructor |suc| takes an element of type |Fin n| and returns an element of type |Fin (suc n)|.
+%
+Let's illustrate the type for a couple of different n's.
+%
+\begin{figure}
+\label{images:finn}
+\centering
+\includegraphics[scale=0.7]{images/finn.png}
+\caption{Illustration of the Fin type.}
+\end{figure}
+
+%
+Illustrating what |suc| does comes as no surprise.
+%
+It takes an element of |Fin n| and give us the sucessor in |Fin (suc n)|.
+%
+\begin{figure}
+\label{images:suc}
+\centering
+\includegraphics[scale=0.8]{images/suc.png}
+\caption{suc takes an element of type |Fin n| and gives us the sucessor element of type |Fin (suc n)|.}
+\end{figure}
+
+%
+What if we want to change the type of an element?
+% \TODO{fix reference}
+In figure \ref{images:finn} it becomes clear that all elements of type |Fin n| are also elements of |Fin (suc n)|.
+%
+We sould be able to embed any element from |Fin n| into |Fin (suc n)|.
+\begin{figure}
+\label{images:embed}
+\centering
+\includegraphics[scale=0.8]{images/embed.png}
+\caption{The sucessor type of |Fin n| only has one more element. We should have an embedding like this.}
+\end{figure}
+%
+To do this we use the function inject₁.
+%
+> inject₁ : ∀ {m} → Fin m → Fin (suc m)
+> inject₁ zero     = zero
+> inject₁ (suc i)  = suc (inject₁ i)
+%
+It should be clear here that the element is left intact while the type changes.
+%
+\begin{figure}
+\label{images:inject}
+\centering
+\includegraphics[scale=0.8]{images/inject.png}
+\caption{Inject takes any element of type |Fin n| and returns the same element of type |Fin (suc n)|.}
+\end{figure}
+
+% \TODO{clear this up a bit}
+Now, what if we find ourselves in a situation where we have a number in |Fin (suc n)|, and we want to return its predecessor, but of type |Fin (suc (suc n))|?
+%
+What we want to do is given an element |suc x|, return x.
+%
+We can't do this as is since the element |suc x| is of type |Fin (suc n)|, the element x is of type |Fin n|.
+%
+To solve this problem we need to invoke |inject₁| twice.
+% \TODO{image does not align properly}
+\begin{figure}
+\label{images:injectinject}
+\centering
+\includegraphics[scale=0.8]{images/injectinject.png}
+\caption{One way to implement the predecessor function for |Fin (suc n)|, while returning an element of the sucessor type.}
+\end{figure}
+
 \subsection{Time dependent example} % need better section title
 \label{subsec:timedependentexample}
 %
@@ -57,7 +138,7 @@ The natural numbers seemed, and were, a reasonable choice.
 %
 With the time dependent process at our disposal however we notice a source of ineffectiveness.
 
-%
+% \TODO{Only if initial state is zero?}
 The state space is all the natural numbers even when we haven't taken a step yet.
 %
 After 1 step the possible states we could inhabit are only two.
@@ -105,43 +186,19 @@ The step function says the same thing as in the previous example, but it says it
 %
 If the state is zero there is only two available controls, and we update the state like we did previously.
 %
+However, if the state is greater than |zero| we need to change the types as described in section \ref{subsec:fintype}.
+%
+For the left control the result has to be injected twice, and for the stay control it has to be injected once.
+%
 \begin{code}
 oned-step :   (n : ℕ)
           →  (x : oned-state n) → (y : oned-control n x) → oned-state (suc n)
 oned-step n zero     ZS  = zero
 oned-step n zero     ZR  = suc zero
-\end{code}
-%
-In the successor case we need to play a bit with the types to get our meaning across.
-%
-If we supplied the left control we previously changed our state from |suc n| to |n|.
-%
-Now we have a state |suc n| of type |Fin n|, and we wish to return |n| and have it be of type |Fin (suc n)|.
-%
-However |n| is of type |Fin (pred n)|, and so we need to inject it into the sucessor type by applying |inject₁| to it.
-%
-We do this twice to achieve an element of the proper type.
-%
-\begin{code}
 oned-step n (suc x)  SL  = inject₁ (inject₁ x)
-\end{code}
-%
-Simialarly for the stay control we wish to leave the state unchanged but change the type of it.
-%
-We inject the state unchanged and turn it from being an inhabitant of |Fin n| to one of |Fin (suc n)|.
-%
-\begin{code}
 oned-step n (suc x)  SS  = inject₁ (suc x)
-\end{code}
-%
-The case where we actually increment the state is straight forward.
-%
-The |Fin n| will become a |Fin (suc n)| by using the |suc| constructor.
-%
-\begin{code}
 oned-step n (suc x)  SR  = suc (suc x)
 \end{code}
-
 %
 Now the entire system has been defined and we can package it as a |SDProcT|.
 %

@@ -44,8 +44,10 @@ Combining two controls becomes the task of combining two |Pred'|, and produce a 
 The result is a predicate that given a time and a state, applies the prior predicates to the time and the state componentwise.
 %
 \begin{code}
-_×C_ : {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂ → Pred' (S₁ ×S S₂)
-(s₁ ×C s₂) time state = s₁ time (proj₁ state) × s₂ time (proj₂ state)
+_×C_ :  {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂
+   →    Pred' (S₁ ×S S₂)
+(s₁ ×C s₂) time state
+  = s₁ time (proj₁ state) × s₂ time (proj₂ state)
 \end{code}
 %
 Again we capture the type of the step function in a type |Step|.
@@ -62,8 +64,10 @@ Combining two such step functions is similar to the time independent case.
 The only different is that we have an extra parameter |time|, and we must apply the step functions to this |time| parameters.
 %
 \begin{code}
-_×sf_ :  {S₁ S₂ : Pred ℕ} → {C₁ : Pred' S₁} → {C₂ : Pred' S₂}
-      →  Step S₁ C₁ → Step S₂ C₂ → Step (S₁ ×S S₂) (C₁ ×C C₂)
+_×sf_ :  {S₁ S₂ : Pred ℕ}
+      →  {C₁ : Pred' S₁} → {C₂ : Pred' S₂}
+      →  Step S₁ C₁ → Step S₂ C₂
+      →  Step (S₁ ×S S₂) (C₁ ×C C₂)
 (sf₁ ×sf sf₂) time state control
   =  sf₁ time (proj₁ state) (proj₁ control) ,
      sf₂ time (proj₂ state) (proj₂ control)
@@ -86,7 +90,8 @@ s₁ ⊎S s₂ = λ t → s₁ t ⊎ s₂ t
 \end{code}
 Combining two controls is done by pattern matching on the state and return one of the previous predicates applies to the time and the state.
 \begin{code}
-_⊎C_ : {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂ → Pred' (S₁ ⊎S S₂)
+_⊎C_ :  {S₁ S₂ : Pred ℕ} → Pred' S₁
+     →  Pred' S₂ → Pred' (S₁ ⊎S S₂)
 (C₁ ⊎C C₂) time = λ {  (inj₁ s₁) → C₁ time s₁ ;
                        (inj₂ s₂) → C₂ time s₂}
 \end{code}
@@ -96,10 +101,12 @@ Combining the step functions to produce one defined for the new process is, simi
 If the state is injected with the first injection, we apply the first step function, and similarly for the second injection.
 %
 \begin{code}
-_⊎sf_ :  {S₁ S₂ : Pred ℕ} → {C₁ : Pred' S₁} → {C₂ : Pred' S₂}
-       →  Step S₁ C₁ → Step S₂ C₂ → Step (S₁ ⊎S S₂) (C₁ ⊎C C₂)
-(sf₁ ⊎sf sf₂) time (inj₁ s₁) control =  inj₁ (sf₁ time s₁ control)
-(sf₁ ⊎sf sf₂) time (inj₂ s₂) control =  inj₂ (sf₂ time s₂ control)
+_⊎sf_ :  {S₁ S₂ : Pred ℕ}
+      →  {C₁ : Pred' S₁} → {C₂ : Pred' S₂}
+      →  Step S₁ C₁ → Step S₂ C₂
+      →  Step (S₁ ⊎S S₂) (C₁ ⊎C C₂)
+(sf₁ ⊎sf sf₂) time (inj₁ s₁) c = inj₁ (sf₁ time s₁ c)
+(sf₁ ⊎sf sf₂) time (inj₂ s₂) c = inj₂ (sf₂ time s₂ c)
 \end{code}
 Again we combine two processes by applying the component combinators componentwise.
 \begin{code}
@@ -112,14 +119,16 @@ SDPT S₁ C₁ sf₁ ⊎SDP SDPT S₂ C₂ sf₂
 To combine two time dependent processes into a yielding coproduct we begin by describing the component that relates the states in one process to states in the other.
 %
 \begin{code}
-_⇄_ : (S₁ S₂ : Pred ℕ) → Set -- change time parameter
-s₁ ⇄ s₂ = ((t : ℕ) → s₁ t → s₂ (suc t)) × ((t : ℕ) → s₂ t → s₁ (suc t))
+_⇄_ : (S₁ S₂ : Pred ℕ) → Set
+s₁ ⇄ s₂ =  ((t : ℕ) → s₁ t → s₂ (suc t)) ×
+           ((t : ℕ) → s₂ t → s₁ (suc t))
 \end{code}
 %
 The first change from the coproduct combinator is again that the control space is extended to contain also the |nothing| constructor.
 %
 \begin{code}
-_⊎C+_ : {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂ → Pred' (S₁ ⊎S S₂)
+_⊎C+_ :  {S₁ S₂ : Pred ℕ}
+      →  Pred' S₁ → Pred' S₂ → Pred' (S₁ ⊎S S₂)
 (C₁ ⊎C+ C₂) time (inj₁ s₁) = Maybe (C₁ time s₁)
 (C₁ ⊎C+ C₂) time (inj₂ s₂) = Maybe (C₂ time s₂)
 \end{code}
@@ -127,12 +136,18 @@ _⊎C+_ : {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂ → Pred' (S₁ �
 In contrast to the coproduct case, the new step function will switch which process is executing if the control is the |nothing| constructor, and otherwise, depending on which injection was used, apply one of the previous step functions.
 %
 \begin{code}
-⊎sf+ :  {S₁ S₂ : Pred ℕ} → {C₁ : Pred' S₁} → {C₂ : Pred' S₂} → S₁ ⇄ S₂
-    →   Step S₁ C₁ → Step S₂ C₂ → Step (S₁ ⊎S S₂) (C₁ ⊎C+ C₂)
-⊎sf+ _         sf₁ sf₂ time (inj₁ s₁) (just c₁)  = inj₁ (sf₁ time s₁ c₁)
-⊎sf+ (r₁ , _)  sf₁ sf₂ time (inj₁ s₁) nothing    = inj₂ (r₁ time s₁)
-⊎sf+ _         sf₁ sf₂ time (inj₂ s₂) (just c₂)  = inj₂ (sf₂ time s₂ c₂)
-⊎sf+ (_ , r₂)  sf₁ sf₂ time (inj₂ s₂) nothing    = inj₁ (r₂ time s₂)
+⊎sf+ :  {S₁ S₂ : Pred ℕ}
+     →  {C₁ : Pred' S₁} → {C₂ : Pred' S₂} → S₁ ⇄ S₂
+     →  Step S₁ C₁ → Step S₂ C₂
+     →  Step (S₁ ⊎S S₂) (C₁ ⊎C+ C₂)
+⊎sf+ _         sf₁ sf₂ time (inj₁ s₁) (just c₁)  =
+  inj₁ (sf₁ time s₁ c₁)
+⊎sf+ (r₁ , _)  sf₁ sf₂ time (inj₁ s₁) nothing    =
+  inj₂ (r₁ time s₁)
+⊎sf+ _         sf₁ sf₂ time (inj₂ s₂) (just c₂)  =
+  inj₂ (sf₂ time s₂ c₂)
+⊎sf+ (_ , r₂)  sf₁ sf₂ time (inj₂ s₂) nothing    =
+  inj₁ (r₂ time s₂)
 \end{code}
 %
 In the spirit of keeping notation similar, we provide a misfix operator for the step combinator.
@@ -144,7 +159,8 @@ syntax ⊎sf+ r sf₁ sf₂ = sf₁ ⟨ r ⟩ sf₂
 To create a yielding coproduct we use the same combinator for the state space, but use the new modified combinators for the control space and step function.
 %
 \begin{code}
-⊎SDP+ : (p₁ p₂ : SDProcT) →  (#st p₁) ⇄ (#st p₂) → SDProcT
+⊎SDP+ :  (p₁ p₂ : SDProcT) →  (#st p₁) ⇄ (#st p₂)
+     →   SDProcT
 ⊎SDP+ (SDPT S₁ C₁ sf₁) (SDPT S₂ C₂ sf₂) r
   = SDPT (S₁ ⊎S S₂) (C₁ ⊎C+ C₂) (sf₁ ⟨ r ⟩ sf₂)
 \end{code}

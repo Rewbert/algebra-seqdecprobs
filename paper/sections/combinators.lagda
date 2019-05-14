@@ -52,7 +52,8 @@ Given two terms and two predicates, one on each term, we compute the predicate o
 The inhabitants of this product predicate are pairs of the inhabitants of the prior predicates.
 %
 \begin{code}
-_×C_ :  {S₁ S₂ : Set} -> Pred S₁ -> Pred S₂ -> Pred (S₁ × S₂)
+_×C_ :   {S₁ S₂ : Set}
+     ->  Pred S₁ -> Pred S₂ -> Pred (S₁ × S₂)
 (C₁ ×C C₂) (s₁ , s₂) = C₁ s₁ × C₂ s₂
 \end{code}
 %
@@ -82,7 +83,8 @@ The result is a product of terms that are computed by componentwise calling the 
 \begin{code}
 _×sf_  :   {S₁ S₂ : Set}
        ->  {C₁ : Pred S₁} -> {C₂ : Pred S₂}
-       ->  Step S₁ C₁ -> Step S₂ C₂ ->  Step (S₁ × S₂) (C₁ ×C C₂)
+       ->  Step S₁ C₁ -> Step S₂ C₂
+       ->  Step (S₁ × S₂) (C₁ ×C C₂)
 (sf₁ ×sf sf₂) (s₁ , s₂) (c₁ , c₂) = (sf₁ s₁ c₁ , sf₂ s₂ c₂)
 \end{code}
 
@@ -170,7 +172,8 @@ The control, here considered a predicate, is a predicate on the sum of the terms
 The inhabitants of this sum predicate is the sum of the inhabitants of the prior predicates.
 %
 \begin{code}
-_⊎C_ : {S₁ S₂ : Set} → Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
+_⊎C_ :  {S₁ S₂ : Set}
+     →  Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
 (C₁ ⊎C C₂) (inj₁ s₁)  = C₁ s₁
 (C₁ ⊎C C₂) (inj₂ s₂)  = C₂ s₂
 \end{code}
@@ -186,7 +189,8 @@ The result of the application is then injected into the sum type using the same 
 \begin{code}
 _⊎sf_  :   {S₁ S₂ : Set}
        ->  {C₁ : Pred S₁} -> {C₂ : Pred S₂}
-       ->  Step S₁ C₁ -> Step S₂ C₂ ->  Step (S₁ ⊎ S₂) (C₁ ⊎C C₂)
+       ->  Step S₁ C₁ -> Step S₂ C₂
+       ->  Step (S₁ ⊎ S₂) (C₁ ⊎C C₂)
 (sf₁ ⊎sf sf₂) (inj₁ s₁) c₁  = inj₁ (sf₁ s₁ c₁)
 (sf₁ ⊎sf sf₂) (inj₂ s₂) c₂  = inj₂ (sf₂ s₂ c₂)
 \end{code}
@@ -275,7 +279,8 @@ However, instead of the new predicate being defined as either of the two prior o
 The idea is that if the selected inhabitant from this predicate is Nothing, the process would like to yield in favour of the other process.
 %
 \begin{code}
-_⊎C+_ : {S₁ S₂ : Set} → Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
+_⊎C+_ :  {S₁ S₂ : Set}
+      →  Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
 (C₁ ⊎C+ C₂) (inj₁ s₁) = Maybe (C₁ s₁)
 (C₁ ⊎C+ C₂) (inj₂ s₂) = Maybe (C₂ s₂)
 \end{code}
@@ -291,7 +296,8 @@ If the predicate of the step function is ever Nothing, we will use the relation 
 ⊎sf+  :  {S₁ S₂ : Set}
       →  {C₁ : Pred S₁} → {C₂ : Pred S₂}
       →  (S₁ ⇄ S₂)
-      →  Step S₁ C₁ → Step S₂ C₂ → Step (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
+      →  Step S₁ C₁ → Step S₂ C₂
+      →  Step (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
 ⊎sf+ _          sf₁ sf₂  (inj₁ s₁)  (just c)  = inj₁ (sf₁ s₁ c)
 ⊎sf+ _          sf₁ sf₂  (inj₂ s₂)  (just c)  = inj₂ (sf₂ s₂ c)
 ⊎sf+ (r₁ , _ )  sf₁ sf₂  (inj₁ s₁)  nothing   = inj₂ (r₁ s₁)
@@ -370,7 +376,8 @@ Agda require us to include a case for when the first component has any other val
 one : Fin 2
 one = suc zero
 
-_⇄C_ : {S₁ S₂ : Set} → Pred S₁ → Pred S₂ → Pred (S₁ ⇄S S₂)
+_⇄C_ :  {S₁ S₂ : Set}
+     →  Pred S₁ → Pred S₂ → Pred (S₁ ⇄S S₂)
 (C₁ ⇄C C₂) (zero , s₁ , s₂)      = C₁ s₁
 (C₁ ⇄C C₂) (one , s₁ , s₂)  = C₂ s₂
 \end{code}
@@ -380,8 +387,10 @@ The step function will inspect this first component and based on what value it h
 The other component that is not the index is left unchanged, while the index is changed to indicate that the other process is the one to advance next.
 %
 \begin{code}
-_⇄sf_  :  {S₁ S₂ : Set} → {C₁ : Pred S₁} → {C₂ : Pred S₂} →
-          Step S₁ C₁ → Step S₂ C₂ → Step (S₁ ⇄S S₂) (C₁ ⇄C C₂)
+_⇄sf_  :  {S₁ S₂ : Set}
+       →  {C₁ : Pred S₁} → {C₂ : Pred S₂}
+       →  Step S₁ C₁ → Step S₂ C₂
+       →  Step (S₁ ⇄S S₂) (C₁ ⇄C C₂)
 (sf₁ ⇄sf sf₂) (zero , s₁ , s₂)      c  = (suc zero  , sf₁ s₁ c  , s₂        )
 (sf₁ ⇄sf sf₂) (suc zero , s₁ , s₂)  c  = (zero      , s₁        , sf₂ s₂ c  )
 (sf₁ ⇄sf sf₂) (suc (suc ()) , _)

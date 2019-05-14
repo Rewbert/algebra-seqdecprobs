@@ -23,9 +23,9 @@ Because not all actions are possible in all states the control is depending on w
 record SDProc : Set1 where
   constructor SDP
   field
-    State   : Set
-    Control : State -> Set
-    step    : (x : State) -> Control x -> State
+    State    : Set
+    Control  : State -> Set
+    step     : (x : State) -> Control x -> State
 \end{code}
 
 %if false
@@ -50,7 +50,8 @@ Which control is actually used to transition from one state to the next  is spec
 %
 \begin{code}
 Policy : SDProc -> Set
-Policy (SDP State Control _) = (x : State) -> Control x
+Policy (SDP State Control _)
+  = (x : State) -> Control x
 \end{code}
 %
 To compute |n| transitions we need a sequence of |n| policies.
@@ -63,8 +64,9 @@ PolicySeq system n = Vec (Policy system) n
 Now we have all the definitions we need in order to implement the trajectory function for sequential decision processes.
 %
 \begin{code}
-trajectory :  {n : ℕ} -> (p : SDProc) -> PolicySeq p n ->
-              #st p -> Vec (#st p) (suc n)
+trajectory :  {n : ℕ}
+          ->  (p : SDProc) -> PolicySeq p n -> #st p
+          ->  Vec (#st p) (suc n)
 trajectory sys []        x0  = x0  ∷ []
 trajectory sys (p ∷ ps)  x0  = x0 ∷ trajectory sys ps x1
   where  x1  :  #st sys

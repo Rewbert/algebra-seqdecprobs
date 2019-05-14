@@ -123,10 +123,12 @@ We can now evaluate the system using this sequence, starting from different poin
 We can use |≡| and |refl| to assert that the system behaves as intended.
 %
 \begin{code}
-test1 : trajectory system sequence 0  ≡ 0 ∷ 0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ []
+test1 : trajectory system sequence 0
+  ≡ 0 ∷ 0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ []
 test1 = refl
 
-test2 : trajectory system sequence 5  ≡ 5 ∷ 4 ∷ 3 ∷ 4 ∷ 4 ∷ 5 ∷ []
+test2 : trajectory system sequence 5
+  ≡ 5 ∷ 4 ∷ 3 ∷ 4 ∷ 4 ∷ 5 ∷ []
 test2 = refl
 \end{code}
 
@@ -154,9 +156,11 @@ distance (suc n) (suc m) = distance n m
 large-number : ℕ
 large-number = 10000
 
-oned-reward :  oned-state ->
-               (x : oned-state) -> oned-control x -> oned-state -> ℕ
-oned-reward target x0 y x1 = large-number  ∸ (distance target x1)
+oned-reward :  oned-state
+           ->  (x : oned-state) -> oned-control x -> oned-state
+           ->  ℕ
+oned-reward target x0 y x1
+  = large-number  ∸ (distance target x1)
 \end{code}
 %
 We can redefine the sequential decision process above to be a sequential decision problem simply by instantiating the |SDProb| record.
@@ -164,7 +168,9 @@ We can redefine the sequential decision process above to be a sequential decisio
 
 \begin{code}
 problem : oned-state -> SDProblem
-problem target = SDProb oned-state oned-control oned-step (oned-reward target)
+problem target
+  = SDProb  oned-state  oned-control
+            oned-step   (oned-reward target)
 \end{code}
 
 \TODO{Example ``run'' would be instructive}

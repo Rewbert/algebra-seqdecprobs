@@ -25,7 +25,8 @@ record SDProcT : Set₁ where
   field
     State    : (t : ℕ) → Set
     Control  : (t : ℕ) → State t → Set
-    step     : (t : ℕ) → (x : State t) → Control t x → State (suc t)
+    step     : (t : ℕ)
+           →  (x : State t) → Control t x → State (suc t)
 \end{code}
 %if false
 \begin{code}
@@ -46,7 +47,8 @@ The embedding produces a process that does not use the fact that the state is ti
 %
 \begin{code}
 embed : SDProc → SDProcT
-embed (SDP S C sf) = SDPT (λ _ → S) (λ _ → C) (λ _ → sf)
+embed (SDP S C sf)
+  = SDPT (λ _ → S) (λ _ → C) (λ _ → sf)
 \end{code}
 
 \subsection{A discussion on the |Fin| type}
@@ -191,8 +193,8 @@ However, if the state is greater than |zero| we need to change the types as desc
 For the left control the result has to be injected twice, and for the stay control it has to be injected once.
 %
 \begin{code}
-oned-step  :   (n : ℕ)
-           →  (x : oned-state n) → (y : oned-control n x) → oned-state (suc n)
+oned-step :  (n : ℕ) → (x : oned-state n)
+         →   (y : oned-control n x) →  oned-state (suc n)
 oned-step n zero     ZS  = zero
 oned-step n zero     ZR  = suc zero
 oned-step n (suc x)  SL  = inject₁ (inject₁ x)

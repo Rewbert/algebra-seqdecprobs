@@ -20,6 +20,8 @@ Since our contributions are defined in Agda \cite{norell_practical_2007}, we nee
 
 \cite{ionescujansson2013DTPinSciComp,ionescujansson:LIPIcs:2013:3899,DBLP:journals/corr/BottaJICB16,botta_jansson_ionescu_2017_avoidability}).
 
+% Zoom in from broad perspective on the field towards more specific questions in the current paper.
+% cite Bellman
 
 
 %-----------------------------------------------------------

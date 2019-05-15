@@ -123,6 +123,7 @@
 
 %-------------------------------------------------------------------------------
 
+\TODO{abstract does not show up}
 \begin{abstract}
   \TODO{The abstract should briefly summarize the contents of the paper in 150--250 words.}
   \input{abstract.txt}

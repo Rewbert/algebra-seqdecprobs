@@ -3,7 +3,7 @@
 \label{sec:background}
 
 %
-Before the contributions presented in this text can be introduced, previous work by Botta et al.~\cite{DBLP:journals/corr/BottaJICB16} needs to be considered.
+Before the contributions presented in this text can be introduced, previous work by Botta et al.~\cite{DBLP:journals/corr/BottaJICB16} needs to be defined.
 %
 Their work lays the foundation for the contributions presented here.
 %

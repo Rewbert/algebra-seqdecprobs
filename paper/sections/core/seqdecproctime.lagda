@@ -66,70 +66,71 @@ From this definition we see that |zero| is an element of |Fin n| for any |n > ze
 %
 The constructor |suc| takes an element of type |Fin n| and returns an element of type |Fin (suc n)|.
 %
-Let's illustrate the type for a couple of different n's.
+We illustrate the type for a couple of different n's in figure \ref{images:finn}.
 %
 \begin{figure}
 \centering
 \includegraphics[scale=0.7]{images/finn.png}
-\caption{Illustration of the Fin type.}
+\caption{An illustration of the |Fin n| type. We emphasise that there are exactly |n| inhabitants of |Fin n|.}
 \label{images:finn}
 \end{figure}
 
-%
-Illustrating what |suc| does comes as no surprise.
-%
-It takes an element of |Fin n| and give us the sucessor in |Fin (suc n)|.
-%TODO: cut the "middle two" n, n+1 to fit in the width. May need to use figure* for a 2col-wide figure in ACM style.
-\begin{figure*}
-\centering
-\includegraphics[scale=0.8]{images/suc.png}\includegraphics[scale=0.8]{images/inject.png}\includegraphics[scale=0.8]{images/injectinject.png}
-\caption{|suc| takes an element of type |Fin n| and gives us the sucessor element of type |Fin (suc n)|.}
-\label{images:suc}
+\begin{figure*}[htbp]
+  \begin{subfigure}[b]{.20\textwidth}
+    \hbox{\hspace{-0.5em} \includegraphics[scale=0.75]{images/suc.png}} % \TODO{add suc annot to image or remove inject annot from the others}
+    \caption{}
+    \label{images:suc}
+  \end{subfigure}
+  \begin{subfigure}[b]{.20\textwidth}
+    \centering
+    \includegraphics[scale=0.75]{images/inject.png}
+    \caption{}
+    \label{images:inject}
+  \end{subfigure}
+  \begin{subfigure}[b]{.20\textwidth}
+    \centering
+    \includegraphics[scale=0.75]{images/injectinject.png}
+    \caption{}
+    \label{images:injectinject}
+  \end{subfigure}
+  \begin{subfigure}[b]{.20\textwidth}
+    \centering
+    \includegraphics[scale=0.75]{images/embed.png}
+    \caption{}
+    \label{images:embed}
+  \end{subfigure}
+
+  \caption{Illustrations of how to embed elements of type |Fin n| in the sucessor type |Fin (suc n)|.}
+  \label{images:fin}
 \end{figure*}
 
 %
-What if we want to change the type of an element?
+We illustrate what the |suc| constructor does in figure \ref{images:suc}.
+%
+It takes an element of type |Fin n|, and returns the sucessor element of type |Fin (suc n)|.
+%
+
+%
+What if we want an element of the sucessor type without using the suc constructor?
+%
+We might wish to simply 'promote' the type of an element.
 %
 In figure \ref{images:embed} it becomes clear that all elements of type |Fin n| are also elements of |Fin (suc n)|.
 %
-We sould be able to embed any element from |Fin n| into |Fin (suc n)|.
-\begin{figure}
-\centering
-\includegraphics[scale=0.8]{images/embed.png}
-\caption{The sucessor type of |Fin n| only has one more element. We should have an embedding like this.}
-\label{images:embed}
-\end{figure}
-%
-To do this we use the function inject₁.
+To do this promoting we use the function inject₁, which is illustrated in figure \ref{images:inject}.
 %
 > inject₁ : ∀ {m} → Fin m → Fin (suc m)
 > inject₁ zero     = zero
 > inject₁ (suc i)  = suc (inject₁ i)
 %
-It should be clear here that the element is left intact while the type changes.
-%
-\begin{figure}
-\centering
-\includegraphics[scale=0.8]{images/inject.png}
-\caption{Inject takes any element of type |Fin n| and returns the same element of type |Fin (suc n)|.}
-\label{images:inject}
-\end{figure}
 
-% \TODO{clear this up a bit}
-Now, what if we find ourselves in a situation where we have a number in |Fin (suc n)|, and we want to return its predecessor, but of type |Fin (suc (suc n))|?
+Now, what if we find ourselves in a situation where we have an element of type |Fin (suc n)|, and we want to return its predecessor, but of the sucessor type |Fin (suc (suc n))|?
 %
-What we want to do is given an element |suc x|, return x.
+What we want to do is given an element |suc x|, return |x|.
 %
-We can't do this as is since the element |suc x| is of type |Fin (suc n)|, the element x is of type |Fin n|.
+We can't do this as is since the element |suc x| is of type |Fin (suc n)|, the element |x| is of type |Fin n|.
 %
-To solve this problem we need to invoke |inject₁| twice.
-% \TODO{image does not align properly}
-\begin{figure}
-\centering
-\includegraphics[scale=0.8]{images/injectinject.png}
-\caption{One way to implement the predecessor function for |Fin (suc n)|, while returning an element of the sucessor type.}
-\label{images:injectinject}
-\end{figure}
+To get the proper type we need to invoke |inject₁| twice, which is illustrated in figure \ref{images:injectinject}.
 
 \subsection{Time dependent example} % need better section title
 \label{subsec:timedependentexample}

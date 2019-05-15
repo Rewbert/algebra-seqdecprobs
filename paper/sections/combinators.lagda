@@ -102,8 +102,8 @@ _×SDP_ : SDProc → SDProc → SDProc
 \begin{figure}
 \label{images:product}
 \centering
-\includegraphics{images/product.png}
-\caption{Illustration of a product process}
+\includegraphics[scale=0.7]{images/product.png}
+\caption{Illustration of a product of two processes. The process holds components of both states and advances both simultaneously.}
 \end{figure}
 
 %
@@ -144,8 +144,8 @@ singleton = record {
 \begin{figure}
 \label{images:singleton}
 \centering
-\includegraphics{images/singleton.png}
-\caption{Illustration of the singleton process}
+\includegraphics[scale=0.7]{images/singleton.png}
+\caption{Illustration of the singleton process. The subscript ₀ here is meant to indicate that the state remains the same when the process advances.}
 \end{figure}
 
 %
@@ -210,14 +210,14 @@ SDP S₁ C₁ sf₁ ⊎SDP SDP S₂ C₂ sf₂
   \centering
   % include first image
   \includegraphics[width=.8\linewidth]{images/coproduct-inj1.png}
-  \caption{Left injection} % write better captions
+  \caption{Left injection.} % write better captions
   \label{images:coproduct-inj1}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
   \centering
   % include second image
   \includegraphics[width=.8\linewidth]{images/coproduct-inj2.png}
-  \caption{Right injection}
+  \caption{Right injection.}
   \label{images:coproduct-inj2}
 \end{subfigure}
 \label{images:coproduct}
@@ -319,8 +319,8 @@ _⊎SDP+_  :  (p₁ : SDProc) → (p₂ : SDProc)
 \begin{figure}
 \label{images:yieldcoproduct}
 \centering
-\includegraphics{images/yieldcoproduct.png}
-\caption{Illustration of a coproduct process}
+\includegraphics[scale=0.7]{images/yieldcoproduct.png}
+\caption{Illustration of the yielding coproduct process. It is capable of switching between the two processes.}
 \end{figure}
 
 %
@@ -405,8 +405,8 @@ SDP S₁ C₁ sf₁ ⇄SDP SDP S₂ C₂ sf₂
 \begin{figure}
 \label{images:interleave}
 \centering
-\includegraphics{images/interleave.png}
-\caption{Illustration of a coproduct process}
+\includegraphics[scale=0.7]{images/interleave.png}
+\caption{Illustration of two interleaved process. We want to emphasise that the state holds components of both prior states, but chooses to advance only one.}
 \end{figure}
 
 %
@@ -420,8 +420,8 @@ If we combine three processes using this combinator the resulting system would b
 \begin{figure}
 \label{images:badinterleave}
 \centering
-\includegraphics{images/badinterleave.png}
-\caption{Illustration of a coproduct process}
+\includegraphics[scale=0.7]{images/badinterleave.png}
+\caption{If we interleave two processes, and then interleave the resulting process with a third we get a situation like this. They are not properly interleaved.}
 \end{figure}
 
 %
@@ -431,8 +431,8 @@ If we instead consider an implementation where the input to the combinator is a 
 \begin{figure}
 \label{images:wantedinterleave}
 \centering
-\includegraphics{images/wantedinterleave.png}
-\caption{Illustration of a coproduct process}
+\includegraphics[scale=0.7]{images/wantedinterleave.png}
+\caption{This is the interleaved behaviour we would want for three processes.}
 \end{figure}
 
 %

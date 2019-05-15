@@ -30,18 +30,20 @@ record DynamicSystem : Set1 where
 To make further type signatures more convenient it is handy to define helper functions which extract the different components of the record.
 %
 \begin{code}
-# : DynamicSystem -> Set
-# system = DynamicSystem.State system
+#st : DynamicSystem -> Set
+#st = DynamicSystem.State
 \end{code}
 %if false
 \begin{code}
-getstep : (x : DynamicSystem) → (# x → # x)
-getstep = DynamicSystem.step
+#sf : (x : DynamicSystem) → (#st x → #st x)
+#sf = DynamicSystem.step
 \end{code}
 %endif
 
 %
 In the following sections these helper functions are assumed to exist without being explicitly mentioned in this text.
+%
+They will be named |#st| for extracting state, |#c| for control (see section \ref{subsec:seqdecproc} and |#sf| for the step function.
 %
 Computing a sequence of states should come naturally to the functional programmer.
 %
@@ -49,12 +51,12 @@ We define a recursive function that at each step computes the next state.
 %
 
 \begin{code}
-trajectory :   (sys : DynamicSystem) ->  # sys  ->
-               (n : ℕ) -> Vec (# sys) n
+trajectory :   (sys : DynamicSystem) ->  #st sys  ->
+               (n : ℕ) -> Vec (#st sys) n
 trajectory sys x0 zero     = []
 trajectory sys x0 (suc n)  = x0 ∷ trajectory sys x1 n
-  where  x1  :  # sys
-         x1  =  getstep sys x0
+  where  x1  :  #st sys
+         x1  =  #sf sys x0
 \end{code}
 
 \cite{ionescu2009vulnerability}

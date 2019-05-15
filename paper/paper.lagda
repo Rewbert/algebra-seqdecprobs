@@ -113,7 +113,6 @@
 % }
 % \email{first1.last1@inst1.edu}          %% \email is recommended
 
-
 % \institute{University of Gothenburg,
 %              \email{guskrooro@@student.gu.se}
 %       \and Chalmers University of Technology,

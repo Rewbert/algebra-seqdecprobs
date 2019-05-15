@@ -69,8 +69,8 @@ The step functions is swiftly implemented, pattern matching on the states and co
 %
 \begin{code}
 oned-step  :  (x : oned-state) -> oned-control x -> oned-state
-oned-step  zero ZS      = 0
-oned-step  zero ZR      = 1
+oned-step  zero ZS      = zero
+oned-step  zero ZR      = suc zero
 oned-step  (suc n)  SL  = n
 oned-step  (suc n)  SS  = suc n
 oned-step  (suc n)  SR  = suc (suc n)
@@ -123,12 +123,10 @@ We can now evaluate the system using this sequence, starting from different poin
 We can use |≡| and |refl| to assert that the system behaves as intended.
 %
 \begin{code}
-test1 : trajectory system sequence 0
-  ≡ 0 ∷ 0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ []
+test1 : trajectory system sequence 0 ≡ 0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ 2 ∷ []
 test1 = refl
 
-test2 : trajectory system sequence 5
-  ≡ 5 ∷ 4 ∷ 3 ∷ 4 ∷ 4 ∷ 5 ∷ []
+test2 : trajectory system sequence 5 ≡ 4 ∷ 3 ∷ 4 ∷ 4 ∷ 5 ∷ 5 ∷ []
 test2 = refl
 \end{code}
 

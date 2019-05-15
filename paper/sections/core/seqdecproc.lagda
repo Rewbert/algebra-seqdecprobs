@@ -50,8 +50,7 @@ Which control is actually used to transition from one state to the next  is spec
 %
 \begin{code}
 Policy : SDProc -> Set
-Policy (SDP State Control _)
-  = (x : State) -> Control x
+Policy (SDP S C _) = (x : S) -> C x
 \end{code}
 %
 To compute |n| transitions we need a sequence of |n| policies.
@@ -68,7 +67,7 @@ trajectory :  {n : ℕ}
           ->  (p : SDProc) -> PolicySeq p n -> #st p
           ->  Vec (#st p) (suc n)
 trajectory sys []        x0  = x0  ∷ []
-trajectory sys (p ∷ ps)  x0  = x0 ∷ trajectory sys ps x1
+trajectory sys (p ∷ ps)  x0  = x1 ∷ trajectory sys ps x1
   where  x1  :  #st sys
          x1  =  (#sf sys) x0 (p x0)
 \end{code}

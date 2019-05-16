@@ -25,7 +25,6 @@ If the circumstances changed and we now need to model how something moves in a t
 We seek a combinator \emph{|_×SDP_| : SDProc → SDProc → SDProc} such that
 > p² = p ×SDP p
 
-\TODO{Give types for |×SDP|, |embed| and perhaps |×SDPT| and |+SDP|}
 %
 A slightly more interesting example is a process |p' : SDProcT| that is similar to |p|, but it is time dependent.
 %
@@ -68,6 +67,7 @@ Finally we redefine the combinators to work with these new processes.
 %
 It turns out that this is not entirely straightforward, and we discuss why this is the case.
 %
+Lastly we present combinators for policy sequences.
 %
-% om vi har med policy combinators, nämn dem här i suppose.
+This is the final piece that lets us create and run processes without writing any new code, but only by reusing code for existing processes.
 %

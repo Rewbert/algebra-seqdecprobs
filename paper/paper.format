@@ -55,7 +55,7 @@
 %format _⊎SDP_ = "\unopun{⊎_{\!\Varid{SDP}}}"
 %format ⊎SDP   =         "⊎_{\!\Varid{SDP}}"
 
-%format _⊎C+_   = "\unopun{" ⊎C+ "}"
+%format _⊎C+_   = "\unopun{⊎_{\!\Varid{C}}^m}"
 %format ⊎C+     =         "⊎_{\!\Varid{C}}^m"
 %format _⊎sf+_  = "\unopun{⊎_{\!\Varid{sf}}^m}"
 %format ⊎sf+    =         "⊎_{\!\Varid{sf}}^m"
@@ -82,6 +82,15 @@
 
 %format _×P_   = "\unopun{" ×P "}"
 %format ×P     =         "\mathop{×_{\!\Varid{P}}}"
+
+%format _⊎P_   = "\unopun{" ⊎P "}"
+%format ⊎P     =         "\mathop{⊎_{\!\Varid{P}}}"
+
+%format _⊎P+_   = "\unopun{" ⊎P "}"
+%format ⊎P+     =         "\mathop{⊎_{\!\Varid{P+}}}"
+
+%format _⊎P+_   = "\unopun{⊎_{\!\Varid{P}}^m}"
+%format ⊎P+     =         "⊎_{\!\Varid{P}}^m"
 
 %format _:comb:_ = "\unopun{" :comb: "}"
 %format :comb:   = "\mathop{{:}" comb "{:}}"

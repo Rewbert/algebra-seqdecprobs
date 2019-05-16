@@ -80,11 +80,12 @@ If it is |suc zero|, we reuse the other policy.
 %
 \begin{code}
 _⇄P_  :  {p₁ p₂ : SDProc}
-      →  Policy p₁ → Policy p₂ → Policy (p₁ ⇄SDP p₂)
+      →  Policy p₁ → Policy p₂
+      →  Policy (p₁ ⇄SDP p₂)
 p₁ ⇄P p₂ =
-  λ { (zero , state)      → p₁ (proj₁ state);
-      (suc zero , state)  → p₂ (proj₂ state);
-      (suc (suc ()) , _)}
+  λ {  (zero , state)      → p₁ (proj₁ state);
+       (suc zero , state)  → p₂ (proj₂ state);
+       (suc (suc ()) , _)}
 \end{code}
 
 %
@@ -100,16 +101,29 @@ Then the defining equation of the function is a |zipWith|, applying the policy c
 combineSeq  :  {p₁ p₂ : SDProc} {n : ℕ}
                {_:comb:_ : SDProc → SDProc → SDProc}
             →  (Policy p₁ → Policy p₂ → Policy (p₁ :comb: p₂))
-            →  PolicySeq p₁ n → PolicySeq p₂ n → PolicySeq (p₁ :comb: p₂) n
+            →  PolicySeq p₁ n → PolicySeq p₂ n
+            →  PolicySeq (p₁ :comb: p₂) n
 combineSeq = zipWith
-
-⊎↦× : (p₁ p₂ : SDProc) → Policy (p₁ ⊎SDP p₂) → Policy p₁ × Policy p₂
-⊎↦× _ _ policy = (λ s₁ → policy (inj₁ s₁)) , λ s₂ → policy (inj₂ s₂)
-
-×↦⊎ : (p₁ p₂ : SDProc) → Policy p₁ × Policy p₂ → Policy (p₁ ⊎SDP p₂)
-×↦⊎ _ _ (p₁ , p₂) = λ { (inj₁ s₁) → p₁ s₁ ; (inj₂ s₂) → p₂ s₂}
-
 \end{code}
-TODO
-∀⊎↦× : {p₁ p₂ : SDProc} → (p : Policy (p₁ ⊎SDP p₂)) → ×↦⊎ p₁ p₂ (⊎↦× p₁ p₂ p) ≡  p
-∀⊎↦× {x} {y} p = {!!}
+%
+With these combinators in place we observe that a policy for a coproduct process is a product of policies for the individual processes.
+%
+We show the translation as Agda functions.
+%
+\begin{code}
+⊎↦×  :  {p₁ p₂ : SDProc} → Policy (p₁ ⊎SDP p₂)
+     →  Policy p₁ × Policy p₂
+⊎↦× policy = (  λ s₁ → policy (inj₁ s₁)) ,
+                λ s₂ → policy (inj₂ s₂)
+
+×↦⊎  :  {p₁ p₂ : SDProc} → Policy p₁ × Policy p₂
+     →  Policy (p₁ ⊎SDP p₂)
+×↦⊎ (p₁ , p₂) = λ {  (inj₁ s₁) → p₁ s₁ ;
+                     (inj₂ s₂) → p₂ s₂}
+\end{code}
+
+% I am not sure how to show this? Is it possible if there are yellow markers?
+\begin{code}
+∀⊎↦× : {p₁ p₂ : SDProc} → (p : Policy (p₁ ⊎SDP p₂)) → (state : #st (p₁ ⊎SDP p₂)) → ×↦⊎ (⊎↦× p) state ≡  p state
+∀⊎↦× {x} {y} p state = {!!}
+\end{code}

@@ -21,31 +21,19 @@ The answer, unsurprisingly, is yes.
 \begin{code}
 twod-system = oned-system ×SDP oned-system
 \end{code}
+
 %
-In section \ref{sec:policycombinators} we will introduce combinators for policy sequences, but here we will not use them.
-%TODO: why not use them? I was not sure if we were going to keep that section in. All the yellow-ness had me hesitating.
-%\TODO{Find out if the section on policy combinators will be kept, and if so change the text to indicate that we are using a combinator defined later. Otherwise perhaps define this one combinator, as it is now, and use it for the example?}
-We create a policy sequence for the twod-system by applying the previous policies componentwise to an inhabitant of the new product state.
+In section \ref{sec:policycombinators} we introduce combinators for policy sequences.
 %
-% \TODO{rewrite this part}
-\TODO{Perhaps show the "yellow" code + some workds about problems.}B
+Here we use the product combinator to produce a policy sequence that is compatible with the new process.
+%
+% \TODO{Make sure to discuss that these combinators are yellow in the policy combinator section.}
 \begin{code}
 twodsequence :  PolicySeq twod-system 5
-twodsequence =  pseq ×Ps pseq
-twodsequence =  zipWith  (λ { p1 p2 (s1 , s2) → (p1 s1 , p2 s2) })
-                         pseq  pseq
+twodsequence =  combineSeq _×P_ pseq pseq
 \end{code}
 %if False
-\begin{code}
-P : (S : Set) -> (S -> Set) -> Set
-P S C = (x : S) -> C x
-_×P'_  :  {S₁ S₂ : Set} -> {S₁ S₂ : Set} -> {C₁ : Pred S₁} -> {C₂ : Pred S₂}
-      →  P S₁ C₁ → P S₂ C₂ → P (S₁ × S₂) (C₁ ×C C₂)
-(p₁ ×P' p₂) (fst , snd) = (p₁ fst , p₂ snd)
-twodsequence' : PolicySeq twod-system 5
-twodsequence' =  zipWith (_×P'_) pseq pseq
-\end{code}
-%Some hidden argument problem: probably because |Policy system| does not evaluate which make it unclear to Agda at which types the ploci product is used..
+% The yellow stuff works, but maybe we can mention in the report that agda does not solve every metavariable. Maybe someone will know why.
 %endif
 %
 And now we can evaluate this new process like we did with the oned system.

@@ -44,10 +44,9 @@ Combining two controls becomes the task of combining two |Pred'|, and produce a 
 The result is a predicate that given a time and a state, applies the prior predicates to the time and the state componentwise.
 %
 \begin{code}
-_×C_ :  {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂
-   →    Pred' (S₁ ×S S₂)
-(s₁ ×C s₂) time state
-  = s₁ time (proj₁ state) × s₂ time (proj₂ state)
+_×C_  :   {S₁ S₂ : Pred ℕ}
+      →     Pred' S₁ → Pred' S₂   →  Pred' (S₁ ×S S₂)
+(C₁ ×C C₂) time (s₁ , s₂) = C₁ time s₁ × C₂ time s₂
 \end{code}
 %
 Again we capture the type of the step function in a type |Step|.
@@ -190,15 +189,9 @@ s₁ ⇄S s₂ = λ t → s₁ (half t + rem t) × s₂ (half t)
 
 \begin{code}
 _⇄C_ : {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂ → Pred' (S₁ ⇄S S₂)
-C₁ ⇄C C₂ = λ time → λ {  s₁×s₂  → C₁ (half time + rem time)  (proj₁ s₁×s₂) ;
-                            s₁×s₂  → C₂ (half time)             (proj₂ s₁×s₂)}
-
--- Do we mean something like this for the control? The control above will never
--- suit the second component.
-_⇄CC_ : {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂ → Pred' (S₁ ⇄S S₂)
-(C₁ ⇄CC C₂) time (s₁ , s₂) with rem time | inspect rem time
-(C₁ ⇄CC C₂) time (s₁ , s₂) | zero     | p  = C₁ (half time + zero) s₁
-(C₁ ⇄CC C₂) time (s₁ , s₂) | suc rem  | p  = C₂ (half time) s₂
+(C₁ ⇄C C₂) time (s₁ , s₂) with rem time | inspect rem time
+(C₁ ⇄C C₂) time (s₁ , s₂) | zero     | p  = C₁ (half time + zero) s₁
+(C₁ ⇄C C₂) time (s₁ , s₂) | suc rem  | p  = C₂ (half time) s₂
 \end{code}
 %
 When we try to combine the two step functions we run into some trouble.
@@ -213,7 +206,7 @@ Given that the state space at time |suc t| might not be the same as at time |t|,
 %
 \begin{code}
 _⇄sf_ :  {S₁ S₂ : Pred ℕ} → {C₁ : Pred' S₁} → {C₂ : Pred' S₂}
-      →  Step S₁ C₁ → Step S₂ C₂ → Step (S₁ ⇄S S₂) (C₁ ⇄CC C₂)
+      →  Step S₁ C₁ → Step S₂ C₂ → Step (S₁ ⇄S S₂) (C₁ ⇄C C₂)
 (sf₁ ⇄sf sf₂) time (s₁ , s₂) c with rem time | inspect rem time
 (sf₁ ⇄sf sf₂) time (s₁ , s₂) c | zero | p = {!!} , {!s₂!}
 (sf₁ ⇄sf sf₂) time (s₁ , s₂) c | one  | p = {!!} , {!!}

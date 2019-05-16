@@ -19,7 +19,7 @@ Looking back at the example of the one dimensional coordinate system, we find ou
 The answer, unsurprisingly, is yes.
 %
 \begin{code}
-twod-system = system ×SDP system
+twod-system = oned-system ×SDP oned-system
 \end{code}
 %
 In section \ref{sec:policycombinators} we will introduce combinators for policy sequences, but here we will not use them.
@@ -27,10 +27,12 @@ In section \ref{sec:policycombinators} we will introduce combinators for policy 
 %\TODO{Find out if the section on policy combinators will be kept, and if so change the text to indicate that we are using a combinator defined later. Otherwise perhaps define this one combinator, as it is now, and use it for the example?}
 We create a policy sequence for the twod-system by applying the previous policies componentwise to an inhabitant of the new product state.
 %
+\TODO{Perhaps show the "yellow" code + some workds about problems.}B
 \begin{code}
 twodsequence :  PolicySeq twod-system 5
+twodsequence =  pseq ×Ps pseq
 twodsequence =  zipWith  (λ { p1 p2 (s1 , s2) → (p1 s1 , p2 s2) })
-                         sequence  sequence
+                         pseq  pseq
 \end{code}
 %if False
 \begin{code}
@@ -40,7 +42,7 @@ _×P'_  :  {S₁ S₂ : Set} -> {S₁ S₂ : Set} -> {C₁ : Pred S₁} -> {C₂
       →  P S₁ C₁ → P S₂ C₂ → P (S₁ × S₂) (C₁ ×C C₂)
 (p₁ ×P' p₂) (fst , snd) = (p₁ fst , p₂ snd)
 twodsequence' : PolicySeq twod-system 5
-twodsequence' =  zipWith (_×P'_) sequence sequence
+twodsequence' =  zipWith (_×P'_) pseq pseq
 \end{code}
 %Some hidden argument problem: probably because |Policy system| does not evaluate which make it unclear to Agda at which types the ploci product is used..
 %endif

@@ -29,10 +29,9 @@ record SDProblem : Set1 where
 \end{code}
 
 %
-Policies for sequential decision |problems| are identical to those for sequential decision |processes|.
+The types for policies and policy sequences for sequential decision |problems| are identical to those for sequential decision |processes|.
 %
-Consequently, policy sequences do neither them differ in their definition.
-%
+%if False
 The only difference in their definition is that they must depend on a |SeqDecProb| and not a |SeqDecProc| in order to satisfy the typechecker, when used with sequential decision problems.
 %
 \begin{code}
@@ -42,7 +41,7 @@ Policy (SDProb S C _ _)  =  (x : S) -> C x
 PolicySeq : SDProblem -> ℕ -> Set
 PolicySeq sys n = Vec (Policy sys) n
 \end{code}
-
+%endif
 %
 Now we have the proper definitions in place in order to explore how instances of such records can be combined, and what properties the resulting system would have.
 %

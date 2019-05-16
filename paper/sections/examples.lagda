@@ -79,8 +79,8 @@ oned-step  (suc n)  SR  = suc (suc n)
 Finally, a sequential decision process can be defined.
 %
 \begin{code}
-system  :  SDProc
-system  =  SDP oned-state oned-control oned-step
+oned-system  :  SDProc
+oned-system  =  SDP oned-state oned-control oned-step
 \end{code}
 %
 If we wish to run this system and see an example of a trajectory, we need to define some policies.
@@ -94,7 +94,7 @@ We name it so since there is no way to move left if the state is zero.
 If this is the case, the policy will return a control that does nothing.
 %
 \begin{code}
-tryleft : Policy system
+tryleft : Policy oned-system
 tryleft zero     = ZS
 tryleft (suc s)  = SL
 \end{code}
@@ -102,11 +102,11 @@ tryleft (suc s)  = SL
 The policies for stay and right are easy, as there are no corner cases.
 %
 \begin{code}
-stay : Policy system
+stay : Policy oned-system
 stay zero     = ZS
 stay (suc s)  = SS
 
-right : Policy system
+right : Policy oned-system
 right zero     = ZR
 right (suc s)  = SR
 \end{code}
@@ -114,8 +114,8 @@ right (suc s)  = SR
 A policy sequence is now just a vector of policies.
 %
 \begin{code}
-sequence : Vec (Policy system) 5
-sequence = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
+pseq : PolicySeq oned-system 5 -- Vec (Policy oned-system) 5
+pseq = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
 \end{code}
 %
 We can now evaluate the system using this sequence, starting from different points.
@@ -123,10 +123,10 @@ We can now evaluate the system using this sequence, starting from different poin
 We can use |≡| and |refl| to assert that the system behaves as intended.
 %
 \begin{code}
-test1 : trajectory system sequence 0 ≡ 0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ 2 ∷ []
+test1 : trajectory oned-system pseq 0 ≡ 0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ 2 ∷ []
 test1 = refl
 
-test2 : trajectory system sequence 5 ≡ 4 ∷ 3 ∷ 4 ∷ 4 ∷ 5 ∷ 5 ∷ []
+test2 : trajectory oned-system pseq 5 ≡ 4 ∷ 3 ∷ 4 ∷ 4 ∷ 5 ∷ 5 ∷ []
 test2 = refl
 \end{code}
 
@@ -154,9 +154,9 @@ distance (suc n) (suc m) = distance n m
 large-number : ℕ
 large-number = 10000
 
-oned-reward :  oned-state
-           ->  (x : oned-state) -> oned-control x -> oned-state
-           ->  ℕ
+oned-reward  :   oned-state
+             ->  (x : oned-state) -> oned-control x -> oned-state
+             ->  ℕ
 oned-reward target x0 y x1
   = large-number  ∸ (distance target x1)
 \end{code}

@@ -25,6 +25,7 @@ If the circumstances changed and we now need to model how something moves in a t
 We seek a combinator |_×SDP_| such that
 > p² = p ×SDP p
 
+\TODO{Give types for |×SDP|, |embed| and perhaps |×SDPT| and |+SDP|}
 %
 A slightly more interesting example is a process |p'| that is similar to |p|, but it is time dependent.
 %
@@ -35,19 +36,16 @@ If we want to turn this into a process that can also move freely in a second dim
 %
 
 %
-As a last example consider the case where we want a process that moves in a three dimensional coordinate system
-> p³ = p² ×SDP p
-or in
-> p²'
+As a last example consider the case where we want a process that moves in a three dimensional coordinate system |p³ = p² ×SDP p| or in |p²'|.
 %
 This could perhaps model something like choosing a map in a game.
 %
 Then we would want a process |_⊎SDP_| such that
-> p²'⊎p³ = p²' ⊎SDP (embed p₃)
+> game = p²' ⊎SDP (embed p₃)
 %
 
 %
-These combinators and more make up parts of an |Algebra of Sequential Decision Processes|.
+These combinators and more make up parts of an \emph{Algebra of Sequential Decision Processes}.
 %
 Parts of this algebra is investigated in this pearl.
 %

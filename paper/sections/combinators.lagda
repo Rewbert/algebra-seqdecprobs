@@ -76,7 +76,7 @@ The function is given two terms |S₁| and |S₂|.
 %
 Two predicates |C₁ : Pred S₁| and |C₂ : Pred S₂|, and lastly two functions |Step S₁ C₁| and |Step S₂ C₂|.
 %
-From this input we must define a function that given an element of the product of the terms |S₁ × S₂| and the product of the predicates |C₁ ×C C₂"| produces a new term.
+From this input we must define a function that given an element of the product of the terms |S₁ × S₂| and the product of the predicates |C₁ ×C C₂| produces a new term.
 %
 The result is a product of terms that are computed by componentwise calling the prior step functions.
 %
@@ -291,10 +291,9 @@ We need one relation from one term to the other, as well as an opposite relation
 %
 If the predicate of the step function is ever Nothing, we will use the relation to map the value of the current term to a value of the other term.
 %
-\TODO{Kanske en 3-ställig operator _<|_|>_ eller liknande? Om trassligt, låt bli, eller använd syntax directive för att kunna lägga <->-argumentet före alla Step}
+\TODO{Use this compact telescope format also in a few other places}
 \begin{code}
-⊎sf+  :  {S₁ S₂ : Set}
-      →  {C₁ : Pred S₁} → {C₂ : Pred S₂}
+⊎sf+  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
       →  (S₁ ⇄ S₂)
       →  Step S₁ C₁ → Step S₂ C₂
       →  Step (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)

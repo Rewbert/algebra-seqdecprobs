@@ -12,7 +12,7 @@
 %
 %----------------------------------------------------------------------------
 
-%let submit = True
+%let submit = False
 \documentclass[sigplan,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
 
 %% Conference information
@@ -99,7 +99,6 @@
 
 %Note: double "@" in email to please lhs2tex
 
-%TODO:
 % \orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
 % \affiliation{
 %   \position{Position1}
@@ -118,17 +117,16 @@
 %       \and Chalmers University of Technology,
 %              \email{patrik.jansson@@chalmers.se}%, Computer Science and Engineering, SE-412 96 Göteborg, Sweden
 % }
-\maketitle
 
 %-------------------------------------------------------------------------------
 
-\TODO{abstract does not show up}
 \begin{abstract}
-  \TODO{The abstract should briefly summarize the contents of the paper in 150--250 words.}
   \input{abstract.txt}
 
 \keywords{Functional Programming \and Domain Specific Languages.}
 \end{abstract}
+\maketitle
+\TODO{Fill in affiliations}
 
 %\setcounter{tocdepth}{2}
 %\tableofcontents

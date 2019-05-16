@@ -22,31 +22,36 @@ Assume that we have a process |p : SDProc| that models something moving through 
 %
 If the circumstances changed and we now need to model how something moves in a two dimensional coordinate system, it would be convenient if we could reuse the one dimensional system and get the desired system for free.
 %
-We seek a combinator |_×SDP_| such that
+We seek a combinator \emph{|_×SDP_| : SDProc → SDProc → SDProc} such that
 > p² = p ×SDP p
 
 \TODO{Give types for |×SDP|, |embed| and perhaps |×SDPT| and |+SDP|}
 %
-A slightly more interesting example is a process |p'| that is similar to |p|, but it is time dependent.
+A slightly more interesting example is a process |p' : SDProcT| that is similar to |p|, but it is time dependent.
 %
 This time dependent process captures the notion that not all states are available at all times, meaning it is restricted in the moves it can take.
 %
-If we want to turn this into a process that can also move freely in a second dimension, we want to be able to reuse both |p'| and |p| and do something like
+If we want to turn this into a process that can also move freely in a second dimension, we want to be able to reuse both |p'| and |p|.
+%
+We want a combinator \emph{|_×SDP_| : SDProcT → SDProcT → SDProcT}.
+%
+|p| is however a process of type |SDProc|, so we need to embed it as a time dependent process using some \emph{embed : SDProc → SDProcT}.
 > p²' = p' ×SDP (embed p)
 %
 
 %
-As a last example consider the case where we want a process that moves in a three dimensional coordinate system |p³ = p² ×SDP p| or in |p²'|.
+As a last example consider the case where we want a process that moves in a three dimensional coordinate system \emph{p³ = p² ×SDP p} or in |p²'|.
 %
 This could perhaps model something like choosing a map in a game.
 %
-Then we would want a process |_⊎SDP_| such that
+Then we would want a process \emph{|_⊎SDP_| : SDProcT → SDProcT → SDProcT} such that
 > game = p²' ⊎SDP (embed p₃)
 %
 
 %
 These combinators and more make up parts of an \emph{Algebra of Sequential Decision Processes}.
 %
+% \TODO{If this is indeed a pearl, we need to be clearer about this, and consistent.}
 Parts of this algebra is investigated in this pearl.
 %
 

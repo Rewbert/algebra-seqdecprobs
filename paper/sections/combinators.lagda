@@ -52,8 +52,8 @@ Given two terms and two predicates, one on each term, we compute the predicate o
 The inhabitants of this product predicate are pairs of the inhabitants of the prior predicates.
 %
 \begin{code}
-_×C_ :   {S₁ S₂ : Set}
-     ->  Pred S₁ -> Pred S₂ -> Pred (S₁ × S₂)
+_×C_  :   {S₁ S₂ : Set}
+      ->  Pred S₁ -> Pred S₂ -> Pred (S₁ × S₂)
 (C₁ ×C C₂) (s₁ , s₂) = C₁ s₁ × C₂ s₂
 \end{code}
 %
@@ -82,7 +82,7 @@ The result is a product of terms that are computed by componentwise calling the 
 %
 \begin{code}
 _×sf_  :   {S₁ S₂ : Set}
-       ->  {C₁ : Pred S₁} -> {C₂ : Pred S₂}
+       ->  {C₁ : Pred S₁} {C₂ : Pred S₂}
        ->  Step S₁ C₁ -> Step S₂ C₂
        ->  Step (S₁ × S₂) (C₁ ×C C₂)
 (sf₁ ×sf sf₂) (s₁ , s₂) (c₁ , c₂) = (sf₁ s₁ c₁ , sf₂ s₂ c₂)
@@ -172,8 +172,8 @@ The control, here considered a predicate, is a predicate on the sum of the terms
 The inhabitants of this sum predicate is the sum of the inhabitants of the prior predicates.
 %
 \begin{code}
-_⊎C_ :  {S₁ S₂ : Set}
-     →  Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
+_⊎C_  :  {S₁ S₂ : Set}
+      →  Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
 (C₁ ⊎C C₂) (inj₁ s₁)  = C₁ s₁
 (C₁ ⊎C C₂) (inj₂ s₂)  = C₂ s₂
 \end{code}
@@ -279,8 +279,8 @@ However, instead of the new predicate being defined as either of the two prior o
 The idea is that if the selected inhabitant from this predicate is Nothing, the process would like to yield in favour of the other process.
 %
 \begin{code}
-_⊎C+_ :  {S₁ S₂ : Set}
-      →  Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
+_⊎C+_  :  {S₁ S₂ : Set}
+       →  Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
 (C₁ ⊎C+ C₂) (inj₁ s₁) = Maybe (C₁ s₁)
 (C₁ ⊎C+ C₂) (inj₂ s₂) = Maybe (C₂ s₂)
 \end{code}
@@ -375,8 +375,8 @@ Agda require us to include a case for when the first component has any other val
 one : Fin 2
 one = suc zero
 
-_⇄C_ :  {S₁ S₂ : Set}
-     →  Pred S₁ → Pred S₂ → Pred (S₁ ⇄S S₂)
+_⇄C_  :  {S₁ S₂ : Set}
+      →  Pred S₁ → Pred S₂ → Pred (S₁ ⇄S S₂)
 (C₁ ⇄C C₂) (zero , s₁ , s₂)      = C₁ s₁
 (C₁ ⇄C C₂) (one , s₁ , s₂)  = C₂ s₂
 \end{code}

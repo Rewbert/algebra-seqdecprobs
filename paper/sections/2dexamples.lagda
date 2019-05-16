@@ -27,6 +27,7 @@ In section \ref{sec:policycombinators} we will introduce combinators for policy 
 %\TODO{Find out if the section on policy combinators will be kept, and if so change the text to indicate that we are using a combinator defined later. Otherwise perhaps define this one combinator, as it is now, and use it for the example?}
 We create a policy sequence for the twod-system by applying the previous policies componentwise to an inhabitant of the new product state.
 %
+% \TODO{rewrite this part}
 \TODO{Perhaps show the "yellow" code + some workds about problems.}B
 \begin{code}
 twodsequence :  PolicySeq twod-system 5

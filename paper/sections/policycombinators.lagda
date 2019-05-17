@@ -26,20 +26,22 @@ First, let's consider how to combine individual policies, before we move on to p
 %
 
 %
-Given policies for two individual processes, creating a policy for the product process is straightforward.
-%
-Given a state, the policy must return a control.
-%
-The control space for a product process is the product of the two separate control spaces.
+We redefine a policy to be a predicate on a state and a control.
 %
 \begin{code}
-_×P_  :   {p₁ p₂ : SDProc}
-      →   Policy p₁ → Policy p₂ → Policy (p₁ ×SDP p₂)
-(p₁ ×P p₂) (fst , snd) = (p₁ fst , p₂ snd)
+P : (S : Set) → (C : S → Set) → Set
+P S C = (s : S) → C s
 \end{code}
-%TODO perhaps generalise the type to
-%   {S₁ S₂ : Set} -> {S₁ S₂ : Set} -> {C₁ : Pred S₁} -> {C₂ : Pred S₂}
-%   →  P S₁ C₁ → P S₂ C₂ → P (S₁ × S₂) (C₁ ×C C₂)
+%
+A policy for a product process is the product of the two individual policies.
+%
+\begin{code}
+_×P_  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
+      →  P S₁ C₁ → P S₂ C₂
+      →  P (S₁ × S₂) (C₁ ×C C₂)
+(p₁ ×P p₂) (s₁ , s₂) = p₁ s₁ , p₂ s₂
+\end{code}
+%
 A policy for the sum of two processes is defined by pattern matching on the state.
 %
 If the pattern matches on the left injection, we can reuse the previous policy defined on that state.
@@ -47,28 +49,26 @@ If the pattern matches on the left injection, we can reuse the previous policy d
 Similarly, if the pattern matches on the right injection we can reuse the given policy for the other process.
 %
 \begin{code}
-_⊎P_ :  {p₁ p₂ : SDProc} →
-        Policy p₁ → Policy p₂ → Policy (p₁ ⊎SDP p₂)
-p₁ ⊎P p₂ =   λ {  (inj₁  s₁) →  p₁  s₁;
-                  (inj₂  s₂) →  p₂  s₂}
+_⊎P_  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
+      →  P S₁ C₁ → P S₂ C₂
+      →  P (S₁ ⊎ S₂) (C₁ ⊎C C₂)
+(p₁ ⊎P p₂) (inj₁ s₁) = p₁ s₁
+(p₁ ⊎P p₂) (inj₂ s₂) = p₂ s₂
 \end{code}
 %
 Reusing policies for the yielding coproduct is similar to that of the regular coproduct.
 %
-One difference is that in order to satisfy the Agda typechecker we need to also supply the swap functions that is used when combining the processes.
-%
-The only other difference is that when reusing the old policy the result must be wrapped in the |just| constructor.
+The only difference is that when reusing the old policy the result must be wrapped in the |just| constructor.
 %
 \begin{code}
-_⊎P+_  :  {p₁ p₂ : SDProc}
-       →  Policy p₁ → Policy p₂
-       →  (rel :  #st p₁  ⇄  #st p₂)
-       →  Policy ((p₁ ⊎SDP+ p₂) rel)
-(p₁ ⊎P+ p₂) rel =  λ {  (inj₁ s₁)  → just (p₁ s₁);
-                        (inj₂ s₂)  → just (p₂ s₂)}
+_⊎P+_  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
+       →  P S₁ C₁ → P S₂ C₂
+       →  P (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
+(p₁ ⊎P+ p₂) (inj₁ s₁) = just (p₁ s₁)
+(p₁ ⊎P+ p₂) (inj₂ s₂) = just (p₂ s₂)
 \end{code}
 %
-To combine two policies for the interleaved system we recall that the control space changes when the index changes.
+To combine two policies for an interleaved process we recall that the control space changes when the index changes.
 %
 When the index is 0 the control space is that of the first process, and when it is 1 the control space is that of the second process.
 %
@@ -76,26 +76,24 @@ Similarly, in order to reuse the two previous policies we must then pattern matc
 %
 If the index is |zero|, we reuse the first policy.
 %
-If it is |suc zero|, we reuse the other policy.
+If it is |suc zero|, we reuse the second policy.
 %
 \begin{code}
-_⇄P_  :  {p₁ p₂ : SDProc}
-      →  Policy p₁ → Policy p₂
-      →  Policy (p₁ ⇄SDP p₂)
-p₁ ⇄P p₂ =
-  λ {  (zero , state)      → p₁ (proj₁ state);
-       (suc zero , state)  → p₂ (proj₂ state);
-       (suc (suc ()) , _)}
+_⇄P_  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
+      →  P S₁ C₁ → P S₂ C₂
+      →  P (S₁ ⇄S S₂) (C₁ ⇄C C₂)
+(p₁ ⇄P p₂) (zero , s₁ , _)      = p₁ s₁
+(p₁ ⇄P p₂) (suc zero , _ , s₂)  = p₂ s₂
+(p₁ ⇄P p₂) (suc (suc ()) , _)
 \end{code}
 
+\TODO{Maybe this should not be here? Just using zipWith and a combinator works fine, while using this gives yellow coloring.}
 %
 Now we come to the interesting bit.
 %
 If we have two policy sequences of equal length, we can compute a new policy sequence of the same length for a combination of the two previous processes.
 %
-We leverage Agdas typesystem to define a function that is as precise as possible, allowing us to pass the combinator as a parameter.
-%
-Then the defining equation of the function is a |zipWith|, applying the policy combinator pairwise on the two sequences.
+The defining equation for the combinator is |zipWith|, which applies the policy combinator pairwise on the two sequences.
 %
 \begin{code}
 combineSeq  :  {p₁ p₂ : SDProc} {n : ℕ}
@@ -124,6 +122,6 @@ We show the translation as Agda functions.
 
 % I am not sure how to show this? Is it possible if there are yellow markers?
 \begin{code}
-∀⊎↦× : {p₁ p₂ : SDProc} → (p : Policy (p₁ ⊎SDP p₂)) → (state : #st (p₁ ⊎SDP p₂)) → ×↦⊎ (⊎↦× p) state ≡  p state
-∀⊎↦× {x} {y} p state = {!!}
+--∀⊎↦× : {p₁ p₂ : SDProc} → (p : Policy (p₁ ⊎SDP p₂)) → (state : #st (p₁ ⊎SDP p₂)) → ×↦⊎ (⊎↦× p) state ≡  p state
+--∀⊎↦× {x} {y} p state = {!!}
 \end{code}

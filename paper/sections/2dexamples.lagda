@@ -30,7 +30,7 @@ Here we use the product combinator to produce a policy sequence that is compatib
 % \TODO{Make sure to discuss that these combinators are yellow in the policy combinator section.}
 \begin{code}
 twodsequence :  PolicySeq twod-system 5
-twodsequence =  combineSeq _×P_ pseq pseq
+twodsequence =  zipWith _×P_ pseq pseq --combineSeq _×P_ pseq pseq -- The type information for combineSeq makes agda not see everything properly
 \end{code}
 %if False
 % The yellow stuff works, but maybe we can mention in the report that agda does not solve every metavariable. Maybe someone will know why.

@@ -443,8 +443,8 @@ A system like this would let all the processes advance equally much.
 ⇄m : Set → ℕ → Set
 ⇄m S n = Fin n × Vec S n
 
-⇄C : {S : Set} → {n : ℕ} → Vec (Pred S) n → Pred (⇄m S n)
-⇄C c (index , states) = (lookup index c) (lookup index states)
+⇄CC : {S : Set} → {n : ℕ} → Vec (Pred S) n → Pred (⇄m S n)
+⇄CC c (index , states) = (lookup index c) (lookup index states)
 
 --⇄sf : {S : Set} → {n : ℕ} → {C : Vec (Pred S) n} → {!!} → Step (⇄m S n) (⇄C C)
 --⇄sf v = {!!}

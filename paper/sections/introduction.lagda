@@ -12,15 +12,15 @@ Botta et al \cite{brady2013idris} have formalised the notion of such problems in
 %
 Using dependent types to bridge the gap between description and implementation of complex systems, for purposes of simulation, has been shown to be a good choice \cite{ionescujansson2013DTPinSciComp}.
 %
-They have illustrated how to use their formulation to model e.g climate impact research \cite{esd-2017-86}.
+They have illustrated how to use their formulation to model e.g climate impact research \cite{esd-2017-86}, a very relevant problem today.
 %
-Modeling the climate or climate impact is not a trivial task, as such entities are very dynamic processes with many unknown variables.
+% Modeling climate impact is challenging because it involves very dynamic processes with many unknown variables.
+%TODO perhaps remove or rewrite the above sentence
+Evidence based policy making (when dealing with climate change or other global systems challenges), requires computing policies which are verified to be correct.
+%**TODO "requires" is perhaps a bit too strong
+There are several possible notions of ``correctness'' for a policy: computing feasible system trajectories through a state space, avoiding ``bad'' states, or even computing optimal policys.
 %
-In todays time it is however a very relevant problem.
-%
-Decision makers need to be given advice when dealing with climate change, advice which needs to be verified to be feasible \TODO{Skriv om dessa meningar.}.
-%
-The concepts of feasibility and avoidability have been formalised and presented by \cite{botta_jansson_ionescu_2017_avoidability}.
+The concepts of feasibility and avoidability have been formalised and presented in \citet{botta_jansson_ionescu_2017_avoidability}.
 %
 
 %
@@ -34,25 +34,22 @@ We seek a combinator \emph{|_×SDP_| : SDProc → SDProc → SDProc} such that
 > p² = p ×SDP p
 
 %
-A slightly more interesting example is a process |p' : SDProcT| that is similar to |p|, but it is time dependent.
+A slightly more interesting example is a process |p' : SDProcT| that is similar to |p|, but time dependent.
 %
 This time dependent process captures the notion that not all states are available at all times, meaning it is restricted in the moves it can take.
 %
 If we want to turn this into a process that can also move freely in a second dimension, we want to be able to reuse both |p'| and |p|.
 %
-We want a combinator \emph{|_×SDP_| : SDProcT → SDProcT → SDProcT}.
-%
-|p| is however a process of type |SDProc|, so we need to embed it as a time dependent process using some \emph{embed : SDProc → SDProcT}.
-> p²' = p' ×SDP (embed p)
-%
+We can use a combinator \emph{|_×SDPT_| : SDProcT → SDProcT → SDProcT} together with the trivial embedding of a time independent, as a time dependent, process  \emph{embed : SDProc → SDProcT}.
 
-%
+> p²' = p' ×SDPT (embed p)
+
 As a last example consider the case where we want a process that moves in a three dimensional coordinate system \emph{p³ = p² ×SDP p} or in |p²'|.
 %
 This could perhaps model something like choosing a map in a game.
 %
-Then we would want a process \emph{|_⊎SDP_| : SDProcT → SDProcT → SDProcT} such that
-> game = p²' ⊎SDP (embed p₃)
+Then we would want a process \emph{|_⊎SDPT_| : SDProcT → SDProcT → SDProcT} such that
+> game = p²' ⊎SDPT (embed p₃)
 %
 
 %

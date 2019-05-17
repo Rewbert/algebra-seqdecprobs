@@ -46,6 +46,9 @@
 %format _×SDP_ = "\unopun{" ×SDP "}"
 %format ×SDP   =         "×_{\!\Varid{SDP}}"
 
+%format _×SDPT_ = "\unopun{" ×SDPT "}"
+%format ×SDPT   =         "×_{\!\Varid{SDP}}^{\!\Varid{T}}"
+
 %format _⊎S_   = "\unopun{⊎_{\!\Varid{S}}}"
 %format ⊎S     =         "⊎_{\!\Varid{S}}"
 %format _⊎C_   = "\unopun{⊎_{\!\Varid{C}}}"

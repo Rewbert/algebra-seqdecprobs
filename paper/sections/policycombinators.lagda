@@ -103,7 +103,7 @@ combineSeq  :  {p₁ p₂ : SDProc} {n : ℕ}
             →  PolicySeq (p₁ :comb: p₂) n
 combineSeq = zipWith
 \end{code}
-%
+% \TODO{Should we keep these? Seems like we need more if we should keep these.}
 With these combinators in place we observe that a policy for a coproduct process is a product of policies for the individual processes.
 %
 We show the translation as Agda functions.

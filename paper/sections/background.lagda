@@ -13,11 +13,9 @@ Since our contributions are defined in Agda \cite{norell_practical_2007}, we nee
 
 
 %
-\TODO{Perhaps update seqdecprobdeptypes to point to noe of the more recent papers?}
+\TODO{Perhaps update seqdecprobdeptypes to point to one of the more recent papers?}
 
-\TODO{Also cite the climate impact application paper for motivation \cite{esd-2017-86}}
-
-\TODO{Cite \cite{ionescujansson2013DTPinSciComp,ionescujansson:LIPIcs:2013:3899,botta_jansson_ionescu_2017_avoidability}}
+\TODO{Cite \cite{ionescujansson:LIPIcs:2013:3899}}
 
 % Zoom in from broad perspective on the field towards more specific questions in the current paper.
 % cite Bellman

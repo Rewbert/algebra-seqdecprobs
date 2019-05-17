@@ -10,13 +10,21 @@ Sequential decision processes and problems are a well established concept in dec
 %
 Botta et al \cite{brady2013idris} have formalised the notion of such problems in Idris, a general purpose programming language with dependent types.
 %
+Using dependent types to bridge the gap between description and implementation of complex systems, for purposes of simulation, has been shown to be a good choice \cite{ionescujansson2013DTPinSciComp}.
+%
 They have illustrated how to use their formulation to model e.g climate impact research \cite{esd-2017-86}.
 %
 Modeling the climate or climate impact is not a trivial task, as such entities are very dynamic processes with many unknown variables.
 %
+In todays time it is however a very relevant problem.
+%
+Decision makers need to be given advice when dealing with climate change, advice which needs to be verified to be feasible \TODO{Skriv om dessa meningar.}.
+%
+The concepts of feasibility and avoidability have been formalised and presented by \cite{botta_jansson_ionescu_2017_avoidability}.
+%
 
 %
-We give a more simple example of a sequential decision process.
+Given the complexity of climate impact research, we give a simpler example of a sequential decision process.
 %
 Assume that we have a process |p : SDProc| that models something moving through a one dimensional coordinate system.
 %

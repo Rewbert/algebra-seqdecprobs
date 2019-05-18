@@ -5,7 +5,8 @@
 % identify a gap (some ref. to earlier work and explain why something is lacking)
 % fill the gap! - check (i think)
 % contributions of this paper / outline - check
-%
+% Zoom in from broad perspective on the field towards more specific questions in the current paper.
+% TODO cite Bellman
 Sequential decision processes and problems are a well established concept in decision theory.
 %
 Botta et al \cite{brady2013idris} have formalised the notion of such problems in Idris, a general purpose programming language with dependent types.
@@ -22,13 +23,11 @@ There are several possible notions of ``correctness'' for a policy: computing fe
 %
 The concepts of feasibility and avoidability have been formalised and presented in \citet{botta_jansson_ionescu_2017_avoidability}.
 %
+Although motivated by the complexity of modelling in climate impact research, we focus on simpler examples of sequential decision processes and how to combine them.
 
-%
-Given the complexity of climate impact research, we give a simpler example of a sequential decision process.
-%
 Assume that we have a process |p : SDProc| that models something moving through a 1-D coordinate system with a natural number as the state and |+1|, |0|, and |-1| as actions.
 %
-If the circumstances change and we now need to model how something moves in a 2-D coordinate system, it would be convenient if we could reuse the one dimensional system and get the desired system for free.
+If the circumstances change and we need to model how something moves in a 2-D coordinate system, it would be convenient if we could reuse the one dimensional system and get the desired system for free.
 %
 We seek a combinator |_×SDP_ : SDProc → SDProc → SDProc| such that
 %
@@ -38,7 +37,7 @@ We seek a combinator |_×SDP_ : SDProc → SDProc → SDProc| such that
 
 Both |p| and |p²| use a fixed state space, but we can also handle time dependent processes.
 %
-Assume |p' : SDProcT| is similar to |p| but time dependent: not all states are available at all times, meaning it |p'| is more restricted in the moves it can take.
+Assume |p' : SDProcT| is similar to |p| but time dependent: not all states are available at all times, meaning |p'| is more restricted in the moves it can make.
 %
 If we want to turn this into a process that can also move around in a second dimension, we want to be able to reuse both |p'| and |p|.
 %
@@ -50,7 +49,7 @@ We can use a combinator |_×SDPT_ : SDProcT → SDProcT → SDProcT| together wi
 
 As a last example consider the case where we want a process that moves either in a 3-D coordinate system |p³ = p² ×SDP p| or in |p²'|.
 %
-This could think of this as choosing a map in a game.
+You could think of this as choosing a map in a game.
 %
 Then we would want a combinator |_⊎SDPT_ : SDProcT → SDProcT → SDProcT| such that
 %
@@ -59,7 +58,7 @@ Then we would want a combinator |_⊎SDPT_ : SDProcT → SDProcT → SDProcT| su
 \end{code}
 
 %
-These combinators and more make up an \emph{Algebra of Sequential Decision Processes}.
+These combinators, and more, make up an \emph{Algebra of Sequential Decision Processes}.
 %
 % \TODO{If this is indeed a pearl, we need to be clearer about this, and consistent.}
 Parts of this algebra is investigated in this pearl.

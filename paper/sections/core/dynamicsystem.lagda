@@ -58,7 +58,3 @@ trajectory sys x0 (suc n)  = x0 ∷ trajectory sys x1 n
   where  x1  :  #st sys
          x1  =  #sf sys x0
 \end{code}
-
-\cite{ionescu2009vulnerability}
-\TODO{cite cezar ionescu thesis}
-% reference to Cezars thesis (ask patrik how to reference it properly)  https://refubium.fu-berlin.de/handle/fub188/5259

@@ -24,7 +24,7 @@ open import Data.Vec
 %endif
 
 %
-Now that we've seen a few examples and are getting comfortable with the notion of sequential decision problems, it is suitable to more forward and see what we can do with such problems.
+Now that we've seen an example of a sequential decision process and are getting comfortable with the concept, it is suitable to move forward and see what we can do with processes.
 %
 This section will explore different ways sequential decision processes can be combined in order to produce more sophisticated processes.
 %
@@ -34,13 +34,14 @@ This section will explore different ways sequential decision processes can be co
 %
 A first example of how two problems can be combined is to create their product.
 %
-Naturally the new state is just the product of the two prior states.
+The new state is just the product of the two prior states.
 %
 The other components, the |Control| and the |step| must be described and combined more thoroughly.
 %
 The control is a predicate on the state, and if we consider the control as such we can consider the state to be a term.
 %
 \TODO{Use consistent constructor/variable names/cases also elsewhere}
+\TODO{The way i talk about terms seems iffy, i wrote this with predicate logic in mind but i think i went wrong somewhere. Maybe just talking in terms of state is enough.}
 %
 \begin{code}
 Pred : Set → Set₁
@@ -78,7 +79,7 @@ Two predicates |C₁ : Pred S₁| and |C₂ : Pred S₂|, and lastly two functio
 %
 From this input we must define a function that given an element of the product of the terms |S₁ × S₂| and the product of the predicates |C₁ ×C C₂| produces a new term.
 %
-The result is a product of terms that are computed by componentwise calling the prior step functions.
+The result is a product of terms that are computed by componentwise applying the prior step functions.
 %
 \begin{code}
 _×sf_  :   {S₁ S₂ : Set}
@@ -91,7 +92,7 @@ _×sf_  :   {S₁ S₂ : Set}
 %
 Seeing how we know how to combine all components on the bases of a product, computing the product of two sequential decision processes becomes easy.
 %
-We componentwise apply the product operations.
+We apply the product combinators componentwise.
 %
 \begin{code}
 _×SDP_ : SDProc → SDProc → SDProc
@@ -103,13 +104,13 @@ _×SDP_ : SDProc → SDProc → SDProc
 \label{images:product}
 \centering
 \includegraphics[scale=0.7]{images/product.png}
-\caption{Illustration of a product of two processes. The process holds components of both states and advances both simultaneously.}
+\caption{Illustration of a product of two processes. The process holds components of both states and applies the step function to both components simultaneously.}
 \end{figure}
 
 %
 An observation to be made here is that in order for the new system to exist in any state, it has to hold components of both prior states.
 %
-This has the consequence that if one of the prior processes do not have any states, the new problem may never exist in a state either.
+This has the consequence that if the state space of one of the prior processes is empty, the new problems state space is also empty.
 %
 Similarly, if one of the components reaches a point where there are no available controls, and thus can not progress, the other component will not be able to progress either.
 %
@@ -119,13 +120,14 @@ Similarly, if one of the components reaches a point where there are no available
 %
 Functional programmers will often find they are in need of a unit, e.g when using |reduce| or other frequently appearing constructs from the functional paradigm.
 %
+\TODO{We don't give units for all combinators, make this clearer in the text. We should not promise to give units for all combinators.}
 Naturally, it would be convenient to define units for the combinators described in this script.
 %
 
 %
 What we are after is a process that will not carry any extra information, or rather one that can not alter the information it carries.
 %
-Recall that in order for the product of two states to exist in any state, both state spaces has to be inhabited.
+Recall that in order for the state space of the product process to not be empty, both state spaces of the separate processes has to be non-empty.
 %
 In order to call the step function the control space also has to be inhabited.
 %
@@ -145,15 +147,13 @@ singleton = record {
 \label{images:singleton}
 \centering
 \includegraphics[scale=0.7]{images/singleton.png}
-\caption{Illustration of the singleton process. The subscript ₀ here is meant to indicate that the state remains the same when the process advances.}
+\caption{Illustration of the singleton process. The subscript ₀ is meant to indicate that the state remains the same when the process advances.}
 \end{figure}
 
 %
 Taking the product of any process and the singleton process would produce a process where the only change of information during each step is that of the process which is not the singleton.
 %
-Of course, the other process could itself be the singleton process also.
-%
-In this case the only change in each step is exactly that of the singleton process, which is no change at all.
+Of course, the other process could itself be the singleton process also, in which case the only change in each step is exactly that of the singleton process, which is no change at all.
 %
 
 %-----------------------------------------------------------------------
@@ -161,13 +161,13 @@ In this case the only change in each step is exactly that of the singleton proce
 \label{subsec:coproductseqdecproc}
 
 %
-Seeing how we could define the product of two processes, we are left wondering if we can compute the sum of two processes.
+Seeing how we defined a product combinator of two processes, we are interested in also defining a sum combinator for processes.
 %
 The approach is similar to that of the product case.
 %
 
 %
-The control, here considered a predicate, is a predicate on the sum of the terms.
+The control, is a predicate on the sum of the terms.
 %
 The inhabitants of this sum predicate is the sum of the inhabitants of the prior predicates.
 %

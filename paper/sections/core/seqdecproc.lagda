@@ -17,7 +17,9 @@ We can extend the idea of a |dynamic system| to that of a |sequential decision p
 %
 A control captures the idea of an action that is possible at a given state.
 %
-Because not all actions are possible in all states the control is depending on what state the process is currently in.
+Since the available actions depend on what state the process is in, the control is a predicate on the state.
+%
+To exemplify this we consider the case of an airplane that can only execute the action of lifting the landing gears if the plane is airborne.
 %
 \begin{code}
 record SDProc : Set1 where
@@ -46,14 +48,16 @@ infix 30 #st_
 %
 Many different controls could be available at each step.
 %
-Which control is actually used to transition from one state to the next  is specified by a |Policy|.
+To decide which control should be selected at a state we resort to the notion of a Policy.
 %
 \begin{code}
 Policy : SDProc -> Set
 Policy (SDP S C _) = (x : S) -> C x
 \end{code}
 %
-To compute |n| transitions we need a sequence of |n| policies.
+If we want to make |n| transitions we need a sequence of |n| policies.
+%
+We define a sequence of policies in terms of a vector.
 %
 \begin{code}
 PolicySeq : SDProc -> ℕ -> Set

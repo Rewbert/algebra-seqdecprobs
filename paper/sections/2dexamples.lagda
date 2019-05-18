@@ -14,7 +14,7 @@ open import Relation.Binary.PropositionalEquality
 \end{code}
 %endif
 %
-Looking back at the example of the one dimensional coordinate system, we find ourselves wondering if we would now get a process of a two dimensional coordinate system almost for free.
+Looking back at the example of the one dimensional coordinate system, we find ourselves wondering if we would now get a process of a two dimensional coordinate system seemingly for free.
 %
 The answer, unsurprisingly, is yes.
 %
@@ -30,13 +30,14 @@ Here we use the product combinator to produce a policy sequence that is compatib
 % \TODO{Make sure to discuss that these combinators are yellow in the policy combinator section.}
 \begin{code}
 twodsequence :  PolicySeq twod-system 5
-twodsequence =  zipWith _×P_ pseq pseq --combineSeq _×P_ pseq pseq -- The type information for combineSeq makes agda not see everything properly
+twodsequence =  zipWith _×P_ pseq pseq
 \end{code}
 %if False
+--combineSeq _×P_ pseq pseq -- The type information for combineSeq makes agda not see everything properly
 % The yellow stuff works, but maybe we can mention in the report that agda does not solve every metavariable. Maybe someone will know why.
 %endif
 %
-And now we can evaluate this new process like we did with the oned system.
+And now we can evaluate this new process like we did with the one dimensional system.
 %
 \begin{code}
 runtwod = trajectory twod-system twodsequence

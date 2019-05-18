@@ -43,7 +43,9 @@ To make further type signatures more convenient it is handy to define helper fun
 %
 In the following sections these helper functions are assumed to exist without being explicitly mentioned in this text.
 %
-They will be named |#st| for extracting state, |#c| for control (see section \ref{subsec:seqdecproc} and |#sf| for the step function.
+They will be named |#st| for extracting state, |#c| for control (see section \ref{subsec:seqdecproc}) and |#sf| for the step function.
+%
+
 %
 Computing a sequence of states should come naturally to the functional programmer.
 %
@@ -54,7 +56,8 @@ We define a recursive function that at each step computes the next state.
 trajectory :   (sys : DynamicSystem) ->  #st sys  ->
                (n : ℕ) -> Vec (#st sys) n
 trajectory sys x0 zero     = []
-trajectory sys x0 (suc n)  = x0 ∷ trajectory sys x1 n
+trajectory sys x0 (suc n)  = x1 ∷ trajectory sys x1 n
   where  x1  :  #st sys
          x1  =  #sf sys x0
 \end{code}
+% changes traj function to be consistent with rest of article.

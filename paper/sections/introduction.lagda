@@ -16,7 +16,7 @@ Using dependent types to bridge the gap between description and implementation o
 They have illustrated how to use their formulation to model e.g.\ climate impact research \cite{esd-2017-86}, a very relevant problem today.
 %
 % Modeling climate impact is challenging because it involves very dynamic processes with many unknown variables.
-%TODO perhaps remove or rewrite the above sentence
+%TODO perhaps remove or rewrite the above sentence. Yes perhaps, i tried to introduce a sentence that motivated why combining simpler problems is desired. Might be clear enough without it.
 Evidence based policy making (when dealing with climate change or other global systems challenges), requires computing policies which are verified to be correct.
 %**TODO "requires" is perhaps a bit too strong
 There are several possible notions of ``correctness'' for a policy: computing feasible system trajectories through a state space, avoiding ``bad'' states, or even computing optimal policys.
@@ -71,13 +71,13 @@ In this pearl we implement a small library of combinators for sequential decisio
 %
 We give examples where we use the combinators mentioned above and discuss the properties of the resulting processes.
 %
-In section \ref{sec:timedependentcase} we define time dependent processes and follow up by reimplementing the example of the time dependent case, where we can now be more fine grained about what we are modeling.
+In section \ref{sec:timedependentcase} we define time dependent processes and follow up by reimplementing a previous example, where we can now be more fine grained about what we are modeling.
 %
-Finally we redefine the combinators to work with these new processes.
+Finally we redefine the combinators in terms of these new processes.
 %
 It turns out that this is not entirely straightforward, and we discuss why this is the case.
 %
-Lastly we present combinators for policy sequences.
+Lastly we present combinators for policies and policy sequences.
 %
 This is the final piece that lets us create and run processes without writing any new code, but only by reusing code for existing processes.
 %

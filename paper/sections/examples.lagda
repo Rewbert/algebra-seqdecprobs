@@ -17,7 +17,7 @@ open import Relation.Binary.PropositionalEquality
 
 %endif
 
-As an example, let us consider a sequential decision process where the state space is a one dimensional coordinate system represented by natural numbers.
+Let us consider a sequential decision process where the state space is a one dimensional coordinate system represented by natural numbers.
 %
 
 \begin{code}
@@ -26,9 +26,11 @@ oned-state  =  ℕ
 \end{code}
 
 %
-There are generally three available controls, taking a step to the left, staying or taking a step to the right.
+Generally there are three available controls.
 %
-Here taking a step to the left means subtracting one from the coordinate, stay means not changing it at all and taking a step to the right means incrementing it by one.
+Taking a step to the left, staying, or taking a step to the right.
+%
+Here, taking a step to the left means subtracting one from the coordinate, staying means not changing it at all and taking a step to the right means incrementing by one.
 %
 
 \begin{code}
@@ -65,7 +67,7 @@ oned-control (suc n)  = SAction
 \end{code}
 
 %
-The step functions is swiftly implemented, pattern matching on the states and controls.
+The step function is defined by pattern matching on the state and the control, followed by executing the updates as described above.
 %
 \begin{code}
 oned-step  :  (x : oned-state) -> oned-control x -> oned-state
@@ -76,7 +78,7 @@ oned-step  (suc n)  SS  = suc n
 oned-step  (suc n)  SR  = suc (suc n)
 \end{code}
 %
-Finally, a sequential decision process can be defined.
+With these three components we can instantiate a sequential decision process.
 %
 \begin{code}
 oned-system  :  SDProc
@@ -91,7 +93,7 @@ The first policy we define we will name |tryleft|.
 %
 We name it so since there is no way to move left if the state is zero.
 %
-If this is the case, the policy will return a control that does nothing.
+If this is the case, the policy will return a control that does nothing to the state.
 %
 \begin{code}
 tryleft : Policy oned-system
@@ -121,6 +123,7 @@ pseq = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
 We can now evaluate the system using this sequence, starting from different points.
 %
 We can use |≡| and |refl| to assert that the system behaves as intended.
+\TODO{Maybe explain briefly what refl and ≡ are?}
 %
 \begin{code}
 test1 : trajectory oned-system pseq 0 ≡ 0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ 2 ∷ []
@@ -133,7 +136,7 @@ test2 = refl
 %
 Now, how to turn a process into a problem?
 %
-We need to introduce some sort of goal, described by a |reward| function.
+We need to introduce a notion of a goal, described by a |reward| function.
 %
 For our example we define the reward function to be parameterised over a target coordinate.
 %
@@ -149,7 +152,7 @@ distance (suc n) zero    = 1 + distance n zero
 distance (suc n) (suc m) = distance n m
 \end{code}
 %endif
-
+\TODO{Maybe we need to mention the large number? Or is it obvious?}
 \begin{code}
 large-number : ℕ
 large-number = 10000

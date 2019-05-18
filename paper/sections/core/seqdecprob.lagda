@@ -13,7 +13,7 @@ open import Data.Vec
 %endif
 
 %
-Again we can extend the notion of a |sequential decision process| to that of a |sequential decision problem| by introducing the idea of a reward obtained by transitioning from one state to another.
+Again we can extend the notion of a \emph{sequential decision process} to that of a \emph{sequential decision problem} by introducing a notion of reward obtained by transitioning from one state to the next.
 %
 The problem becomes that of finding the sequence of policies which results in the highest sum of rewards.
 %
@@ -44,4 +44,6 @@ PolicySeq sys n = Vec (Policy sys) n
 %endif
 %
 Now we have the proper definitions in place in order to explore how instances of such records can be combined, and what properties the resulting system would have.
+%
+But before we get to the combinators we give an example of a sequential decision process.
 %

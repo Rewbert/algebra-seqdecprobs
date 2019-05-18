@@ -12,7 +12,7 @@ Botta et al \cite{brady2013idris} have formalised the notion of such problems in
 %
 Using dependent types to bridge the gap between description and implementation of complex systems, for purposes of simulation, has been shown to be a good choice \cite{ionescujansson2013DTPinSciComp}.
 %
-They have illustrated how to use their formulation to model e.g climate impact research \cite{esd-2017-86}, a very relevant problem today.
+They have illustrated how to use their formulation to model e.g.\ climate impact research \cite{esd-2017-86}, a very relevant problem today.
 %
 % Modeling climate impact is challenging because it involves very dynamic processes with many unknown variables.
 %TODO perhaps remove or rewrite the above sentence
@@ -26,34 +26,40 @@ The concepts of feasibility and avoidability have been formalised and presented 
 %
 Given the complexity of climate impact research, we give a simpler example of a sequential decision process.
 %
-Assume that we have a process |p : SDProc| that models something moving through a one dimensional coordinate system.
+Assume that we have a process |p : SDProc| that models something moving through a 1-D coordinate system with a natural number as the state and |+1|, |0|, and |-1| as actions.
 %
-If the circumstances changed and we now need to model how something moves in a two dimensional coordinate system, it would be convenient if we could reuse the one dimensional system and get the desired system for free.
+If the circumstances change and we now need to model how something moves in a 2-D coordinate system, it would be convenient if we could reuse the one dimensional system and get the desired system for free.
 %
-We seek a combinator \emph{|_×SDP_| : SDProc → SDProc → SDProc} such that
-> p² = p ×SDP p
+We seek a combinator |_×SDP_ : SDProc → SDProc → SDProc| such that
+%
+\begin{code}
+  p² = p ×SDP p
+\end{code}
+
+Both |p| and |p²| use a fixed state space, but we can also handle time dependent processes.
+%
+Assume |p' : SDProcT| is similar to |p| but time dependent: not all states are available at all times, meaning it |p'| is more restricted in the moves it can take.
+%
+If we want to turn this into a process that can also move around in a second dimension, we want to be able to reuse both |p'| and |p|.
+%
+We can use a combinator |_×SDPT_ : SDProcT → SDProcT → SDProcT| together with the trivial embedding of a time independent, as a time dependent, process |embed : SDProc → SDProcT|.
+%
+\begin{code}
+  p²' = p' ×SDPT (embed p)
+\end{code}
+
+As a last example consider the case where we want a process that moves either in a 3-D coordinate system |p³ = p² ×SDP p| or in |p²'|.
+%
+This could think of this as choosing a map in a game.
+%
+Then we would want a combinator |_⊎SDPT_ : SDProcT → SDProcT → SDProcT| such that
+%
+\begin{code}
+  game = p²' ⊎SDPT (embed p₃)
+\end{code}
 
 %
-A slightly more interesting example is a process |p' : SDProcT| that is similar to |p|, but time dependent.
-%
-This time dependent process captures the notion that not all states are available at all times, meaning it is restricted in the moves it can take.
-%
-If we want to turn this into a process that can also move freely in a second dimension, we want to be able to reuse both |p'| and |p|.
-%
-We can use a combinator \emph{|_×SDPT_| : SDProcT → SDProcT → SDProcT} together with the trivial embedding of a time independent, as a time dependent, process  \emph{embed : SDProc → SDProcT}.
-
-> p²' = p' ×SDPT (embed p)
-
-As a last example consider the case where we want a process that moves in a three dimensional coordinate system \emph{p³ = p² ×SDP p} or in |p²'|.
-%
-This could perhaps model something like choosing a map in a game.
-%
-Then we would want a process \emph{|_⊎SDPT_| : SDProcT → SDProcT → SDProcT} such that
-> game = p²' ⊎SDPT (embed p₃)
-%
-
-%
-These combinators and more make up parts of an \emph{Algebra of Sequential Decision Processes}.
+These combinators and more make up an \emph{Algebra of Sequential Decision Processes}.
 %
 % \TODO{If this is indeed a pearl, we need to be clearer about this, and consistent.}
 Parts of this algebra is investigated in this pearl.

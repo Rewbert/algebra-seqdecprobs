@@ -195,7 +195,7 @@ _⊎sf_  :   {S₁ S₂ : Set}
 (sf₁ ⊎sf sf₂) (inj₂ s₂) c₂  = inj₂ (sf₂ s₂ c₂)
 \end{code}
 %
-The sum of two problems is now computed by applying the sum operators componentwise.
+The sum of two problems is computed by applying the sum operators componentwise.
 %
 \begin{code}
 _⊎SDP_ : SDProc → SDProc → SDProc
@@ -227,14 +227,14 @@ SDP S₁ C₁ sf₁ ⊎SDP SDP S₂ C₂ sf₂
 %
 In the case of the product process the two prior processes were not entirely independent.
 %
-If one process could not progress the other process was affected in the sense that it too could not process further.
+If one process could not progress the other process was \emph{affected} in the sense that it too could not progress further.
 %
 The sum of two processes keeps the two problems truly independent.
 %
 In fact, the coproduct of two processes will start progressing from some initial state, and depending on which injection is used the other process will never advance.
 
 %
-A process that acts as a unit to the coproduct combinator is the empty process.
+A unit to the coproduct combinator is the empty process.
 %
 The process has no states, no controls and the step function will return its input state.
 %
@@ -259,7 +259,7 @@ There is no way to begin advancing the empty process, and so the only available 
 \label{subsec:yieldingcoproductseqdecproc}
 
 %
-Computing the coproduct of two processes and getting a process that evaluates either of the two, without actually considering the other process, leaves us wondering what this is useful for.
+Computing the coproduct of two processes and getting a process that behaves like either of the two, without actually considering the other process, leaves us wondering what this is useful for.
 %
 It would be more useful if we could jump between the two processes.
 %
@@ -272,11 +272,13 @@ _⇄_ : (S₁ S₂ : Set) → Set
 s₁ ⇄ s₂ = (s₁ -> s₂) × (s₂ -> s₁)
 \end{code}
 %
-Combining the two predicates on the terms look similar to that of the coproduct case, when looking at the type.
+Combining the two predicates on the terms is similar to that of the coproduct case, when looking at the type.
 %
 However, instead of the new predicate being defined as either of the two prior ones, it is now |Maybe| either of the two previous ones.
 %
-The idea is that if the selected inhabitant from this predicate is Nothing, the process would like to yield in favour of the other process.
+The idea is that we extend the control space to have one more inhabitant, the value |nothing|.
+%
+If we select this control, the process should yield in favour of the other process.
 %
 \begin{code}
 _⊎C+_  :  {S₁ S₂ : Set}
@@ -285,13 +287,14 @@ _⊎C+_  :  {S₁ S₂ : Set}
 (C₁ ⊎C+ C₂) (inj₂ s₂) = Maybe (C₂ s₂)
 \end{code}
 %
-In order to combine two step functions we need two additional pieces of information.
+The new step function needs to accomodate for this scenario where the process should yield in favour of the other.
 %
-We need one relation from one term to the other, as well as an opposite relation. % opposite är helt fel old här.
+To implement this the new step function needs to know \emph{how} to yield.
 %
-If the predicate of the step function is ever Nothing, we will use the relation to map the value of the current term to a value of the other term.
+We describe how to yield by supplying an element of type |S₁ ⇄ S₂|.
 %
-\TODO{Use this compact telescope format also in a few other places}
+If the selected control is |nothing| the step function will apply the appropriate component of this element to the current state.
+%
 \begin{code}
 ⊎sf+  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
       →  (S₁ ⇄ S₂)
@@ -301,7 +304,9 @@ If the predicate of the step function is ever Nothing, we will use the relation 
 ⊎sf+ _          sf₁ sf₂  (inj₂ s₂)  (just c)  = inj₂ (sf₂ s₂ c)
 ⊎sf+ (r₁ , _ )  sf₁ sf₂  (inj₁ s₁)  nothing   = inj₂ (r₁ s₁)
 ⊎sf+ (_  , r₂)  sf₁ sf₂  (inj₂ s₂)  nothing   = inj₁ (r₂ s₂)
-
+\end{code}
+Since the other operators were infix, we give a syntax declaration that mimics the same style.
+\begin{code}
 syntax ⊎sf+ r sf₁ sf₂  =  sf₁ ⟨ r ⟩ sf₂
 \end{code}
 %
@@ -325,11 +330,11 @@ _⊎SDP+_  :  (p₁ : SDProc) → (p₂ : SDProc)
 %
 With a combinator such as this one you could describe e.g software.
 %
-As an example, one process could model the normal execution of some software, while the other could model the behaviour of an exception handler.
+As an example, one process could model the normal execution of some software while the other could model the behaviour of an exception handler.
 %
 When the process modeling the software reaches a point where an exception is thrown, the process can yield control to the exception handler.
 %
-When the exception handler process is done, it will reach a state where it can yield in favour of the other process again.
+When the exception handler process is done, it can yield in favour of the other process again.
 %
 
 %
@@ -344,13 +349,16 @@ Further more, we would not be able to give a definition for a function |S₁ -> 
 \subsection{Interleaving processes}
 \label{subsec:interleavingseqdecproc}
 %
-The next combinator is one that interleaves processes, allowing each of the two prior processes to progress one step at a time each.
+The next combinator we introduce is one that interleaves processes.
+%
+The state of such a process holds components of both prior states, but takes turns applying the step function to each of them.
 %
 This behaviour could be similar to that of a game, where two players take turns making their next move.
 %
 However, the users do not know what moves the other player has made, and can therefore not make particularly smart moves.
 %
-In section -insert section with policies- it is shown how computing optimal policies produce controls which do know of the other users move.
+In section \ref{sec:policycombinators} it is shown that writing new policies for a process like this will however produce a policy that knows what move the other 'player' has made.
+%
 
 %
 Given two states, how can we produce a new state which not only captures all inhabitants of the separate states, but also knows which process should be allowed to advance next?
@@ -362,37 +370,38 @@ _⇄S_ : Set → Set → Set
 S₁ ⇄S S₂ = Fin 2 × S₁ × S₂
 \end{code}
 %
-The predicate on this new state, defined in terms of the two previous predicates, is defined as follows.
+The control space for the interleaved process is the sum of the two prior control spaces.
 %
 If the value of the first component is zero, we select the first predicate.
 %
 If the value is one, we select the second predicate.
 %
-Agda require us to include a case for when the first component has any other value also, but quickly realises that this is an unreachable case.
-%
-\TODO{name for suc zero: one}
 \begin{code}
 one : Fin 2
 one = suc zero
 
 _⇄C_  :  {S₁ S₂ : Set}
       →  Pred S₁ → Pred S₂ → Pred (S₁ ⇄S S₂)
-(C₁ ⇄C C₂) (zero , s₁ , s₂)      = C₁ s₁
-(C₁ ⇄C C₂) (one , s₁ , s₂)  = C₂ s₂
+(C₁ ⇄C C₂) (zero , s₁ , s₂)  = C₁ s₁
+(C₁ ⇄C C₂) (one , s₁ , s₂)   = C₂ s₂
 \end{code}
 %
-The step function will inspect this first component and based on what value it has, it is going to invoke one of the prior step functions on the appropriate component.
+Defining a new step function in terms of the two previous ones is done by pattern matching on the state.
 %
-The other component that is not the index is left unchanged, while the index is changed to indicate that the other process is the one to advance next.
+Specifically we are interested in the first component, the index.
+%
+If the index is zero we apply the first step function to the second component of the state, leave the last component unchanged and increment the index by one.
+%
+Similarly if the index is zero we apply the second step function to the last component, leave the second one unchanged and decrement the index by one.
 %
 \begin{code}
 _⇄sf_  :  {S₁ S₂ : Set}
        →  {C₁ : Pred S₁} → {C₂ : Pred S₂}
        →  Step S₁ C₁ → Step S₂ C₂
        →  Step (S₁ ⇄S S₂) (C₁ ⇄C C₂)
-(sf₁ ⇄sf sf₂) (zero , s₁ , s₂)      c  = (suc zero  , sf₁ s₁ c  , s₂        )
-(sf₁ ⇄sf sf₂) (suc zero , s₁ , s₂)  c  = (zero      , s₁        , sf₂ s₂ c  )
-(sf₁ ⇄sf sf₂) (suc (suc ()) , _)
+(sf₁ ⇄sf sf₂) (zero , s₁ , s₂) c  = (one , sf₁ s₁ c , s₂)
+(sf₁ ⇄sf sf₂) (suc zero , s₁ , s₂) c   = (zero , s₁ , sf₂ s₂ c)
+(sf₁ ⇄sf sf₂) (suc (suc ()) , _ , _)
 \end{code}
 Combining two processes to capture this interleaved behaviour is once again simply done by combining the components componentwise.
 \begin{code}
@@ -400,16 +409,19 @@ _⇄SDP_ : SDProc → SDProc → SDProc
 SDP S₁ C₁ sf₁ ⇄SDP SDP S₂ C₂ sf₂
   = SDP (S₁ ⇄S S₂) (C₁ ⇄C C₂) (sf₁ ⇄sf sf₂)
 \end{code}
+%
+The final process behaves as illustrated in figure \ref{images:interleave}.
+%
 
 \begin{figure}
-\label{images:interleave}
 \centering
 \includegraphics[scale=0.7]{images/interleave.png}
 \caption{Illustration of two interleaved process. We want to emphasise that the state holds components of both prior states, but chooses to advance only one.}
+\label{images:interleave}
 \end{figure}
 
 %
-This way of modeling the interleaved problem is not optimal, as combining more than two processes with it will produce undesired behaviour.
+This way of defining the interleaved combinator is not optimal as combining more than two processes with it will produce undesired behaviour.
 %
 If we combine three processes using this combinator the resulting system would be one where one of the processes advance half the time, and the other two only a quarter of the time each.
 %

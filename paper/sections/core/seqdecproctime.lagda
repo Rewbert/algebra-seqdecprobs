@@ -1,9 +1,9 @@
 % -*- latex -*-
-\section{Time dependent case}
+\section{Time dependent processes}
 \label{sec:timedependentcase}
 
 %
-Imagine a process where the state can vary over time.
+Imagine a process where the state space can vary over time.
 %
 If we consider the example with the one dimensional coordinate system, if the process is time dependent it could disallow some states at certain points in time.
 %

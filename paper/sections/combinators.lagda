@@ -430,49 +430,27 @@ We can not give a generic process that when interleaved with another process act
 \TODO{I am quite sure this is right, but may as well discuss it with Patrik.}
 
 %
-The way we defined the interleaved combinator is not optimal as combining more than two processes with it will produce undesired behaviour.
+The way we define the interleaved combinator might not be optimal.
+%
+Combining more than two processes will produce potentially unexpected behaviour.
 %
 If we combine three processes using this combinator the resulting system would be one where one of the processes advance half the time, and the other two only a quarter of the time each.
 %
-
-\TODO{Perhaps code up with i : Fin n times Vec n S or similar (don't bother with different S)}
 
 \begin{figure}
 \label{images:badinterleave}
 \centering
 \includegraphics[scale=0.5]{images/badinterleave2.png}
-\caption{If we interleave two processes, and then interleave the resulting process with a third we get a situation like this. They are not properly interleaved.}
+\caption{If we interleave two processes and then interleave the resulting process with a third we get a situation like this. They are not properly interleaved.}
 \end{figure}
-
-%
-If we instead consider an implementation where the input to the combinator is a vector of processes, we would construct a more clever process with a better indexing behaviour.
-%
 
 \begin{figure}
 \label{images:wantedinterleave}
 \centering
 \includegraphics[scale=0.5]{images/wantedinterleave2.png}
-\caption{This is the interleaved behaviour we would want for three processes.}
+\caption{This is the interleaved behaviour we might expect for three processes.}
 \end{figure}
 
 %
-A system like this would let all the processes advance equally much.
+This does not necessarily mean that the combinator described here is wrong, but rather that there is another combinator we could implement that would have this other behaviour.
 %
-\TODO{If we don't have time to code up this example we should maybe rewrite this piece.}
-\TODO{implement this - A general product type with an indexing function}
-%-----------------------------------------------------------------------
-\begin{code}
-⇄m : Set → ℕ → Set
-⇄m S n = Fin n × Vec S n
-
-⇄CC : {S : Set} → {n : ℕ} → Vec (Pred S) n → Pred (⇄m S n)
-⇄CC c (index , states) = (lookup index c) (lookup index states)
-
-⇄sf : {S : Set} → {n : ℕ} → {C : Pred S} → Vec (Step S C) n → Step (⇄m S n) (⇄CC (replicate C))
-⇄sf {_} {n} sfs (index , state) c = if toℕ index == n
-                                    then {!!}
-                                    else {!!}
-
---⇄SDP' : {n : ℕ} → Vec SDProc n → SDProc
---⇄SDP' {n} v = SDP (⇄m {!!} n) (⇄C {!!}) (⇄sf {!!})
-\end{code}

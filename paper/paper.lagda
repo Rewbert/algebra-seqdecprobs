@@ -159,4 +159,7 @@
 %------------------------------------------------------------------------------
 \bibliography{paper}
 
+\newpage
+%include sections/appendix.lagda
+
 \end{document}

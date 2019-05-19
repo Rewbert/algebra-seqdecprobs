@@ -67,15 +67,17 @@ Parts of this algebra is investigated in this pearl.
 \subsection{Contributions}
 \label{subsec:contributions}
 %
-In this pearl we implement a small library of combinators for sequential decision processes.
+In this text we implement a small library of combinators for sequential decision processes.
 %
 We give examples where we use the combinators mentioned above and discuss the properties of the resulting processes.
 %
-In section \ref{sec:timedependentcase} we define time dependent processes and follow up by reimplementing a previous example, where we can now be more fine grained about what we are modeling.
+In section \ref{sec:timedependentcase} we define time dependent processes and follow up by reimplementing a previously seen example, where we can now be more fine grained about what we are modeling.
 %
-Finally we redefine the combinators in terms of these new processes.
+Then we redefine the previously implemented combinators in terms of these new processes.
 %
-It turns out that this is not entirely straightforward, and we discuss why this is the case.
+As it turns out, this is not entirely straightforward.
+%
+
 %
 Lastly we present combinators for policies and policy sequences.
 %

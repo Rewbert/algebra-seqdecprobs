@@ -101,5 +101,5 @@
 %format _⊎P+_   = "\unopun{⊎_{\!\Varid{P}}^m}"
 %format ⊎P+     =         "⊎_{\!\Varid{P}}^m"
 
-%format _:comb:_ = "\unopun{" :comb: "}"
-%format :comb:   = "\mathop{{:}" comb "{:}}"
+%format _:c:_ = "\unopun{" :c: "}"
+%format :c:   = "\mathop{{:}" c "{:}}"

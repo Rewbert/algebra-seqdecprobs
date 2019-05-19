@@ -166,50 +166,11 @@ To create a yielding coproduct we use the same combinator for the state space, b
 \end{code}
 
 %
-
-%if false
-\begin{code}
--- rem when div with 2
-rem : ℕ → ℕ
-rem 0              = 0
-rem 1              = 1
-rem (suc (suc n))  = rem n
-
-half : ℕ → ℕ
-half n = ⌊ n /2⌋
-\end{code}
-
-  0  ->  1  ->  2  ->  3  ->  4  ->
-(0,0)->(1,0)->(1,1)->(2,1)->(2,2)->...
-
-%endif
-\begin{code}
-_⇄S_ : (S₁ S₂ : Pred ℕ) → Pred ℕ
-s₁ ⇄S s₂ = λ t → s₁ (half t + rem t) × s₂ (half t)
-\end{code}
-
-\begin{code}
-_⇄C_ : {S₁ S₂ : Pred ℕ} → Pred' S₁ → Pred' S₂ → Pred' (S₁ ⇄S S₂)
-(C₁ ⇄C C₂) time (s₁ , s₂) with rem time | inspect rem time
-(C₁ ⇄C C₂) time (s₁ , s₂) | zero     | p  = C₁ (half time + zero) s₁
-(C₁ ⇄C C₂) time (s₁ , s₂) | suc rem  | p  = C₂ (half time) s₂
-\end{code}
+When we try to implement the interleaved combinator for the time dependent case we run into some problems.
 %
-When we try to combine the two step functions we run into some trouble.
+The main problem is that since the step function only advances one of the state components, the other one will be of the wrong type.
 %
-We can not actually do this.
+At time |n| one of the components get advanced to a state in time |suc n|, while the other is not changed at all.
 %
-The way we chose to define the state, such that it contains components of both processes with the intention of only allowing one component to change in each step, is suboptimal.
+This problem is discussed further in the appendix.
 %
-The step function must take the state at time |t| to a state at time |suc t|.
-%
-Given that the state space at time |suc t| might not be the same as at time |t|, we can not just leave the component the way it is.
-%
-\begin{code}
-_⇄sf_ :  {S₁ S₂ : Pred ℕ} → {C₁ : Pred' S₁} → {C₂ : Pred' S₂}
-      →  Step S₁ C₁ → Step S₂ C₂ → Step (S₁ ⇄S S₂) (C₁ ⇄C C₂)
-(sf₁ ⇄sf sf₂) time (s₁ , s₂) c with rem time | inspect rem time
-(sf₁ ⇄sf sf₂) time (s₁ , s₂) c | zero | p = {!!} , {!s₂!}
-(sf₁ ⇄sf sf₂) time (s₁ , s₂) c | one  | p = {!!} , {!!}
-
-\end{code}

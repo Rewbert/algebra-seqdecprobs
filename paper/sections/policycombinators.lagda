@@ -88,23 +88,6 @@ _⇄P_  :  {S₁ S₂ : Set}
 (p₁ ⇄P p₂) (suc (suc ()) , _)
 \end{code}
 
-\TODO{Maybe this should not be here? Just using zipWith and a combinator works fine, while using this gives yellow coloring.}
-%
-Now we come to the interesting bit.
-%
-If we have two policy sequences of equal length, we can compute a new policy sequence of the same length for a combination of the two previous processes.
-%
-The defining equation for the combinator is |zipWith|, which applies the policy combinator pairwise on the two sequences.
-%
-\begin{code}
-combineSeq  :  {p₁ p₂ : SDProc} {n : ℕ}
-               {_:comb:_ : SDProc → SDProc → SDProc}
-            →  (Policy p₁ → Policy p₂ → Policy (p₁ :comb: p₂))
-            →  PolicySeq p₁ n → PolicySeq p₂ n
-            →  PolicySeq (p₁ :comb: p₂) n
-combineSeq = zipWith
-\end{code}
-
 %
 With these policy combinators defined, we make a few observations.
 %

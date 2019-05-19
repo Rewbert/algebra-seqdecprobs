@@ -7,7 +7,7 @@
 % contributions of this paper / outline - check
 % Zoom in from broad perspective on the field towards more specific questions in the current paper.
 % TODO cite Bellman
-Sequential decision processes and problems are a well established concept in decision theory.
+Sequential decision processes and problems are a well established concept in decision theory, with the Bellman equation \cite{Bellman1957} as a popular choice for describing them.
 %
 Botta et al \cite{brady2013idris} have formalised the notion of such problems in Idris, a general purpose programming language with dependent types.
 %

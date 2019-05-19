@@ -41,9 +41,6 @@ The other components, the |Control| and the |step| must be described and combine
 %
 The control is a predicate on the state.
 %
-\TODO{Use consistent constructor/variable names/cases also elsewhere}
-\TODO{The way i talk about terms seems iffy, i wrote this with predicate logic in mind but i think i went wrong somewhere. Maybe just talking in terms of state is enough.}
-%
 \begin{code}
 Pred : Set → Set₁
 Pred S = S → Set

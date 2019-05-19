@@ -157,6 +157,7 @@
 % The reviewers suggested many improvements to the paper.
 
 %------------------------------------------------------------------------------
+\newpage
 \bibliography{paper}
 
 \newpage

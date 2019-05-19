@@ -142,26 +142,6 @@ The natural numbers seemed, and were, a reasonable choice.
 With the time dependent process at our disposal however we notice a source of ineffectiveness.
 %
 
-\TODO{Everything looks too crowded when this image is below the other big image.}
-%if False
-\begin{figure*}
-  \begin{subfigure}[b]{.30\textwidth}
-    \centering
-    \includegraphics[scale=0.75]{images/generalcasefin}
-    \caption{How the state space grows in the general case, where we can either increment, decrement or do nothing.}
-    \label{subfig:generalcasefin}
-  \end{subfigure}
-  \begin{subfigure}[b]{.30\textwidth}
-    \centering
-    \includegraphics[scale=0.75]{images/edgecasefin}
-    \caption{In the edge case the state space grows slower, as we initially can not decrement the state.}
-    \label{subfig:edgecasefin}
-  \end{subfigure}
-\caption{Illustration of the state space of a time dependent process grows where the state are the natural numbers.}
-\label{fig:finex}
-\end{figure*}
-%endif
-
 %
 In the general case we could only be in three different states after one step.
 %

@@ -132,7 +132,7 @@ We can't do this as is since the element |suc x| is of type |Fin (suc n)|, the e
 %
 To get the proper type we need to invoke |inject₁| twice, which is illustrated in figure \ref{images:injectinject}.
 
-\subsection{Time dependent example} % need better section title
+\subsection{Time dependent example}
 \label{subsec:timedependentexample}
 %
 Looking back at the time independent example, we reflect on the choice of state.

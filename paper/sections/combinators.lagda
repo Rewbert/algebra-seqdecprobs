@@ -32,13 +32,13 @@ This section will explore different ways sequential decision processes can be co
 \subsection{Product}
 \label{subsec:productseqdecproc}
 %
-A first example of how two problems can be combined is to create their product.
+As a first combinator let us compute the product of two processes.
 %
 The new state is just the product of the two prior states.
 %
 The other components, the |Control| and the |step| must be described and combined more thoroughly.
 %
-The control is a predicate on the state, and if we consider the control as such we can consider the state to be a term.
+The control is a predicate on the state.
 %
 \TODO{Use consistent constructor/variable names/cases also elsewhere}
 \TODO{The way i talk about terms seems iffy, i wrote this with predicate logic in mind but i think i went wrong somewhere. Maybe just talking in terms of state is enough.}
@@ -48,9 +48,9 @@ Pred : Set → Set₁
 Pred S = S → Set
 \end{code}
 %
-Given two terms and two predicates, one on each term, we compute the predicate on the product of the two terms.
+Given two states and two predicates, one on each state, we can compute the predicate on the product of the two states.
 %
-The inhabitants of this product predicate are pairs of the inhabitants of the prior predicates.
+The inhabitants of this predicate on the product are pairs of the inhabitants of the prior predicates.
 %
 \begin{code}
 _×C_  :   {S₁ S₂ : Set}
@@ -60,11 +60,9 @@ _×C_  :   {S₁ S₂ : Set}
 %
 % insert connor mcbride discussion here i suppose.
 %
-After defining what State and Controls are, terms and predicates, we want to relate to the step function in a similar manner.
+To make type signatures more readable we define a type of step functions.
 %
-From predicate logic we recall that functions are also terms. % they are terms if they are applied to n terms (the predicate is not a term?)
-%
-Given a term and a predicate on that term, the step function produces a new term of the same type.
+A step function is defined in terms of a state and a predicate on that state.
 %
 \begin{code}
 Step : (S : Set) -> Pred S -> Set
@@ -73,13 +71,11 @@ Step S C = (s : S) -> C s -> S
 %
 Next we want to compute the product of two such step functions.
 %
-The function is given two terms |S₁| and |S₂|.
+The function is given two states |S₁| and |S₂|.
 %
 Two predicates |C₁ : Pred S₁| and |C₂ : Pred S₂|, and lastly two functions |Step S₁ C₁| and |Step S₂ C₂|.
 %
-From this input we must define a function that given an element of the product of the terms |S₁ × S₂| and the product of the predicates |C₁ ×C C₂| produces a new term.
-%
-The result is a product of terms that are computed by componentwise applying the prior step functions.
+We can define a new step function by returning the pair computed by applying the individual step functions to the corresponding compontents of the input.
 %
 \begin{code}
 _×sf_  :   {S₁ S₂ : Set}
@@ -90,9 +86,7 @@ _×sf_  :   {S₁ S₂ : Set}
 \end{code}
 
 %
-Seeing how we know how to combine all components on the bases of a product, computing the product of two sequential decision processes becomes easy.
-%
-We apply the product combinators componentwise.
+Seeing how we know how to combine all components on the bases of a product, we can now compute the product of two sequential decision processes.
 %
 \begin{code}
 _×SDP_ : SDProc → SDProc → SDProc
@@ -167,7 +161,7 @@ The approach is similar to that of the product case.
 %
 
 %
-The control, is a predicate on the sum of the terms.
+The control, is a predicate on the sum of the states.
 %
 The inhabitants of this sum predicate is the sum of the inhabitants of the prior predicates.
 %
@@ -180,9 +174,9 @@ _⊎C_  :  {S₁ S₂ : Set}
 %
 Calculating a new step function from two prior step functions is relatively straight forward.
 %
-The first input is the sum of the two terms.
+The first input is the sum of the two states.
 %
-Depending on which term the first argument belongs to, one of the prior step functions is applied to it and the second argument, the predicate on that term.
+Depending on which state the first argument belongs to, one of the prior step functions is applied to it and the second argument, the predicate on that state.
 %
 The result of the application is then injected into the sum type using the same injection as the input.
 %
@@ -202,8 +196,6 @@ _⊎SDP_ : SDProc → SDProc → SDProc
 SDP S₁ C₁ sf₁ ⊎SDP SDP S₂ C₂ sf₂
   = SDP (S₁ ⊎ S₂) (C₁ ⊎C C₂) (sf₁ ⊎sf sf₂)
 \end{code}
-
-% \TODO{Perhaps split into two sub-images with an ``OR'' inbetween as text}
 
 \begin{figure}
 \begin{subfigure}{.5\textwidth}
@@ -265,20 +257,20 @@ It would be more useful if we could jump between the two processes.
 %
 To do this, we first need to define a relation between states.
 %
-We define a relation on two terms, and define it to be a mapping from an inhabitant of one term to an inhabitant of the other.
+We define a relation on two state and define it to be a mapping from an inhabitant of one state to an inhabitant of the other.
 %
 \begin{code}
 _⇄_ : (S₁ S₂ : Set) → Set
 s₁ ⇄ s₂ = (s₁ -> s₂) × (s₂ -> s₁)
 \end{code}
 %
-Combining the two predicates on the terms is similar to that of the coproduct case, when looking at the type.
+Combining the two predicates on the states is similar to that of the coproduct case, when looking at the type.
 %
 However, instead of the new predicate being defined as either of the two prior ones, it is now |Maybe| either of the two previous ones.
 %
 The idea is that we extend the control space to have one more inhabitant, the value |nothing|.
 %
-If we select this control, the process should yield in favour of the other process.
+If we select this control the process should yield in favour of the other process.
 %
 \begin{code}
 _⊎C+_  :  {S₁ S₂ : Set}
@@ -327,6 +319,7 @@ _⊎SDP+_  :  (p₁ : SDProc) → (p₂ : SDProc)
 \caption{Illustration of the yielding coproduct process. It is capable of switching between the two processes.}
 \end{figure}
 
+\TODO{Is giving an example good if we actually don't code up the example?}
 %
 With a combinator such as this one you could describe e.g software.
 %
@@ -361,9 +354,12 @@ In section \ref{sec:policycombinators} it is reasoned that writing new policies 
 %
 
 %
-Given two states, how can we produce a new state which not only captures all inhabitants of the separate states, but also knows which process should be allowed to advance next?
+Similar to the product combinator the new state needs to hold components of both prior states.
 %
-The most natural way seems to be to create a 3-ary product, where one of the components is an index indicating which of the two processes turn it is to advance.
+It should apply the step function to them one at a time, alternating between the two.
+%
+In order to know which components turn it is to advance we extend the product to also hold an index.
+%
 %\TODO{Add format directiove to subscript S, etc. _\text{S}}
 \begin{code}
 _⇄S_ : Set → Set → Set
@@ -403,7 +399,9 @@ _⇄sf_  :  {S₁ S₂ : Set}
 (sf₁ ⇄sf sf₂) (suc zero , s₁ , s₂) c   = (zero , s₁ , sf₂ s₂ c)
 (sf₁ ⇄sf sf₂) (suc (suc ()) , _ , _)
 \end{code}
+%
 Combining two processes to capture this interleaved behaviour is once again simply done by combining the components componentwise.
+%
 \begin{code}
 _⇄SDP_ : SDProc → SDProc → SDProc
 SDP S₁ C₁ sf₁ ⇄SDP SDP S₂ C₂ sf₂
@@ -426,7 +424,7 @@ This way of defining the interleaved combinator is not optimal as combining more
 If we combine three processes using this combinator the resulting system would be one where one of the processes advance half the time, and the other two only a quarter of the time each.
 %
 
-\TODO{Perhaps code up with i : FIn n times Vec n S or similar (don't bother with different S)}
+\TODO{Perhaps code up with i : Fin n times Vec n S or similar (don't bother with different S)}
 
 \begin{figure}
 \label{images:badinterleave}
@@ -449,6 +447,7 @@ If we instead consider an implementation where the input to the combinator is a 
 %
 A system like this would let all the processes advance equally much.
 %
+\TODO{If we don't have time to code up this example we should maybe rewrite this piece.}
 \TODO{implement this - A general product type with an indexing function}
 %-----------------------------------------------------------------------
 \begin{code}

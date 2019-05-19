@@ -11,6 +11,7 @@ open import core.seqdecproc
 open import examples
 
 open import Data.Nat hiding (_^_)
+open import Agda.Builtin.Nat
 open import Data.Bool
 open import Data.Product hiding (swap)
 open import Data.Sum
@@ -457,8 +458,10 @@ A system like this would let all the processes advance equally much.
 ⇄CC : {S : Set} → {n : ℕ} → Vec (Pred S) n → Pred (⇄m S n)
 ⇄CC c (index , states) = (lookup index c) (lookup index states)
 
---⇄sf : {S : Set} → {n : ℕ} → {C : Vec (Pred S) n} → {!!} → Step (⇄m S n) (⇄C C)
---⇄sf v = {!!}
+⇄sf : {S : Set} → {n : ℕ} → {C : Pred S} → Vec (Step S C) n → Step (⇄m S n) (⇄CC (replicate C))
+⇄sf {_} {n} sfs (index , state) c = if toℕ index == n
+                                    then ?
+                                    else {!!}
 
 --⇄SDP' : {n : ℕ} → Vec SDProc n → SDProc
 --⇄SDP' {n} v = SDP (⇄m {!!} n) (⇄C {!!}) (⇄sf {!!})

@@ -431,7 +431,7 @@ If we combine three processes using this combinator the resulting system would b
 \begin{figure}
 \label{images:badinterleave}
 \centering
-\includegraphics[scale=0.7]{images/badinterleave.png}
+\includegraphics[scale=0.5]{images/badinterleave2.png}
 \caption{If we interleave two processes, and then interleave the resulting process with a third we get a situation like this. They are not properly interleaved.}
 \end{figure}
 
@@ -442,7 +442,7 @@ If we instead consider an implementation where the input to the combinator is a 
 \begin{figure}
 \label{images:wantedinterleave}
 \centering
-\includegraphics[scale=0.7]{images/wantedinterleave.png}
+\includegraphics[scale=0.5]{images/wantedinterleave2.png}
 \caption{This is the interleaved behaviour we would want for three processes.}
 \end{figure}
 

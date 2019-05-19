@@ -142,7 +142,26 @@ The natural numbers seemed, and were, a reasonable choice.
 With the time dependent process at our disposal however we notice a source of ineffectiveness.
 %
 
+\TODO{Everything looks too crowded when this image is below the other big image.}
 %if False
+\begin{figure*}
+  \begin{subfigure}[b]{.30\textwidth}
+    \centering
+    \includegraphics[scale=0.75]{images/generalcasefin}
+    \caption{How the state space grows in the general case, where we can either increment, decrement or do nothing.}
+    \label{subfig:generalcasefin}
+  \end{subfigure}
+  \begin{subfigure}[b]{.30\textwidth}
+    \centering
+    \includegraphics[scale=0.75]{images/edgecasefin}
+    \caption{In the edge case the state space grows slower, as we initially can not decrement the state.}
+    \label{subfig:edgecasefin}
+  \end{subfigure}
+\caption{Illustration of the state space of a time dependent process grows where the state are the natural numbers.}
+\label{fig:finex}
+\end{figure*}
+%endif
+
 %
 In the general case we could only be in three different states after one step.
 %
@@ -150,26 +169,27 @@ Either we stayed, went left or we went right.
 %
 After two steps we could be in any of five possible states.
 %
-\TODO{Insert this image, maybe? Split with both the general and the edge case situation.}
+This behaviour is illustrated in figure \ref{fig:generalcasefin}.
+%
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.75]{images/generalcasefin}
+  \caption{How the state space grows in the general case, where we can either increment, decrement or do nothing.}
+  \label{fig:generalcasefin}
+\end{figure}
 %
 This can be generalised to saying that at time |n| the number of possible states are |n + 2|.
 %
-In the edge case where the initial state is zero the number of possible states are |n+1|.
+In figure \ref{fig:edgecasefin} the edge case is illustrated, and we note that the number of possible states after n steps are |n+1|.
+%
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.75]{images/edgecasefin}
+  \caption{In the edge case the state space grows slower, as we initially can not decrement the state.}
+  \label{fig:edgecasefin}
+\end{figure}
 %
 If we consider the example from earlier but restrict it to starting in state zero, we could define this process as follows.
-%
-%endif
-
-% \TODO{Only if initial state is zero? Text above this TODO might be a little clearer.}
-The state space is all the natural numbers even when we haven't taken a step yet.
-%
-After 1 step the possible states we could inhabit are only two.
-%
-Either we stayed or we turned left or right.
-%
-Similarly after 2 steps we could only be in any of three possible states.
-%
-
 %
 We can encode this behaviour in the state space of the coordinate system as follows.
 %

@@ -357,7 +357,7 @@ This behaviour could be similar to that of a game, where two players take turns 
 %
 However, the users do not know what moves the other player has made, and can therefore not make particularly smart moves.
 %
-In section \ref{sec:policycombinators} it is shown that writing new policies for a process like this will however produce a policy that knows what move the other 'player' has made.
+In section \ref{sec:policycombinators} it is reasoned that writing new policies for a process like this will be a policy that does know what move the other 'player' has made.
 %
 
 %

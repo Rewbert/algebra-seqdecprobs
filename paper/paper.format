@@ -71,6 +71,9 @@
 %format _⇄_    = "\unopun{" ⇄ "}"
 %format ⇄      =          "\mathop{⇄}"
 
+%format _⇄P_   = "\unopun{" ⇄P "}"
+%format ⇄P     =          "\mathop{⇄_{\!P}}"
+
 %format _⇄S_   = "\unopun{" ⇄S "}"
 %format ⇄S     =          "\mathop{⇄_{\!S}}"
 

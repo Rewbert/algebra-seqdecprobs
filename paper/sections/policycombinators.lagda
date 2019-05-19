@@ -6,7 +6,7 @@
 %
 Now that we have a way of reusing sequential decision processes to create more sophisticated processes, we want to reuse existing policy sequences also.
 %
-As the function |trajectory|, which observes a process, accepts as input a process and a policy sequence, this would simplify combining and observing processes without having to write any new policy sequences.
+As the function |trajectory| which observes a process accepts a process and a policy sequence as input, this would simplify combining and observing processes without having to write any new policy sequences.
 %
 %if false
 \begin{code}
@@ -22,7 +22,7 @@ open import Relation.Binary.PropositionalEquality
 \end{code}
 %endif
 %
-First, let's consider how to combine individual policies, before we move on to policy sequences.
+We start by combining single policies.
 %
 
 %
@@ -33,7 +33,7 @@ P : (S : Set) → (C : S → Set) → Set
 P S C = (s : S) → C s
 \end{code}
 %
-A policy for a product process is the product of the two individual policies.
+A policy for a product process defined in terms of two policies for the individual processes, is created by taking a pair of the two previous policies applied to the components of the state.
 %
 \begin{code}
 _×P_  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
@@ -79,7 +79,8 @@ If the index is |zero|, we reuse the first policy.
 If it is |suc zero|, we reuse the second policy.
 %
 \begin{code}
-_⇄P_  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
+_⇄P_  :  {S₁ S₂ : Set}
+          {C₁ : Pred S₁} {C₂ : Pred S₂}
       →  P S₁ C₁ → P S₂ C₂
       →  P (S₁ ⇄S S₂) (C₁ ⇄C C₂)
 (p₁ ⇄P p₂) (zero , s₁ , _)      = p₁ s₁
@@ -103,25 +104,46 @@ combineSeq  :  {p₁ p₂ : SDProc} {n : ℕ}
             →  PolicySeq (p₁ :comb: p₂) n
 combineSeq = zipWith
 \end{code}
-% \TODO{Should we keep these? Seems like we need more if we should keep these.}
-With these combinators in place we observe that a policy for a coproduct process is a product of policies for the individual processes.
+
 %
-We show the translation as Agda functions.
+With these policy combinators defined, we make a few observations.
+%
+We recall the claim that in an interleaved process the two prior processes does not know what state the other process is in.
+%
+It does not know what moves it has made.
+%
+The combinator above does indeed not inspect the other states component before applying the policy.
+%
+If we write new policies we can of course look at this parameter also.
+%
+The state of an interleaved process is a product, and we recall that by curring |(a,b) → c| is the same as |a → b → c|.
+%
+Consider |a| to be one processes state and |b| to be the others, we reason that a policy for the interleaved process is something like a policy for one of the processes parameterised over the other process.
+%
+
+% \TODO{Should we keep these? Seems like we need more if we should keep these.}
+Another interesting observation to make is that a policy for a process with a sum state, e.g a policy for a coproduct, is a pair of policies for the separate processes.
+%
+We can make this concrete with the following two definitions.
 %
 \begin{code}
-⊎↦×  :  {p₁ p₂ : SDProc} → Policy (p₁ ⊎SDP p₂)
+⊎↦×  :  {p₁ p₂ : SDProc}
+     →  Policy (p₁ ⊎SDP p₂)
      →  Policy p₁ × Policy p₂
 ⊎↦× policy = (  λ s₁ → policy (inj₁ s₁)) ,
                 λ s₂ → policy (inj₂ s₂)
 
-×↦⊎  :  {p₁ p₂ : SDProc} → Policy p₁ × Policy p₂
+×↦⊎  :  {p₁ p₂ : SDProc}
+     →  Policy p₁ × Policy p₂
      →  Policy (p₁ ⊎SDP p₂)
 ×↦⊎ (p₁ , p₂) = λ {  (inj₁ s₁) → p₁ s₁ ;
                      (inj₂ s₂) → p₂ s₂}
 \end{code}
 
+%if False
 % I am not sure how to show this? Is it possible if there are yellow markers?
 \begin{code}
 --∀⊎↦× : {p₁ p₂ : SDProc} → (p : Policy (p₁ ⊎SDP p₂)) → (state : #st (p₁ ⊎SDP p₂)) → ×↦⊎ (⊎↦× p) state ≡  p state
 --∀⊎↦× {x} {y} p state = {!!}
 \end{code}
+%endif

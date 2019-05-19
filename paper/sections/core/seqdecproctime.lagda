@@ -41,9 +41,9 @@ In section \ref{subsec:timedependentexample} we illustrate what this means.
 %
 
 %
-We note here that there is a trivial embedding of a sequential decision process as a time dependen process.
+A time independent process can be embedded as a time dependent process.
 %
-The embedding produces a process that does not use the fact that the state is time dependent.
+The embedding is a process that disregards the time parameter.
 %
 \begin{code}
 embed : SDProc → SDProcT
@@ -124,7 +124,7 @@ To do this promoting we use the function inject₁, which is illustrated in figu
 > inject₁ (suc i)  = suc (inject₁ i)
 %
 
-Now, what if we find ourselves in a situation where we have an element of type |Fin (suc n)|, and we want to return its predecessor, but of the sucessor type |Fin (suc (suc n))|?
+Now, what if we find ourselves in a situation where we have an element of type |Fin (suc n)|, and we want to return its predecessor, but of the sucessor type \emph{Fin (suc (suc n))}?
 %
 What we want to do is given an element |suc x|, return |x|.
 %
@@ -140,8 +140,27 @@ Looking back at the time independent example, we reflect on the choice of state.
 The natural numbers seemed, and were, a reasonable choice.
 %
 With the time dependent process at our disposal however we notice a source of ineffectiveness.
+%
 
-% \TODO{Only if initial state is zero?}
+%if False
+%
+In the general case we could only be in three different states after one step.
+%
+Either we stayed, went left or we went right.
+%
+After two steps we could be in any of five possible states.
+%
+\TODO{Insert this image, maybe? Split with both the general and the edge case situation.}
+%
+This can be generalised to saying that at time |n| the number of possible states are |n + 2|.
+%
+In the edge case where the initial state is zero the number of possible states are |n+1|.
+%
+If we consider the example from earlier but restrict it to starting in state zero, we could define this process as follows.
+%
+%endif
+
+% \TODO{Only if initial state is zero? Text above this TODO might be a little clearer.}
 The state space is all the natural numbers even when we haven't taken a step yet.
 %
 After 1 step the possible states we could inhabit are only two.

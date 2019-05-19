@@ -17,13 +17,11 @@ open import Relation.Binary.PropositionalEquality
 \end{code}
 %endif
 %
-Before we begin presenting the actual combinators we highlight that the state now is actually a predicate on the natural numbers.
+Before we move on we want to highlight that the state now is a predicate on the natural numbers.
 %
-The combinators of time dependent processes are now predicates on these time dependent predicates instead.
+The controls of these time dependent processes can be seen as a predicate on those natural number predicates.
 %
-We capture this by defining |Pred'| to be a predicate on a predicate on ℕ.
-%
-The inhabitants of this type is a function that given a time |t|, returns a predicate on S applied to |t|, which is the way we modeled controls earlier.
+We capture this reasoning in the definition of |Pred'|.
 %
 \begin{code}
 Pred' : Pred ℕ → Set₁
@@ -39,9 +37,9 @@ _×S_ : (S₁ S₂ : Pred ℕ) → Pred ℕ
 s₁ ×S s₂ = λ t → s₁ t × s₂ t
 \end{code}
 %
-Combining two controls becomes the task of combining two |Pred'|, and produce a new |Pred'| on the result of applying |×St| to two predicates on natural numbers.
+The product combinator for two controls should produce a new |Pred'| on |S₁ ×S S₂| defined in terms of two predicates |Pred' S₁| and |Pred' S₂|.
 %
-The result is a predicate that given a time and a state, applies the prior predicates to the time and the state componentwise.
+The defining equation is similar to the time independent case, but the extra parameter time is given as the first argument.
 %
 \begin{code}
 _×C_  :   {S₁ S₂ : Pred ℕ}
@@ -79,15 +77,18 @@ _×SDP_ : SDProcT → SDProcT → SDProcT
 SDPT S₁ C₁ sf₁ ×SDP SDPT S₂ C₂ sf₂
   = SDPT (S₁ ×S S₂) (C₁ ×C C₂) (sf₁ ×sf sf₂)
 \end{code}
-
 %
-the coproduct is similar to the product case, except that it returns the sum of applying to predicates to the time.
+Just as the product combinator, the defining equation for the coproduct combinator is similar to its time independent counterpart.
+%
+The difference is again that the parameters are applied to the time.
 %
 \begin{code}
 _⊎S_ : (S₁ S₂ : Pred ℕ) → Pred ℕ
 s₁ ⊎S s₂ = λ t → s₁ t ⊎ s₂ t
 \end{code}
-Combining two controls is done by pattern matching on the state and return one of the previous predicates applies to the time and the state.
+%
+The time dependent sum combinator for controls pattern matches on what injection was used, and applies the associated control to the time and the state.
+%
 \begin{code}
 _⊎C_  :  {S₁ S₂ : Pred ℕ}
       →  Pred' S₁ → Pred' S₂ → Pred' (S₁ ⊎S S₂)
@@ -149,7 +150,7 @@ In contrast to the coproduct case, the new step function will switch which proce
   inj₁ (r₂ time s₂)
 \end{code}
 %
-In the spirit of keeping notation similar, we provide a misfix operator for the step combinator.
+Again we provide an infix operator to be consistent.
 %
 \begin{code}
 syntax ⊎sf+ r sf₁ sf₂ = sf₁ ⟨ r ⟩ sf₂

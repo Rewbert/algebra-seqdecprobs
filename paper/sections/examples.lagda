@@ -3,7 +3,6 @@
 \section{Examples}
 \label{sec:examples}
 
-
 %if false
 module examples where
 
@@ -45,6 +44,46 @@ However, there is an edge case.
 %
 When the state is zero, it is not possible to take a step to the left, and so there are only two available controls.
 %
+%if false
+\begin{code}
+distance : ℕ → ℕ → ℕ    -- distance m n = abs (m-n)  informally
+distance zero zero       = 0
+distance zero (suc m)    = 1 + distance zero m
+distance (suc n) zero    = 1 + distance n zero
+distance (suc n) (suc m) = distance n m
+\end{code}
+%endif
+%if False
+\TODO{Perhaps use an indexed datatype (a type family) directly:}
+\TODO{Perhaps use |+1| for |Right|, some zero (say 0_C) for |Stay|, and |-1| for |Left| as in the intro.}
+\begin{code}
+module Family where
+  data oned-control : oned-state -> Set where
+    Right  : {n : oned-state} -> oned-control n
+    Stay   : {n : oned-state} -> oned-control n
+    Left   : {n : oned-state} -> oned-control (suc n)
+
+  oned-step  :  (x : oned-state) -> oned-control x -> oned-state
+  oned-step x        Right  = suc x
+  oned-step x        Stay   = x
+  oned-step (suc x)  Left   = x
+
+  oned-Policy = (x : oned-state) -> oned-control x
+
+  right stay tryleft : oned-Policy
+  right    _        = Right
+  stay     _        = Stay
+  tryleft  zero     = Stay
+  tryleft  (suc s)  = Left
+
+  \TODO{I think a solution to the optimisation below should be |towards n|.}
+  towards : ℕ -> oned-Policy
+  towards goal n with compare n goal
+  ... | less _ _     = Right
+  ... | equal _      = Stay
+  ... | greater _ _  = Left
+\end{code}
+%endif
 
 \begin{code}
 data ZAction : Set where
@@ -143,15 +182,6 @@ For our example we define the reward function to be parameterised over a target 
 The reward function could then reward a proposed step based on how close to the target it lands.
 %
 
-%if false
-\begin{code}
-distance : ℕ → ℕ → ℕ    -- distance m n = abs (m-n)  informally
-distance zero zero       = 0
-distance zero (suc m)    = 1 + distance zero m
-distance (suc n) zero    = 1 + distance n zero
-distance (suc n) (suc m) = distance n m
-\end{code}
-%endif
 \TODO{Maybe we need to mention the large number? Or is it obvious?}
 \begin{code}
 large-number : ℕ

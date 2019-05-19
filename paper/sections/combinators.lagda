@@ -115,8 +115,9 @@ Similarly, if one of the components reaches a point where there are no available
 %
 Functional programmers will often find they are in need of a unit, e.g when using |reduce| or other frequently appearing constructs from the functional paradigm.
 %
-\TODO{We don't give units for all combinators, make this clearer in the text. We should not promise to give units for all combinators.}
-Naturally, it would be convenient to define units for the combinators described in this script.
+Before we begin implementing a unit for the product case we want to clarify what we mean by a unit.
+%
+A unit to a process is one that when combined with another process, produces a process where the change at each step is exactly that of the other process.
 %
 
 %
@@ -420,7 +421,16 @@ The final process behaves as illustrated in figure \ref{images:interleave}.
 \end{figure}
 
 %
-This way of defining the interleaved combinator is not optimal as combining more than two processes with it will produce undesired behaviour.
+Defining a unit for the interleaved process is not possible.
+%
+Where the initial process would advance e.g five steps, the interleaved process would need ten steps to take that component to the same state.
+%
+We can not give a generic process that when interleaved with another process acts as a unit.
+%
+\TODO{I am quite sure this is right, but may as well discuss it with Patrik.}
+
+%
+The way we defined the interleaved combinator is not optimal as combining more than two processes with it will produce undesired behaviour.
 %
 If we combine three processes using this combinator the resulting system would be one where one of the processes advance half the time, and the other two only a quarter of the time each.
 %
@@ -460,7 +470,7 @@ A system like this would let all the processes advance equally much.
 
 ⇄sf : {S : Set} → {n : ℕ} → {C : Pred S} → Vec (Step S C) n → Step (⇄m S n) (⇄CC (replicate C))
 ⇄sf {_} {n} sfs (index , state) c = if toℕ index == n
-                                    then ?
+                                    then {!!}
                                     else {!!}
 
 --⇄SDP' : {n : ℕ} → Vec SDProc n → SDProc

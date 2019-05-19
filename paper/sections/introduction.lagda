@@ -60,8 +60,7 @@ Then we would want a combinator |_⊎SDPT_ : SDProcT → SDProcT → SDProcT| su
 %
 These combinators, and more, make up an \emph{Algebra of Sequential Decision Processes}.
 %
-% \TODO{If this is indeed a pearl, we need to be clearer about this, and consistent.}
-Parts of this algebra is investigated in this pearl.
+Parts of this algebra is investigated in this text.
 %
 
 \subsection{Contributions}

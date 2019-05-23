@@ -318,8 +318,6 @@ _⊎SDP+_  :  (p₁ : SDProc) → (p₂ : SDProc)
 \caption{Illustration of the yielding coproduct process. It is capable of switching between the two processes.}
 \end{figure}
 
-\TODO{Is giving an example good if we actually don't code up the example?}
-%
 With a combinator such as this one you could describe e.g software.
 %
 As an example, one process could model the normal execution of some software while the other could model the behaviour of an exception handler.
@@ -359,7 +357,6 @@ It should apply the step function to them one at a time, alternating between the
 %
 In order to know which components turn it is to advance we extend the product to also hold an index.
 %
-%\TODO{Add format directiove to subscript S, etc. _\text{S}}
 \begin{code}
 _⇄S_ : Set → Set → Set
 S₁ ⇄S S₂ = Fin 2 × S₁ × S₂
@@ -423,10 +420,7 @@ Defining a unit for the interleaved process is not possible.
 Where the initial process would advance e.g five steps, the interleaved process would need ten steps to take that component to the same state.
 %
 We can not give a generic process that when interleaved with another process acts as a unit.
-%
-\TODO{I am quite sure this is right, but may as well discuss it with Patrik.}
 
-%
 The way we define the interleaved combinator might not be optimal.
 %
 Combining more than two processes will produce potentially unexpected behaviour.

@@ -76,13 +76,13 @@ module Family where
   tryleft  zero     = Stay
   tryleft  (suc s)  = Left
 
-  \TODO{I think a solution to the optimisation below should be |towards n|.}
   towards : ℕ -> oned-Policy
   towards goal n with compare n goal
   ... | less _ _     = Right
   ... | equal _      = Stay
   ... | greater _ _  = Left
 \end{code}
+\TODO{I think a solution to the optimisation below should be |towards n|.}
 %endif
 
 \begin{code}

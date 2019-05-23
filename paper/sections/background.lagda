@@ -7,7 +7,6 @@ As mentioned in the introduction, we start from the foundations provided by Bott
 %
 These foundations were implemented in Idris and Haskell, but we have built our algebra in Agda \cite{norell_practical_2007}.
 %
-%\TODO{Perhaps update seqdecprobdeptypes to point to one of the more recent papers?}
 This section explains sequential decision problemss by presenting the Agda implementation.
 
 

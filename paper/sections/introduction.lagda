@@ -6,7 +6,6 @@
 % fill the gap! - check (i think)
 % contributions of this paper / outline - check
 % Zoom in from broad perspective on the field towards more specific questions in the current paper.
-% TODO cite Bellman
 Sequential decision processes and problems are a well established concept in decision theory, with the Bellman equation \cite{Bellman1957} as a popular choice for describing them.
 %
 Botta et al \cite{brady2013idris} have formalised the notion of such problems in Idris, a general purpose programming language with dependent types.
@@ -15,10 +14,8 @@ Using dependent types to bridge the gap between description and implementation o
 %
 They have illustrated how to use their formulation to model e.g.\ climate impact research \cite{esd-2017-86}, a very relevant problem today.
 %
-% Modeling climate impact is challenging because it involves very dynamic processes with many unknown variables.
-%TODO perhaps remove or rewrite the above sentence. Yes perhaps, i tried to introduce a sentence that motivated why combining simpler problems is desired. Might be clear enough without it.
 Evidence based policy making (when dealing with climate change or other global systems challenges), requires computing policies which are verified to be correct.
-%**TODO "requires" is perhaps a bit too strong
+%
 There are several possible notions of ``correctness'' for a policy: computing feasible system trajectories through a state space, avoiding ``bad'' states, or even computing optimal policys.
 %
 The concepts of feasibility and avoidability have been formalised and presented in \citet{botta_jansson_ionescu_2017_avoidability}.

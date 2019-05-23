@@ -77,7 +77,7 @@ We illustrate the type for a couple of different n's in figure \ref{images:finn}
 
 \begin{figure*}[htbp]
   \begin{subfigure}[b]{.20\textwidth}
-    \hbox{\hspace{-0.5em} \includegraphics[scale=0.75]{images/suc.png}} % \TODO{add suc annot to image or remove inject annot from the others}
+    \hbox{\hspace{-0.5em} \includegraphics[scale=0.75]{images/suc.png}}
     \caption{}
     \label{images:suc}
   \end{subfigure}

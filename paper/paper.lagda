@@ -120,11 +120,11 @@
 
 %-------------------------------------------------------------------------------
 
-\begin{abstract}
-  \input{abstract.txt}
+%\begin{abstract}
+%  \input{abstract.txt}
 
-\keywords{Functional Programming \and Domain Specific Languages.}
-\end{abstract}
+%\keywords{Functional Programming \and Domain Specific Languages.}
+%\end{abstract}
 \maketitle
 \TODO{Fill in affiliations}
 
@@ -134,22 +134,23 @@
 %\newpage
 
 
+%include sections/extabstract.lagda
 %------------------------------------------------------------------------------
-%include sections/introduction.lagda
+% include sections/introduction.lagda
 %------------------------------------------------------------------------------
-%include sections/background.lagda
+% include sections/background.lagda
 %------------------------------------------------------------------------------
-%include sections/examples.lagda
+% include sections/examples.lagda
 %------------------------------------------------------------------------------
-%include sections/combinators.lagda
+% include sections/combinators.lagda
 %------------------------------------------------------------------------------
-%include sections/core/seqdecproctime.lagda
+% include sections/core/seqdecproctime.lagda
 %------------------------------------------------------------------------------
-%include sections/combinatorstime.lagda
+% include sections/combinatorstime.lagda
 %------------------------------------------------------------------------------
-%include sections/policycombinators.lagda
+% include sections/policycombinators.lagda
 %------------------------------------------------------------------------------
-%include sections/conclusions.lagda
+% include sections/conclusions.lagda
 %------------------------------------------------------------------------------
 
 % \paragraph{Acknowledgements.}

@@ -1,7 +1,7 @@
 % -*- Latex -*-
 
-\section{Policy Combinators}
-\label{sec:policycombinators}
+\subsection{Policy Combinators}
+\label{subsec:policycombinators}
 
 %
 Now that we have a way of reusing sequential decision processes to create more sophisticated processes, we want to reuse existing policy sequences also.
@@ -110,43 +110,29 @@ Another interesting observation to make is that a policy for a process with a su
 We can make this concrete with the following two definitions.
 %
 \begin{code}
-module test where
-  ⊎↦×  : {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
-       →  P (S₁ ⊎ S₂) (C₁ ⊎C C₂)
-       →  P S₁ C₁ × P S₂ C₂
-  ⊎↦× policy = (  λ s₁ → policy (inj₁ s₁)) ,
-                  λ s₂ → policy (inj₂ s₂)
-
-  ×↦⊎  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
-       →  P S₁ C₁ × P S₂ C₂
-       →  P (S₁ ⊎ S₂) (C₁ ⊎C C₂)
-  ×↦⊎ (p₁ , p₂) = λ {  (inj₁ s₁) → p₁ s₁ ;
-                       (inj₂ s₂) → p₂ s₂}
-
-  ∀⊎↦×  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
-            (p : P (S₁ ⊎ S₂) (C₁ ⊎C C₂)) → (state : S₁ ⊎ S₂) →
-            ×↦⊎ (⊎↦× p) state ≡  p state
-  ∀⊎↦× _ (inj₁ _) = refl
-  ∀⊎↦× _ (inj₂ _) = refl
-
-⊎↦×  :  {p₁ p₂ : SDProc}
-     →  Policy (p₁ ⊎SDP p₂)
-     →  Policy p₁ × Policy p₂
+⊎↦×  :  {S₁ S₂ : Set}
+        {C₁ : Pred S₁} {C₂ : Pred S₂}
+     →  P (S₁ ⊎ S₂) (C₁ ⊎C C₂)
+     →  P S₁ C₁ × P S₂ C₂
 ⊎↦× policy = (  λ s₁ → policy (inj₁ s₁)) ,
                 λ s₂ → policy (inj₂ s₂)
 
-×↦⊎  :  {p₁ p₂ : SDProc}
-     →  Policy p₁ × Policy p₂
-     →  Policy (p₁ ⊎SDP p₂)
+×↦⊎  :  {S₁ S₂ : Set}
+        {C₁ : Pred S₁} {C₂ : Pred S₂}
+     →  P S₁ C₁ × P S₂ C₂
+     →  P (S₁ ⊎ S₂) (C₁ ⊎C C₂)
 ×↦⊎ (p₁ , p₂) = λ {  (inj₁ s₁) → p₁ s₁ ;
                      (inj₂ s₂) → p₂ s₂}
 \end{code}
-
+%
+Then we can further solidify this statement by showing that they are equal by functional extensionality.
+%
 \begin{code}
-∀⊎↦×  :  {p₁ p₂ : SDProc} →
-          (p : Policy (p₁ ⊎SDP p₂)) → (state : #st (p₁ ⊎SDP p₂)) →
-          ×↦⊎ {p₁} {p₂} (⊎↦× {p₁} {p₂} p) state ≡  p state
+∀⊎↦×  :  {S₁ S₂ : Set}
+         {C₁ : Pred S₁} {C₂ : Pred S₂}
+         (p : P (S₁ ⊎ S₂) (C₁ ⊎C C₂))
+      →  (state : S₁ ⊎ S₂)
+      →  ×↦⊎ (⊎↦× p) state ≡  p state
 ∀⊎↦× _ (inj₁ _) = refl
 ∀⊎↦× _ (inj₂ _) = refl
-
 \end{code}

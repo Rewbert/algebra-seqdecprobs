@@ -1,10 +1,10 @@
 % -*- Latex -*-
 
-\section{Appendix}
-\label{sec:appendix}
+\subsection{Future work}
+\label{subsec:futurework}
 
-\subsection{Time dependent interleaved process}
-\label{subsec:timedependentinterleavedprocess}
+\subsubsection{Time dependent interleaved process}
+\label{subsubsec:timedependentinterleavedprocess}
 
 %
 The time dependent interleaved combinator needs to compute a process that holds components of both processes.
@@ -78,13 +78,13 @@ _⇄sf_  :  {S₁ S₂ : Pred ℕ}
 \label{subsec:combiningpolicysequences}
 
 %
-In section \ref{sec:policycombinators} we showed how to combine policies.
+In section \ref{subsec:policycombinators} we showed how to combine policies.
 %
 The policy combinators works very well with |zipWith|.
 %
 We did however also implement a function to combine sequences, where we could be very clear in the types what is actually happening.
 %
-The defining equation is the same as we used in section \ref{sec:timedependentcase} to combine two sequences, |zipWith|.
+The defining equation is the same as we used in section \ref{subsec:timedependentcase} to combine two sequences, |zipWith|.
 %
 When we use this combinator Agda will mark the usage as yellow and report errors of unsolved constraints.
 %

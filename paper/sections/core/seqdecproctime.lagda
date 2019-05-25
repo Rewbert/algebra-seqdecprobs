@@ -1,6 +1,6 @@
 % -*- latex -*-
-\section{Time dependent processes}
-\label{sec:timedependentcase}
+\subsection{Time dependent processes}
+\label{subsec:timedependentcase}
 
 %
 Imagine a process where the state space can vary over time.
@@ -37,7 +37,7 @@ record SDProcT : Set₁ where
 %
 The state is now dependent on a parameter |t : ℕ|, which allows the state to take on alternate forms.
 %
-In section \ref{subsec:timedependentexample} we illustrate what this means.
+In section \ref{subsubsec:timedependentexample} we illustrate what this means.
 %
 
 %
@@ -132,8 +132,8 @@ We can't do this as is since the element |suc x| is of type |Fin (suc n)|, the e
 %
 To get the proper type we need to invoke |inject₁| twice, which is illustrated in figure \ref{images:injectinject}.
 
-\subsection{Time dependent example}
-\label{subsec:timedependentexample}
+\subsubsection{Time dependent example}
+\label{subsubsec:timedependentexample}
 %
 Looking back at the time independent example, we reflect on the choice of state.
 %

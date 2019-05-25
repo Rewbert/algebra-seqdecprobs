@@ -1,7 +1,7 @@
 % -*- latex -*-
 
-\section{Examples}
-\label{sec:examples}
+\subsection{Examples}
+\label{subsec:examples}
 
 %if false
 module examples where

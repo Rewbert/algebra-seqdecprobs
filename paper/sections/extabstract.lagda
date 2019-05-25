@@ -169,30 +169,3 @@ _×SDP_ : SDProc → SDProc → SDProc
   = SDP (S₁ × S₂) (C₁ ×C C₂) (sf₁ ×sf sf₂)
 \end{code}
 
-\section{Example}
-\label{sec:example}
-
-\begin{code}
-
-oned-state : Set
-oned-state = ℕ
-
-data oned-control : oned-state -> Set where
-  Right  : {n : oned-state} -> oned-control n
-  Stay   : {n : oned-state} -> oned-control n
-  Left   : {n : oned-state} -> oned-control (suc n)
-
-oned-step  :  (x : oned-state) -> oned-control x -> oned-state
-oned-step x        Right  = suc x
-oned-step x        Stay   = x
-oned-step (suc x)  Left   = x
-
-sys : SDProc
-sys = SDP oned-state oned-control oned-step
-
-towards : oned-state -> Policy sys
-towards goal n with compare n goal
-... | less _ _     = Right
-... | equal _      = Stay
-... | greater _ _  = Left
-\end{code}

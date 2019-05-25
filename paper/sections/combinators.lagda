@@ -1,6 +1,6 @@
 % -*- latex -*-
-\section{Combinators for sequential decision processes}
-\label{sec:combsecdecproc}
+\subsection{Combinators for sequential decision processes}
+\label{subsec:combsecdecproc}
 
 %if false
 \begin{code}
@@ -30,77 +30,11 @@ Now that we've seen an example of a sequential decision process and are getting 
 This section will explore different ways sequential decision processes can be combined in order to produce more sophisticated processes.
 %
 %-----------------------------------------------------------------------
-\subsection{Product}
-\label{subsec:productseqdecproc}
-%
-As a first combinator let us compute the product of two processes.
-%
-The new state is just the product of the two prior states.
-%
-The other components, the |Control| and the |step| must be described and combined more thoroughly.
-%
-The control is a predicate on the state.
-%
-\begin{code}
-Pred : Set → Set₁
-Pred S = S → Set
-\end{code}
-%
-Given two states and two predicates, one on each state, we can compute the predicate on the product of the two states.
-%
-The inhabitants of this predicate on the product are pairs of the inhabitants of the prior predicates.
-%
-\begin{code}
-_×C_  :   {S₁ S₂ : Set}
-      ->  Pred S₁ -> Pred S₂ -> Pred (S₁ × S₂)
-(C₁ ×C C₂) (s₁ , s₂) = C₁ s₁ × C₂ s₂
-\end{code}
-%
-% insert connor mcbride discussion here i suppose.
-%
-To make type signatures more readable we define a type of step functions.
-%
-A step function is defined in terms of a state and a predicate on that state.
-%
-\begin{code}
-Step : (S : Set) -> Pred S -> Set
-Step S C = (s : S) -> C s -> S
-\end{code}
-%
-Next we want to compute the product of two such step functions.
-%
-The function is given two states |S₁| and |S₂|.
-%
-Two predicates |C₁ : Pred S₁| and |C₂ : Pred S₂|, and lastly two functions |Step S₁ C₁| and |Step S₂ C₂|.
-%
-We can define a new step function by returning the pair computed by applying the individual step functions to the corresponding compontents of the input.
-%
-\begin{code}
-_×sf_  :   {S₁ S₂ : Set}
-       ->  {C₁ : Pred S₁} {C₂ : Pred S₂}
-       ->  Step S₁ C₁ -> Step S₂ C₂
-       ->  Step (S₁ × S₂) (C₁ ×C C₂)
-(sf₁ ×sf sf₂) (s₁ , s₂) (c₁ , c₂) = (sf₁ s₁ c₁ , sf₂ s₂ c₂)
-\end{code}
 
 %
-Seeing how we know how to combine all components on the bases of a product, we can now compute the product of two sequential decision processes.
+We already defined the product combinator, and before we move on to additional combinators we'd like to make a few notes on the product combinator.
 %
-\begin{code}
-_×SDP_ : SDProc → SDProc → SDProc
-(SDP S₁ C₁ sf₁) ×SDP (SDP S₂ C₂ sf₂)
-  = SDP (S₁ × S₂) (C₁ ×C C₂) (sf₁ ×sf sf₂)
-\end{code}
-
-\begin{figure}
-\label{images:product}
-\centering
-\includegraphics[scale=0.7]{images/product.png}
-\caption{Illustration of a product of two processes. The process holds components of both states and applies the step function to both components simultaneously.}
-\end{figure}
-
-%
-An observation to be made here is that in order for the new system to exist in any state, it has to hold components of both prior states.
+An observation to be made is that in order for the new system to exist in any state, it has to hold components of both prior states.
 %
 This has the consequence that if the state space of one of the prior processes is empty, the new problems state space is also empty.
 %
@@ -150,8 +84,8 @@ Of course, the other process could itself be the singleton process also, in whic
 %
 
 %-----------------------------------------------------------------------
-\subsection{Coproduct}
-\label{subsec:coproductseqdecproc}
+\subsubsection{Coproduct}
+\label{subsubsec:coproductseqdecproc}
 
 %
 Seeing how we defined a product combinator of two processes, we are interested in also defining a sum combinator for processes.
@@ -246,8 +180,8 @@ There is no way to begin advancing the empty process, and so the only available 
 %
 
 %-----------------------------------------------------------------------
-\subsection{Yielding Coproduct}
-\label{subsec:yieldingcoproductseqdecproc}
+\subsubsection{Yielding Coproduct}
+\label{subsubsec:yieldingcoproductseqdecproc}
 
 %
 Computing the coproduct of two processes and getting a process that behaves like either of the two, without actually considering the other process, leaves us wondering what this is useful for.
@@ -336,8 +270,8 @@ Further more, we would not be able to give a definition for a function |S₁ -> 
 %
 
 %-----------------------------------------------------------------------
-\subsection{Interleaving processes}
-\label{subsec:interleavingseqdecproc}
+\subsubsection{Interleaving processes}
+\label{subsubsec:interleavingseqdecproc}
 %
 The next combinator we introduce is one that interleaves processes.
 %
@@ -347,7 +281,7 @@ This behaviour could be similar to that of a game, where two players take turns 
 %
 However, the users do not know what moves the other player has made, and can therefore not make particularly smart moves.
 %
-In section \ref{sec:policycombinators} it is reasoned that writing new policies for a process like this will be a policy that does know what move the other 'player' has made.
+In section \ref{subsec:policycombinators} it is reasoned that writing new policies for a process like this will be a policy that does know what move the other 'player' has made.
 %
 
 %

@@ -135,23 +135,6 @@
 
 
 %include sections/extabstract.lagda
-%------------------------------------------------------------------------------
-% include sections/introduction.lagda
-%------------------------------------------------------------------------------
-% include sections/background.lagda
-%------------------------------------------------------------------------------
-% include sections/examples.lagda
-%------------------------------------------------------------------------------
-% include sections/combinators.lagda
-%------------------------------------------------------------------------------
-% include sections/core/seqdecproctime.lagda
-%------------------------------------------------------------------------------
-% include sections/combinatorstime.lagda
-%------------------------------------------------------------------------------
-% include sections/policycombinators.lagda
-%------------------------------------------------------------------------------
-% include sections/conclusions.lagda
-%------------------------------------------------------------------------------
 
 % \paragraph{Acknowledgements.}
 % %
@@ -162,6 +145,20 @@
 \bibliography{paper}
 
 \newpage
+\section{Appendix}
+\label{sec:appendix}
+%include sections/examples.lagda
+%------------------------------------------------------------------------------
+%include sections/combinators.lagda
+%------------------------------------------------------------------------------
+%include sections/core/seqdecproctime.lagda
+%------------------------------------------------------------------------------
+%include sections/combinatorstime.lagda
+%------------------------------------------------------------------------------
+%include sections/policycombinators.lagda
+%------------------------------------------------------------------------------
+%include sections/conclusions.lagda
+%------------------------------------------------------------------------------
 %include sections/appendix.lagda
 
 \end{document}

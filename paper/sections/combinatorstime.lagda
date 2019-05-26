@@ -171,6 +171,6 @@ When we try to implement the interleaved combinator for the time dependent case 
 The main problem is that since the step function only advances one of the state components, the other one will be of the wrong type.
 %
 At time |n| one of the components get advanced to a state in time |suc n|, while the other is not changed at all.
-%
-This problem is discussed further in the appendix.
+% TODO @patrikja is this a thing, with several appendixes?
+This problem is discussed further in Appendix B.
 %

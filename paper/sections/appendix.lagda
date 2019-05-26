@@ -1,7 +1,7 @@
 % -*- Latex -*-
 
-\subsection{Future work}
-\label{subsec:futurework}
+\subsection{Appendix B}
+\label{subsec:appendixb}
 
 \subsubsection{Time dependent interleaved process}
 \label{subsubsec:timedependentinterleavedprocess}

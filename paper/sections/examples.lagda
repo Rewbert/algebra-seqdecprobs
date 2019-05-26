@@ -1,7 +1,7 @@
 % -*- latex -*-
 
-\subsection{Examples}
-\label{subsec:examples}
+\subsection{Example}
+\label{subsec:example}
 
 %if false
 module examples where
@@ -165,10 +165,12 @@ We can use |≡| and |refl| to assert that the system behaves as intended.
 \TODO{Maybe explain briefly what refl and ≡ are?}
 %
 \begin{code}
-test1 : trajectory oned-system pseq 0 ≡ 0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ 2 ∷ []
+test1 : trajectory oned-system pseq 0 ≡  0 ∷ 0 ∷ 1 ∷
+                                         1 ∷ 2 ∷ 2 ∷ []
 test1 = refl
 
-test2 : trajectory oned-system pseq 5 ≡ 4 ∷ 3 ∷ 4 ∷ 4 ∷ 5 ∷ 5 ∷ []
+test2 : trajectory oned-system pseq 5 ≡  4 ∷ 3 ∷ 4 ∷
+                                         4 ∷ 5 ∷ 5 ∷ []
 test2 = refl
 \end{code}
 
@@ -188,8 +190,8 @@ large-number : ℕ
 large-number = 10000
 
 oned-reward  :   oned-state
-             ->  (x : oned-state) -> oned-control x -> oned-state
-             ->  ℕ
+             ->  (x : oned-state) -> oned-control x
+             ->  oned-state -> ℕ
 oned-reward target x0 y x1
   = large-number  ∸ (distance target x1)
 \end{code}

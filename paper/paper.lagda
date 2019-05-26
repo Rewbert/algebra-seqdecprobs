@@ -142,10 +142,10 @@
 % The reviewers suggested many improvements to the paper.
 
 %------------------------------------------------------------------------------
-\newpage
+%\newpage
 \bibliography{paper}
 
-\newpage
+\clearpage
 \section{Appendix}
 \label{sec:appendix}
 %include sections/examples.lagda

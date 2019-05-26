@@ -67,7 +67,11 @@ module extabstract where
 
 open import Data.Nat
 open import Data.Product
+open import Data.Vec
+open import Relation.Binary.PropositionalEquality
 
+
+Val = ℕ
 \end{code}
 %endif
 %
@@ -86,6 +90,7 @@ Step S C = (s : S) -> C s -> S
 \end{code}
 %
 With these in place we define a record type for Sequential Decision Processes:
+\savecolumns
 \begin{code}
 record SDProc : Set1 where
   constructor SDP
@@ -95,19 +100,19 @@ record SDProc : Set1 where
     step     : Step State Control
 \end{code}
 %
-We can extend this idea of a sequential decision |process| to that of a |problem| by adding an additional field |reward|.
+We can extend this idea of a sequential decision |process| to that of a |problem| by adding an additional field |reward| (where |Val| is often |ℝ|).
 %
-\begin{code}
--- ...
+\restorecolumns
+\begin{spec}
     reward   :  (x : State) -> Control x -> State -> Val
-\end{code}
+\end{spec}
 %
 From the type we conclude that the reward puts a value on the steps taken by the step function.
 %
 The problem becomes that of finding the sequence of controls that produces the highest sum of rewards.
 %
 Or, in more realistic settings with uncertainty (which can be modelled by a monadic step function), finding a sequence of \emph{policies} which maximises the expected reward.
-%
+
 A policy is a function from states to controls:
 %
 \begin{code}
@@ -119,11 +124,32 @@ We can use this definition to give a way of evaluating a process.
 %
 Here the |#st| and |#sf| functions extract the state and step component from the \emph{SDProc} respectively.
 %
+\TODO{It looks like |Vec p n| should rather be a list of policies: |Vec Pol n| where |Pol = Policy (#st p) (#C p)| or something similar.}
+%if False
 \begin{code}
-trajectory  :   {n : ℕ}
-            ->  (p : SDProc) -> Vec p n -> #st p
-            ->  Vec (#st p) (suc n)
-trajectory sys []        x0  = x0  ∷ []
+#st_ : SDProc → Set
+#st (SDP State _ _) = State
+infix 30 #st_
+#c_ : (s : SDProc) → (#st s → Set)
+#c SDP State Control step = Control
+#sf_ : (s : SDProc) → ((x : #st s) → (y : (#c s) x) → #st s)
+#sf SDP State Control step = step
+#pol : SDProc -> Set
+#pol (SDP S C _) = Policy S C
+
+oned-state  :  Set
+oned-state  =  ℕ
+postulate
+  oned-system : SDProc
+  oned-control  :  oned-state -> Set
+  tryleft stay right    : Policy oned-state oned-control
+\end{code}
+%endif
+\begin{code}
+trajectory  :  {n : ℕ} ->
+               (P : SDProc) -> Vec (#pol P) n -> #st P ->
+               Vec (#st P) n
+trajectory sys []        x0  = []
 trajectory sys (p ∷ ps)  x0  = x1 ∷ trajectory sys ps x1
   where  x1  :  #st sys
          x1  =  (#sf sys) x0 (p x0)
@@ -177,7 +203,7 @@ _×SDP_ : SDProc → SDProc → SDProc
   = SDP (S₁ × S₂) (C₁ ×C C₂) (sf₁ ×sf sf₂)
 \end{code}
 %
-We illustrate what this combinator does in figure \ref{images:product}.
+We illustrate what this combinator does in Figure \ref{images:product}.
 %
 \begin{figure}
 \centering
@@ -199,6 +225,8 @@ The brief example presented here can be found in its entirety in the appendix.
 We first assume we have a one dimensional process |oned-system| and a policy sequence \emph{pseq} which we can evaluate as described by the \emph{test1} definition.
 %
 \begin{code}
+pseq = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
+
 test1 :  trajectory oned-system pseq 0 ≡  0 ∷ 0 ∷ 1 ∷
                                           1 ∷ 2 ∷ 2 ∷ []
 test1 = refl

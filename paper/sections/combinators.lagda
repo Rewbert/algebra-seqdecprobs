@@ -100,7 +100,7 @@ The inhabitants of this sum predicate is the sum of the inhabitants of the prior
 %
 \begin{code}
 _⊎C_  :  {S₁ S₂ : Set}
-      →  Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
+      →  Con S₁ → Con S₂ → Con (S₁ ⊎ S₂)
 (C₁ ⊎C C₂) (inj₁ s₁)  = C₁ s₁
 (C₁ ⊎C C₂) (inj₂ s₂)  = C₂ s₂
 \end{code}
@@ -115,7 +115,7 @@ The result of the application is then injected into the sum type using the same 
 %
 \begin{code}
 _⊎sf_  :   {S₁ S₂ : Set}
-       ->  {C₁ : Pred S₁} -> {C₂ : Pred S₂}
+       ->  {C₁ : Con S₁} -> {C₂ : Con S₂}
        ->  Step S₁ C₁ -> Step S₂ C₂
        ->  Step (S₁ ⊎ S₂) (C₁ ⊎C C₂)
 (sf₁ ⊎sf sf₂) (inj₁ s₁) c₁  = inj₁ (sf₁ s₁ c₁)
@@ -207,7 +207,7 @@ If we select this control the process should yield in favour of the other proces
 %
 \begin{code}
 _⊎C+_  :  {S₁ S₂ : Set}
-       →  Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
+       →  Con S₁ → Con S₂ → Con (S₁ ⊎ S₂)
 (C₁ ⊎C+ C₂) (inj₁ s₁) = Maybe (C₁ s₁)
 (C₁ ⊎C+ C₂) (inj₂ s₂) = Maybe (C₂ s₂)
 \end{code}
@@ -221,7 +221,7 @@ We describe how to yield by supplying an element of type |S₁ ⇄ S₂|.
 If the selected control is |nothing| the step function will apply the appropriate component of this element to the current state.
 %
 \begin{code}
-⊎sf+  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
+⊎sf+  :  {S₁ S₂ : Set} {C₁ : Con S₁} {C₂ : Con S₂}
       →  (S₁ ⇄ S₂)
       →  Step S₁ C₁ → Step S₂ C₂
       →  Step (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
@@ -307,7 +307,7 @@ one : Fin 2
 one = suc zero
 
 _⇄C_  :  {S₁ S₂ : Set}
-      →  Pred S₁ → Pred S₂ → Pred (S₁ ⇄S S₂)
+      →  Con S₁ → Con S₂ → Con (S₁ ⇄S S₂)
 (C₁ ⇄C C₂) (zero , s₁ , s₂)  = C₁ s₁
 (C₁ ⇄C C₂) (one , s₁ , s₂)   = C₂ s₂
 \end{code}
@@ -322,7 +322,7 @@ Similarly if the index is zero we apply the second step function to the last com
 %
 \begin{code}
 _⇄sf_  :  {S₁ S₂ : Set}
-       →  {C₁ : Pred S₁} → {C₂ : Pred S₂}
+       →  {C₁ : Con S₁} → {C₂ : Con S₂}
        →  Step S₁ C₁ → Step S₂ C₂
        →  Step (S₁ ⇄S S₂) (C₁ ⇄C C₂)
 (sf₁ ⇄sf sf₂) (zero , s₁ , s₂) c  = (one , sf₁ s₁ c , s₂)

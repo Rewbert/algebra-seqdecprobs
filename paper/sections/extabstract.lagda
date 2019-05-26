@@ -115,11 +115,23 @@ Policy : (S : Set) -> Con S -> Set
 Policy S C = (s : S) → C s
 \end{code}
 %
-\TODO{insert trajectory computation from policy sequence}
+We can use this definition to give a way of evaluating a process.
+%
+Here |#st| and |#sf| functions extract the state and step component from the SDProc respectively.
+%
+\begin{code}
+trajectory  :   {n : ℕ}
+            ->  (p : SDProc) -> Vec p n -> #st p
+            ->  Vec (#st p) (suc n)
+trajectory sys []        x0  = x0  ∷ []
+trajectory sys (p ∷ ps)  x0  = x1 ∷ trajectory sys ps x1
+  where  x1  :  #st sys
+         x1  =  (#sf sys) x0 (p x0)
+\end{code}
 
-
+%
 In this abstract we focus on non-monadic, time-independent, sequential decision processes, but the algebra extends nicely to the more general case.
-
+%
 \section{The Product Combinator}
 \label{sec:aproductcombinator}
 %
@@ -130,8 +142,6 @@ The state of the product of two processes is the product of the two separate sta
 
 %
 The other components, the |Control| and the function |step| must be described and combined more thoroughly.
-%
-% We needed a new name: |Pred|icate indicates that we only care about the resulting |Set| being empty or not, but in reality we really care about the control sets. I have changed (in this file) to |Con|.
 %
 Given two control families, we can compute the control family for pairs of states.
 %
@@ -166,3 +176,57 @@ _×SDP_ : SDProc → SDProc → SDProc
 (SDP S₁ C₁ sf₁) ×SDP (SDP S₂ C₂ sf₂)
   = SDP (S₁ × S₂) (C₁ ×C C₂) (sf₁ ×sf sf₂)
 \end{code}
+%
+We illustrate what this combinator does in figure \ref{images:product}.
+%
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{images/product.png}
+\caption{Illustration of a product of two processes. The process holds components of both states and applies the step function to both components simultaneously.}
+\label{images:product}
+\end{figure}
+
+\section{Evaluation}
+\label{sec:evaluation}
+
+%
+With the product combinator now at hand we illustrate what it does.
+%
+The brief example presented here can be found in its entirety in the appendix.
+%
+
+% i can not use emph for 1d sys, it does not render it properly.
+We first assume we have a one dimensional process |oned-system| and a policy sequence \emph{pseq} which we can evaluate as described by the \emph{test1} definition.
+%
+\begin{code}
+test1 :  trajectory oned-system pseq 0 ≡  0 ∷ 0 ∷ 1 ∷
+                                          1 ∷ 2 ∷ 2 ∷ []
+test1 = refl
+\end{code}
+%
+We then want to apply our combinator.
+%
+\begin{code}
+twod-system = oned-system ×SDP oned-system
+\end{code}
+%
+Now |twod-system| gives us a process of two dimensions rather than one, as illustrated by the \emph{test2} definition.
+%
+\begin{code}
+twodtest1 :  runtwod (0 , 5) ≡  (0 , 4) ∷ (0 , 3) ∷ (1 , 4) ∷
+                                (1 , 4) ∷ (2 , 5) ∷ (2 , 5) ∷ []
+twodtest1 = refl
+\end{code}
+
+
+\section{Additional Work}
+\label{sec:additionalwork}
+%
+In the appendix we illustrate further work surrounding an algebra of sequential decision problems.
+%
+We give three more combinators for time independent processes before we move on to present time dependent processes and combinators for them.
+%
+We implement the example of a coordinate system described above, and make it even more precise as a time dependent process.
+%
+Lastly we consider how to combine policies and policy sequences.
+%

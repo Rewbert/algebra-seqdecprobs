@@ -1,5 +1,4 @@
 % -*- Latex -*-
-\TODO{Put extended abstract in the title of the text, as requested on the tyde website.}
 \section{Introduction}
 \label{sec:introduction}
 Sequential decision processes and problems are a well established concept in decision theory, with the Bellman equation \cite{Bellman1957} as a popular choice for describing them.
@@ -56,13 +55,12 @@ These combinators, and more, make up an \emph{Algebra of Sequential Decision Pro
 \section{Sequential Decision Problems}
 \label{sec:seqdecproc}
 %
-First, we formalise the notion of a Sequential Decision |Process| as a record in Agda.
+First, we formalise the notion of a Sequential Decision \emph{Process} in Agda.
 %
 A process always has a |state|, and depending on what that state is there are different |controls| that describe what actions are possible in that state.
 %
 The last component of a sequential decision process is a function |step| that when applied to a state and a control for that state returns the next state.
 %
-
 %if False
 \begin{code}
 module extabstract where
@@ -72,46 +70,60 @@ open import Data.Product
 
 \end{code}
 %endif
-
+%
+To better see the type structure we introduce a type synonym for the family of controls depending on a state:
+%
+\begin{code}
+Con : Set → Set₁
+Con S = S → Set
+\end{code}
+%
+and for the the type of step functions defined in terms of a state and a family of controls on that state:
+%
+\begin{code}
+Step : (S : Set) -> Con S -> Set
+Step S C = (s : S) -> C s -> S
+\end{code}
+%
+With these in place we define a record type for Sequential Decision Processes:
 \begin{code}
 record SDProc : Set1 where
   constructor SDP
   field
     State    : Set
-    Control  : State -> Set
-    step     : (x : State) -> Control x -> State
-\end{code}
-%
-The control to apply the step function to is selected by a |Policy|.
-\begin{code}
-Policy : SDProc → Set
-Policy (SDP S C _) = (s : S) → C s
+    Control  : Con State
+    step     : Step State Control
 \end{code}
 %
 We can extend this idea of a sequential decision |process| to that of a |problem| by adding an additional field |reward|.
 %
 \begin{code}
-record SDProblem : Set1 where
-  constructor SDProb
-  field
-    State    :  Set
-    Control  :  State -> Set
-    step     :  (x : State) -> Control x -> State
-    reward   :  (x : State) -> Control x -> State -> ℕ
+-- ...
+    reward   :  (x : State) -> Control x -> State -> Val
 \end{code}
 %
 From the type we conclude that the reward puts a value on the steps taken by the step function.
 %
 The problem becomes that of finding the sequence of controls that produces the highest sum of rewards.
 %
+Or, in more realistic settings with uncertainty (which can be modelled by a monadic step function), finding a sequence of \emph{policies} which maximises the expected reward.
+%
+A policy is a function from states to controls:
+%
+\begin{code}
+Policy : (S : Set) -> Con S -> Set
+Policy S C = (s : S) → C s
+\end{code}
+%
+\TODO{insert trajectory computation from policy sequence}
 
-\TODO{Mention that we give combinators for processes and not problems.}
+
+In this abstract we focus on non-monadic, time-independent, sequential decision processes, but the algebra extends nicely to the more general case.
+
 \section{The Product Combinator}
 \label{sec:aproductcombinator}
 %
-To compute |p²| we need to define a |product| combinator.
-%
-
+To compute |p²| we need to define a |product| combinator for SDPs.
 %
 The state of the product of two processes is the product of the two separate states.
 %
@@ -119,43 +131,29 @@ The state of the product of two processes is the product of the two separate sta
 %
 The other components, the |Control| and the function |step| must be described and combined more thoroughly.
 %
-The control is a predicate on the state.
+% We needed a new name: |Pred|icate indicates that we only care about the resulting |Set| being empty or not, but in reality we really care about the control sets. I have changed (in this file) to |Con|.
+%
+Given two control families, we can compute the control family for pairs of states.
+%
+The inhabitants (the controls) of each family member are pairs of controls for the two state components.
 %
 \begin{code}
-Pred : Set → Set₁
-Pred S = S → Set
-\end{code}
-%
-Given two states and two predicates, one on each state, we can compute the predicate on the product of the two states.
-%
-The inhabitants of this predicate on the product are pairs of the inhabitants of the prior predicates.
-%
-\begin{code}
-_×C_  :   {S₁ S₂ : Set}
-      ->  Pred S₁ -> Pred S₂ -> Pred (S₁ × S₂)
+_×C_  :  {S₁ S₂ : Set} ->
+         Con S₁ -> Con S₂ -> Con (S₁ × S₂)
 (C₁ ×C C₂) (s₁ , s₂) = C₁ s₁ × C₂ s₂
 \end{code}
 %
-% insert connor mcbride discussion here i suppose.
-%
-To make reading type signatures easier we define a type of step functions.
-%
-A step function is defined in terms of a state and a predicate on that state.
-%
-\begin{code}
-Step : (S : Set) -> Pred S -> Set
-Step S C = (s : S) -> C s -> S
-\end{code}
+%TODO Maybe insert conor mcbride discussion here - not for the extabstract
 %
 Next we want to compute the product of two such step functions.
 %
 Given two step functions we can define a new step function by returning the pair computed by applying the individual step functions to the corresponding components of the input.
 %
 \begin{code}
-_×sf_  :   {S₁ S₂ : Set}
-       ->  {C₁ : Pred S₁} {C₂ : Pred S₂}
-       ->  Step S₁ C₁ -> Step S₂ C₂
-       ->  Step (S₁ × S₂) (C₁ ×C C₂)
+_×sf_  :  {S₁ S₂ : Set} ->
+          {C₁ : Con S₁} {C₂ : Con S₂} ->
+          Step S₁ C₁ -> Step S₂ C₂ ->
+          Step (S₁ × S₂) (C₁ ×C C₂)
 (sf₁ ×sf sf₂) (s₁ , s₂) (c₁ , c₂) = (sf₁ s₁ c₁ , sf₂ s₂ c₂)
 \end{code}
 %
@@ -168,4 +166,3 @@ _×SDP_ : SDProc → SDProc → SDProc
 (SDP S₁ C₁ sf₁) ×SDP (SDP S₂ C₂ sf₂)
   = SDP (S₁ × S₂) (C₁ ×C C₂) (sf₁ ×sf sf₂)
 \end{code}
-

@@ -94,6 +94,7 @@
 % -------------------------------------------------------------------------------
 \begin{document}
 \title{An Algebra of Sequential Decision Problems}
+\subtitle{Extended Abstract}
 \author{Robert Krook\inst{1}\orcidID{0000-0003-3619-2975}
    \and Patrik Jansson\inst{1,2}\orcidID{0000-0003-3078-1437}}
 
@@ -126,7 +127,7 @@
 %\keywords{Functional Programming \and Domain Specific Languages.}
 %\end{abstract}
 \maketitle
-\TODO{Fill in affiliations}
+%\TODO{Fill in affiliations}
 
 %\setcounter{tocdepth}{2}
 %\tableofcontents

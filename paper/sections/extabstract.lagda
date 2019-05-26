@@ -57,7 +57,7 @@ These combinators, and more, make up an \emph{Algebra of Sequential Decision Pro
 %
 First, we formalise the notion of a Sequential Decision \emph{Process} in Agda.
 %
-A process always has a |state|, and depending on what that state is there are different |controls| that describe what actions are possible in that state.
+A process always has a \emph{state}, and depending on what that state is there are different \emph{controls} that describe what actions are possible in that state.
 %
 The last component of a sequential decision process is a function |step| that when applied to a state and a control for that state returns the next state.
 %
@@ -100,7 +100,7 @@ record SDProc : Set1 where
     step     : Step State Control
 \end{code}
 %
-We can extend this idea of a sequential decision |process| to that of a |problem| by adding an additional field |reward| (where |Val| is often |ℝ|).
+We can extend this idea of a sequential decision \emph{process} to that of a \emph{problem} by adding an additional field |reward| (where |Val| is often |ℝ|).
 %
 \restorecolumns
 \begin{spec}
@@ -122,7 +122,7 @@ Policy S C = (s : S) → C s
 %
 We can use this definition to give a way of evaluating a process.
 %
-Here the |#st| and |#sf| functions extract the state and step component from the \emph{SDProc} respectively.
+Here the |#st| and |#sf| functions extract the state and step component from the |SDProc| respectively.
 %
 \TODO{It looks like |Vec p n| should rather be a list of policies: |Vec Pol n| where |Pol = Policy (#st p) (#C p)| or something similar.}
 %if False
@@ -161,7 +161,7 @@ In this abstract we focus on non-monadic, time-independent, sequential decision 
 \section{The Product Combinator}
 \label{sec:aproductcombinator}
 %
-To compute |p²| we need to define a |product| combinator for SDPs.
+To compute |p²| we need to define a \emph{product} combinator for SDPs.
 %
 The state of the product of two processes is the product of the two separate states.
 %
@@ -221,8 +221,7 @@ With the product combinator now at hand we illustrate what it does.
 The brief example presented here can be found in its entirety in the appendix.
 %
 
-% i can not use emph for 1d sys, it does not render it properly.
-We first assume we have a one dimensional process |oned-system| and a policy sequence \emph{pseq} which we can evaluate as described by the \emph{test1} definition.
+We first assume we have a one dimensional process |oned-system| and an example policy sequence |pseq| which we can evaluate as seen in the type of |test1|.
 %
 \begin{code}
 pseq = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
@@ -238,7 +237,7 @@ We then want to apply our combinator.
 twod-system = oned-system ×SDP oned-system
 \end{code}
 %
-Now |twod-system| gives us a process of two dimensions rather than one, as illustrated by the \emph{test2} definition.
+Now |twod-system| gives us a process of two dimensions rather than one, as illustrated by the type of |test2|.
 %
 \TODO{Undefined: |runtwod|}
 \begin{code}

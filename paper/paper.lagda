@@ -146,6 +146,7 @@
 \bibliography{paper}
 
 \clearpage
+\appendix
 \section{Appendix}
 \label{sec:appendix}
 %include sections/examples.lagda

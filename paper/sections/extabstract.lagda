@@ -70,6 +70,10 @@ open import Data.Product
 open import Data.Vec
 open import Relation.Binary.PropositionalEquality
 
+open import examples using (oned-state; oned-control; oned-step; oned-system; tryleft; stay; right)
+open import core.seqdecproc -- using (SDProc; #st_; #sf_)
+open import combinators using (Con; Step)
+open import policycombinators using (_×P_)
 
 Val = ℕ
 \end{code}
@@ -77,35 +81,25 @@ Val = ℕ
 %
 To better see the type structure we introduce a type synonym for the family of controls depending on a state:
 %
-\begin{code}
-Con : Set → Set₁
-Con S = S → Set
-\end{code}
+>Con : Set → Set₁
+>Con S = S → Set
 %
 and for the the type of step functions defined in terms of a state and a family of controls on that state:
 %
-\begin{code}
-Step : (S : Set) -> Con S -> Set
-Step S C = (s : S) -> C s -> S
-\end{code}
+>Step : (S : Set) -> Con S -> Set
+>Step S C = (s : S) -> C s -> S
 %
 With these in place we define a record type for Sequential Decision Processes:
-\savecolumns
-\begin{code}
-record SDProc : Set1 where
-  constructor SDP
-  field
-    State    : Set
-    Control  : Con State
-    step     : Step State Control
-\end{code}
+>record SDProc : Set1 where
+>  constructor SDP
+>  field
+>    State    : Set
+>    Control  : Con State
+>    step     : Step State Control
 %
 We can extend this idea of a sequential decision \emph{process} to that of a \emph{problem} by adding an additional field |reward| (where |Val| is often |ℝ|).
 %
-\restorecolumns
-\begin{spec}
-    reward   :  (x : State) -> Control x -> State -> Val
-\end{spec}
+>    reward   :  (x : State) -> Control x -> State -> Val
 %
 From the type we conclude that the reward puts a value on the steps taken by the step function.
 %
@@ -115,46 +109,33 @@ Or, in more realistic settings with uncertainty (which can be modelled by a mona
 
 A policy is a function from states to controls:
 %
-\begin{code}
-Policy : (S : Set) -> Con S -> Set
-Policy S C = (s : S) → C s
-\end{code}
+>Policy : (S : Set) -> Con S -> Set
+>Policy S C = (s : S) → C s
 %
 We can use this definition to give a way of evaluating a process.
 %
 Here the |#st| and |#sf| functions extract the state and step component from the |SDProc| respectively.
 %
-\TODO{It looks like |Vec p n| should rather be a list of policies: |Vec Pol n| where |Pol = Policy (#st p) (#C p)| or something similar.}
-%if False
+%
+>trajectory  :  {n : ℕ} ->
+>               (P : SDProc) -> Vec (Policy P) n ->
+>               #st P -> Vec (#st P) n
+>trajectory sys []        x0  = []
+>trajectory sys (p ∷ ps)  x0  = x1 ∷ trajectory sys ps x1
+>  where  x1  :  #st sys
+>         x1  =  (#sf sys) x0 (p x0)
+%
+To illustrate how a process is evaluated using this function we assume we have a one dimensional process |oned-system| and an example policy sequence |pseq|, which we evaluate as seen in the type of |test1|.
+%
+The brief example illustrated here is presented in its entirety in the appendix.
+%
 \begin{code}
-#st_ : SDProc → Set
-#st (SDP State _ _) = State
-infix 30 #st_
-#c_ : (s : SDProc) → (#st s → Set)
-#c SDP State Control step = Control
-#sf_ : (s : SDProc) → ((x : #st s) → (y : (#c s) x) → #st s)
-#sf SDP State Control step = step
-#pol : SDProc -> Set
-#pol (SDP S C _) = Policy S C
-
-oned-state  :  Set
-oned-state  =  ℕ
-postulate
-  oned-system : SDProc
-  oned-control  :  oned-state -> Set
-  tryleft stay right    : Policy oned-state oned-control
+pseq = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
+test1 :  trajectory oned-system pseq 0 ≡  0 ∷ 0 ∷ 1 ∷
+                                          1 ∷ 2 ∷ 2 ∷ []
+test1 = refl
 \end{code}
-%endif
-\begin{code}
-trajectory  :  {n : ℕ} ->
-               (P : SDProc) -> Vec (#pol P) n -> #st P ->
-               Vec (#st P) n
-trajectory sys []        x0  = []
-trajectory sys (p ∷ ps)  x0  = x1 ∷ trajectory sys ps x1
-  where  x1  :  #st sys
-         x1  =  (#sf sys) x0 (p x0)
-\end{code}
-
+%
 %
 In this abstract we focus on non-monadic, time-independent, sequential decision processes, but the algebra extends nicely to the more general case.
 %
@@ -212,49 +193,30 @@ We illustrate what this combinator does in Figure \ref{images:product}.
 \label{images:product}
 \end{figure}
 
-\section{Evaluation}
-\label{sec:evaluation}
-
 %
-With the product combinator now at hand we illustrate what it does.
+With the product combinator now at hand we illustrate how we can use it.
 %
-The brief example presented here can be found in its entirety in the appendix.
-%
-
-We first assume we have a one dimensional process |oned-system| and an example policy sequence |pseq| which we can evaluate as seen in the type of |test1|.
-%
-\begin{code}
-pseq = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
-
-test1 :  trajectory oned-system pseq 0 ≡  0 ∷ 0 ∷ 1 ∷
-                                          1 ∷ 2 ∷ 2 ∷ []
-test1 = refl
-\end{code}
-%
-We then want to apply our combinator.
+We apply the combinator to the system assumed to exist earlier.
 %
 \begin{code}
 twod-system = oned-system ×SDP oned-system
 \end{code}
 %
-Now |twod-system| gives us a process of two dimensions rather than one, as illustrated by the type of |test2|.
+Now |twod-system| is a process of two dimensions rather than one, as illustrated by the type of |test2|.
 %
-\TODO{Undefined: |runtwod|}
+To reuse the policy sequence we need to also combine policies, which we show how to do in section \ref{subsec:policycombinators} of the appendix.
+%
 \begin{code}
-twodtest1 :  runtwod (0 , 5) ≡  (0 , 4) ∷ (0 , 3) ∷ (1 , 4) ∷
-                                (1 , 4) ∷ (2 , 5) ∷ (2 , 5) ∷ []
+twodsequence = zipWith _×P_ pseq pseq
+twodtest1 :  trajectory twod-system twodsequence
+             (0 , 5) ≡  (0 , 4) ∷ (0 , 3) ∷ (1 , 4) ∷
+                        (1 , 4) ∷ (2 , 5) ∷ (2 , 5) ∷ []
 twodtest1 = refl
 \end{code}
-
-
-\section{Additional Work}
-\label{sec:additionalwork}
 %
-In the appendix we illustrate further work surrounding an algebra of sequential decision problems.
+Further work is presented in the appendix.
 %
-We give three more combinators for time independent processes before we move on to present time dependent processes and combinators for them.
+We present more combinators both for time dependent and time independent processes.
 %
 We implement the example of a coordinate system described above, and make it even more precise as a time dependent process.
-%
-Lastly we consider how to combine policies and policy sequences.
 %

@@ -11,6 +11,7 @@ open import Data.Product hiding (map; zip)
 open import Data.Nat
 open import Data.Vec
 open import Relation.Binary.PropositionalEquality
+open import extabstract using (_×SDP_)
 \end{code}
 %endif
 %

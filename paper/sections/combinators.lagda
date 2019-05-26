@@ -21,6 +21,12 @@ open import Data.Fin hiding (lift)
 open import Data.Maybe
 open import Data.Vec
 
+Con : Set → Set₁
+Con S = S → Set
+
+Step : (S : Set) -> Con S -> Set
+Step S C = (s : S) -> C s -> S
+
 \end{code}
 %endif
 

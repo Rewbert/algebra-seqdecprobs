@@ -6,7 +6,7 @@
 module combinatorstime where
 
 open import core.seqdecproctime
-open import combinators using (Pred)
+open import combinators using (Con)
 open import Data.Nat
 open import Data.Fin hiding (_+_)
 open import Data.Maybe
@@ -24,8 +24,8 @@ The controls of these time dependent processes can be seen as a predicate on tho
 We capture this reasoning in the definition of |Pred'|.
 %
 \begin{code}
-Pred' : Pred ℕ → Set₁
-Pred' S = (t : ℕ) → Pred (S t)
+Con' : Con ℕ → Set₁
+Con' S = (t : ℕ) → Con (S t)
 \end{code}
 %
 Now on to the product combinator for the time dependent case.
@@ -33,7 +33,7 @@ Now on to the product combinator for the time dependent case.
 To combine two predicates on natural numbers, two time dependent states, we return a new predicate on natural numbers that given a time |t| returns the product of applying the two predicates to |t|.
 %
 \begin{code}
-_×S_ : (S₁ S₂ : Pred ℕ) → Pred ℕ
+_×S_ : (S₁ S₂ : Con ℕ) → Con ℕ
 s₁ ×S s₂ = λ t → s₁ t × s₂ t
 \end{code}
 %
@@ -42,8 +42,8 @@ The product combinator for two controls should produce a new |Pred'| on |S₁ ×
 The defining equation is similar to the time independent case, but the extra parameter time is given as the first argument.
 %
 \begin{code}
-_×C_  :   {S₁ S₂ : Pred ℕ}
-      →     Pred' S₁ → Pred' S₂   →  Pred' (S₁ ×S S₂)
+_×C_  :   {S₁ S₂ : Con ℕ}
+      →     Con' S₁ → Con' S₂   →  Con' (S₁ ×S S₂)
 (C₁ ×C C₂) time (s₁ , s₂) = C₁ time s₁ × C₂ time s₂
 \end{code}
 %
@@ -52,7 +52,7 @@ Again we capture the type of the step function in a type |Step|.
 |Step| accepts a state and a control, a predicate |S| on natural numbers and a predicate on |S|, and returns a type.
 %
 \begin{code}
-Step : (S : Pred ℕ) -> Pred' S -> Set
+Step : (S : Con ℕ) -> Con' S -> Set
 Step S C = (t : ℕ) → (s : S t) -> C t s -> S (suc t)
 \end{code}
 %
@@ -61,8 +61,8 @@ Combining two such step functions is similar to the time independent case.
 The only different is that we have an extra parameter |time|, and we must apply the step functions to this |time| parameters.
 %
 \begin{code}
-_×sf_  :  {S₁ S₂ : Pred ℕ}
-       →  {C₁ : Pred' S₁} → {C₂ : Pred' S₂}
+_×sf_  :  {S₁ S₂ : Con ℕ}
+       →  {C₁ : Con' S₁} → {C₂ : Con' S₂}
        →  Step S₁ C₁ → Step S₂ C₂
        →  Step (S₁ ×S S₂) (C₁ ×C C₂)
 (sf₁ ×sf sf₂) time state control
@@ -83,15 +83,15 @@ Just as the product combinator, the defining equation for the coproduct combinat
 The difference is again that the parameters are applied to the time.
 %
 \begin{code}
-_⊎S_ : (S₁ S₂ : Pred ℕ) → Pred ℕ
+_⊎S_ : (S₁ S₂ : Con ℕ) → Con ℕ
 s₁ ⊎S s₂ = λ t → s₁ t ⊎ s₂ t
 \end{code}
 %
 The time dependent sum combinator for controls pattern matches on what injection was used, and applies the associated control to the time and the state.
 %
 \begin{code}
-_⊎C_  :  {S₁ S₂ : Pred ℕ}
-      →  Pred' S₁ → Pred' S₂ → Pred' (S₁ ⊎S S₂)
+_⊎C_  :  {S₁ S₂ : Con ℕ}
+      →  Con' S₁ → Con' S₂ → Con' (S₁ ⊎S S₂)
 (C₁ ⊎C C₂) time = λ {  (inj₁ s₁) → C₁ time s₁ ;
                        (inj₂ s₂) → C₂ time s₂}
 \end{code}
@@ -101,8 +101,8 @@ Combining the step functions to produce one defined for the new process is, simi
 If the state is injected with the first injection, we apply the first step function, and similarly for the second injection.
 %
 \begin{code}
-_⊎sf_  :  {S₁ S₂ : Pred ℕ}
-       →  {C₁ : Pred' S₁} → {C₂ : Pred' S₂}
+_⊎sf_  :  {S₁ S₂ : Con ℕ}
+       →  {C₁ : Con' S₁} → {C₂ : Con' S₂}
        →  Step S₁ C₁ → Step S₂ C₂
        →  Step (S₁ ⊎S S₂) (C₁ ⊎C C₂)
 (sf₁ ⊎sf sf₂) time (inj₁ s₁) c = inj₁ (sf₁ time s₁ c)
@@ -119,7 +119,7 @@ SDPT S₁ C₁ sf₁ ⊎SDP SDPT S₂ C₂ sf₂
 To combine two time dependent processes into a yielding coproduct we begin by describing the component that relates the states in one process to states in the other.
 %
 \begin{code}
-_⇄_ : (S₁ S₂ : Pred ℕ) → Set
+_⇄_ : (S₁ S₂ : Con ℕ) → Set
 s₁ ⇄ s₂ =  ((t : ℕ) → s₁ t → s₂ (suc t)) ×
            ((t : ℕ) → s₂ t → s₁ (suc t))
 \end{code}
@@ -127,8 +127,8 @@ s₁ ⇄ s₂ =  ((t : ℕ) → s₁ t → s₂ (suc t)) ×
 The first change from the coproduct combinator is again that the control space is extended to contain also the |nothing| constructor.
 %
 \begin{code}
-_⊎C+_  :  {S₁ S₂ : Pred ℕ}
-       →  Pred' S₁ → Pred' S₂ → Pred' (S₁ ⊎S S₂)
+_⊎C+_  :  {S₁ S₂ : Con ℕ}
+       →  Con' S₁ → Con' S₂ → Con' (S₁ ⊎S S₂)
 (C₁ ⊎C+ C₂) time (inj₁ s₁) = Maybe (C₁ time s₁)
 (C₁ ⊎C+ C₂) time (inj₂ s₂) = Maybe (C₂ time s₂)
 \end{code}
@@ -136,8 +136,8 @@ _⊎C+_  :  {S₁ S₂ : Pred ℕ}
 In contrast to the coproduct case, the new step function will switch which process is executing if the control is the |nothing| constructor, and otherwise, depending on which injection was used, apply one of the previous step functions.
 %
 \begin{code}
-⊎sf+  :  {S₁ S₂ : Pred ℕ}
-      →  {C₁ : Pred' S₁} → {C₂ : Pred' S₂} → S₁ ⇄ S₂
+⊎sf+  :  {S₁ S₂ : Con ℕ}
+      →  {C₁ : Con' S₁} → {C₂ : Con' S₂} → S₁ ⇄ S₂
       →  Step S₁ C₁ → Step S₂ C₂
       →  Step (S₁ ⊎S S₂) (C₁ ⊎C+ C₂)
 ⊎sf+ _         sf₁ sf₂ time (inj₁ s₁) (just c₁)  =

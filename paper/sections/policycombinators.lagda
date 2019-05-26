@@ -35,8 +35,14 @@ P S C = (s : S) → C s
 %
 A policy for a product process defined in terms of two policies for the individual processes, is created by taking a pair of the two previous policies applied to the components of the state.
 %
+%if False
 \begin{code}
-_×P_  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
+_×C_ : {S₁ S₂ : Set} (C₁ : Con S₁) (C₂ : Con S₂) → Con (S₁ × S₂)
+(C₁ ×C C₂) (s₁ , s₂) = C₁ s₁ × C₂ s₂
+\end{code}
+%endif
+\begin{code}
+_×P_  :  {S₁ S₂ : Set} {C₁ : Con S₁} {C₂ : Con S₂}
       →  P S₁ C₁ → P S₂ C₂
       →  P (S₁ × S₂) (C₁ ×C C₂)
 (p₁ ×P p₂) (s₁ , s₂) = p₁ s₁ , p₂ s₂
@@ -49,7 +55,7 @@ If the pattern matches on the left injection, we can reuse the previous policy d
 Similarly, if the pattern matches on the right injection we can reuse the given policy for the other process.
 %
 \begin{code}
-_⊎P_  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
+_⊎P_  :  {S₁ S₂ : Set} {C₁ : Con S₁} {C₂ : Con S₂}
       →  P S₁ C₁ → P S₂ C₂
       →  P (S₁ ⊎ S₂) (C₁ ⊎C C₂)
 (p₁ ⊎P p₂) (inj₁ s₁) = p₁ s₁
@@ -61,7 +67,7 @@ Reusing policies for the yielding coproduct is similar to that of the regular co
 The only difference is that when reusing the old policy the result must be wrapped in the |just| constructor.
 %
 \begin{code}
-_⊎P+_  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
+_⊎P+_  :  {S₁ S₂ : Set} {C₁ : Con S₁} {C₂ : Con S₂}
        →  P S₁ C₁ → P S₂ C₂
        →  P (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
 (p₁ ⊎P+ p₂) (inj₁ s₁) = just (p₁ s₁)
@@ -80,7 +86,7 @@ If it is |suc zero|, we reuse the second policy.
 %
 \begin{code}
 _⇄P_  :  {S₁ S₂ : Set}
-          {C₁ : Pred S₁} {C₂ : Pred S₂}
+          {C₁ : Con S₁} {C₂ : Con S₂}
       →  P S₁ C₁ → P S₂ C₂
       →  P (S₁ ⇄S S₂) (C₁ ⇄C C₂)
 (p₁ ⇄P p₂) (zero , s₁ , _)      = p₁ s₁
@@ -111,14 +117,14 @@ We can make this concrete with the following two definitions.
 %
 \begin{code}
 ⊎↦×  :  {S₁ S₂ : Set}
-        {C₁ : Pred S₁} {C₂ : Pred S₂}
+        {C₁ : Con S₁} {C₂ : Con S₂}
      →  P (S₁ ⊎ S₂) (C₁ ⊎C C₂)
      →  P S₁ C₁ × P S₂ C₂
 ⊎↦× policy = (  λ s₁ → policy (inj₁ s₁)) ,
                 λ s₂ → policy (inj₂ s₂)
 
 ×↦⊎  :  {S₁ S₂ : Set}
-        {C₁ : Pred S₁} {C₂ : Pred S₂}
+        {C₁ : Con S₁} {C₂ : Con S₂}
      →  P S₁ C₁ × P S₂ C₂
      →  P (S₁ ⊎ S₂) (C₁ ⊎C C₂)
 ×↦⊎ (p₁ , p₂) = λ {  (inj₁ s₁) → p₁ s₁ ;
@@ -129,7 +135,7 @@ Then we can further solidify this statement by showing that they are equal by fu
 %
 \begin{code}
 ∀⊎↦×  :  {S₁ S₂ : Set}
-         {C₁ : Pred S₁} {C₂ : Pred S₂}
+         {C₁ : Con S₁} {C₂ : Con S₂}
          (p : P (S₁ ⊎ S₂) (C₁ ⊎C C₂))
       →  (state : S₁ ⊎ S₂)
       →  ×↦⊎ (⊎↦× p) state ≡  p state

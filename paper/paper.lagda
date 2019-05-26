@@ -13,7 +13,8 @@
 %----------------------------------------------------------------------------
 
 %let submit = False
-\documentclass[sigplan,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+% \documentclass[sigplan,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+\documentclass[sigplan,review]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
 
 %% Conference information
 %% Supplied to authors by publisher for camera-ready submission;
@@ -95,29 +96,26 @@
 \begin{document}
 \title{An Algebra of Sequential Decision Problems}
 \subtitle{Extended Abstract}
-\author{Robert Krook\inst{1}\orcidID{0000-0003-3619-2975}
-   \and Patrik Jansson\inst{1,2}\orcidID{0000-0003-3078-1437}}
-
+% \author{Robert Krook\inst{1}\orcidID{0000-0003-3619-2975}
+%    \and Patrik Jansson\inst{1,2}\orcidID{0000-0003-3078-1437}}
+\author{Robert Krook}
+\orcid{0000-0003-3619-2975}
+\affiliation{
+  \department{Computer Science and Engineering}
+  \institution{University of Gothenburg}
+  \country{Sweden}
+}
 %Note: double "@" in email to please lhs2tex
+\email{guskrooro@@student.gu.se}
 
-% \orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
-% \affiliation{
-%   \position{Position1}
-%   \department{Department1}              %% \department is recommended
-%   \institution{Institution1}            %% \institution is required
-%   \streetaddress{Street1 Address1}
-%   \city{City1}
-%   \state{State1}
-%   \postcode{Post-Code1}
-%   \country{Country1}                    %% \country is recommended
-% }
-% \email{first1.last1@inst1.edu}          %% \email is recommended
-
-% \institute{University of Gothenburg,
-%              \email{guskrooro@@student.gu.se}
-%       \and Chalmers University of Technology,
-%              \email{patrik.jansson@@chalmers.se}%, Computer Science and Engineering, SE-412 96 Göteborg, Sweden
-% }
+\author{Patrik Jansson}
+\orcid{0000-0003-3078-1437}
+\affiliation{
+  \department{Computer Science and Engineering}
+  \institution{Chalmers University of Technology}
+  \country{Sweden}
+}
+\email{patrik.jansson@@chalmers.se}
 
 %-------------------------------------------------------------------------------
 
@@ -127,13 +125,6 @@
 %\keywords{Functional Programming \and Domain Specific Languages.}
 %\end{abstract}
 \maketitle
-%\TODO{Fill in affiliations}
-
-%\setcounter{tocdepth}{2}
-%\tableofcontents
-%\todo{Remove ToC before submission.}
-%\newpage
-
 
 %include sections/extabstract.lagda
 

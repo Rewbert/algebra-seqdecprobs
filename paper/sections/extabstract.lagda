@@ -117,7 +117,7 @@ Policy S C = (s : S) → C s
 %
 We can use this definition to give a way of evaluating a process.
 %
-Here |#st| and |#sf| functions extract the state and step component from the SDProc respectively.
+Here the |#st| and |#sf| functions extract the state and step component from the SDProc respectively.
 %
 \begin{code}
 trajectory  :   {n : ℕ}

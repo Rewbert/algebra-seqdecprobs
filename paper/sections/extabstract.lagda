@@ -240,6 +240,7 @@ twod-system = oned-system ×SDP oned-system
 %
 Now |twod-system| gives us a process of two dimensions rather than one, as illustrated by the \emph{test2} definition.
 %
+\TODO{Undefined: |runtwod|}
 \begin{code}
 twodtest1 :  runtwod (0 , 5) ≡  (0 , 4) ∷ (0 , 3) ∷ (1 , 4) ∷
                                 (1 , 4) ∷ (2 , 5) ∷ (2 , 5) ∷ []

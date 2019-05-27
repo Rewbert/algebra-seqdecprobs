@@ -19,7 +19,7 @@
 %% Conference information
 %% Supplied to authors by publisher for camera-ready submission;
 %% use defaults for review submission.
-\acmConference[TyDe'19]{ACM SIGPLAN TODO}{TODO}{TODO}
+\acmConference[TyDe'19]{ACM SIGPLAN TODO}{August 18, 2019}{Berlin, Germany}
 \acmYear{2019}
 \acmISBN{} % \acmISBN{978-x-xxxx-xxxx-x/YY/MM}
 \acmDOI{} % \acmDOI{10.1145/nnnnnnn.nnnnnnn}

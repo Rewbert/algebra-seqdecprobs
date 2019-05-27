@@ -54,8 +54,8 @@ distance (suc n) (suc m) = distance n m
 \end{code}
 %endif
 %if False
-\TODO{Perhaps use an indexed datatype (a type family) directly:}
-\TODO{Perhaps use |+1| for |Right|, some zero (say 0_C) for |Stay|, and |-1| for |Left| as in the intro.}
+%\TODO{Perhaps use an indexed datatype (a type family) directly:}
+%\TODO{Perhaps use |+1| for |Right|, some zero (say 0_C) for |Stay|, and |-1| for |Left| as in the intro.}
 \begin{code}
 module Family where
   data oned-control : oned-state -> Set where
@@ -82,7 +82,7 @@ module Family where
   ... | equal _      = Stay
   ... | greater _ _  = Left
 \end{code}
-\TODO{I think a solution to the optimisation below should be |towards n|.}
+%\TODO{I think a solution to the optimisation below should be |towards n|.}
 %endif
 
 \begin{code}
@@ -135,7 +135,7 @@ We name it so since there is no way to move left if the state is zero.
 If this is the case, the policy will return a control that does nothing to the state.
 %
 \begin{code}
-tryleft : Policy oned-system
+tryleft : Policy (#st oned-system) (#c oned-system)
 tryleft zero     = ZS
 tryleft (suc s)  = SL
 \end{code}
@@ -143,11 +143,11 @@ tryleft (suc s)  = SL
 The policies for stay and right are easy, as there are no corner cases.
 %
 \begin{code}
-stay : Policy oned-system
+stay : Policy (#st oned-system) (#c oned-system)
 stay zero     = ZS
 stay (suc s)  = SS
 
-right : Policy oned-system
+right : Policy (#st oned-system) (#c oned-system)
 right zero     = ZR
 right (suc s)  = SR
 \end{code}
@@ -155,14 +155,14 @@ right (suc s)  = SR
 A policy sequence is now just a vector of policies.
 %
 \begin{code}
-pseq : PolicySeq oned-system 5 -- Vec (Policy oned-system) 5
+pseq : PolicySeq (#st oned-system) (#c oned-system) 5
 pseq = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
 \end{code}
 %
 We can now evaluate the system using this sequence, starting from different points.
 %
 We can use |≡| and |refl| to assert that the system behaves as intended.
-\TODO{Maybe explain briefly what refl and ≡ are?}
+%\TODO{Maybe explain briefly what refl and ≡ are?}
 %
 \begin{code}
 test1 : trajectory oned-system pseq 0 ≡  0 ∷ 0 ∷ 1 ∷
@@ -184,7 +184,7 @@ For our example we define the reward function to be parameterised over a target 
 The reward function could then reward a proposed step based on how close to the target it lands.
 %
 
-\TODO{Maybe we need to mention the large number? Or is it obvious?}
+%\TODO{Maybe we need to mention the large number? Or is it obvious?}
 \begin{code}
 large-number : ℕ
 large-number = 10000
@@ -206,4 +206,4 @@ problem target
             oned-step   (oned-reward target)
 \end{code}
 
-\TODO{Example ``run'' would be instructive}
+%\TODO{Example ``run'' would be instructive}

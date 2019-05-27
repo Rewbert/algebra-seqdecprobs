@@ -118,7 +118,8 @@ Here the |#st| and |#sf| functions extract the state and step component from the
 %
 %
 >trajectory  :  {n : ℕ} ->
->               (P : SDProc) -> Vec (Policy P) n ->
+>               (P : SDProc) ->
+>               Vec (Policy (#st P) (#c P)) n ->
 >               #st P -> Vec (#st P) n
 >trajectory sys []        x0  = []
 >trajectory sys (p ∷ ps)  x0  = x1 ∷ trajectory sys ps x1

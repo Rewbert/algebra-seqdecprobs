@@ -26,7 +26,7 @@ We start by combining single policies.
 %
 
 %
-We redefine a policy to be a predicate on a state and a control.
+We remind the reader that a policy is defined in terms of a state and a control.
 %
 \begin{code}
 P : (S : Set) → (C : S → Set) → Set

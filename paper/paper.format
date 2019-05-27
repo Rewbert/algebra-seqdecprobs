@@ -34,6 +34,7 @@
 
 %format #st = # "\ensuremath{_{\text{st}}}"
 %format #sf = # "\ensuremath{_{\text{sf}}}"
+%format #c =  # "\ensuremath{_{\text{c}}}"
 
 \newcommand{\un}{\mbox{\texttt{\_}}}   % short underscore
 \newcommand{\unopun}[1]{\ensuremath{\,\un{#1}\un\,}}

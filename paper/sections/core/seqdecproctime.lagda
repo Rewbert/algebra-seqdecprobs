@@ -32,6 +32,7 @@ record SDProcT : Set₁ where
 \begin{code}
 #st = SDProcT.State
 #sf = SDProcT.step
+#c  = SDProcT.Control
 \end{code}
 %endif
 %

@@ -100,9 +100,7 @@ The approach is similar to that of the product case.
 %
 
 %
-The control, is a predicate on the sum of the states.
-%
-The inhabitants of this sum predicate is the sum of the inhabitants of the prior predicates.
+The inhabitants of the sum control is the sum of the inhabitants of the prior controls.
 %
 \begin{code}
 _⊎C_  :  {S₁ S₂ : Set}
@@ -115,7 +113,7 @@ Calculating a new step function from two prior step functions is relatively stra
 %
 The first input is the sum of the two states.
 %
-Depending on which state the first argument belongs to, one of the prior step functions is applied to it and the second argument, the predicate on that state.
+Depending on which state the first argument belongs to, one of the prior step functions is applied to it and the second argument, the control for that state.
 %
 The result of the application is then injected into the sum type using the same injection as the input.
 %
@@ -203,9 +201,9 @@ _⇄_ : (S₁ S₂ : Set) → Set
 s₁ ⇄ s₂ = (s₁ -> s₂) × (s₂ -> s₁)
 \end{code}
 %
-Combining the two predicates on the states is similar to that of the coproduct case, when looking at the type.
+Combining the two controls on the states is similar to that of the coproduct case, when looking at the type.
 %
-However, instead of the new predicate being defined as either of the two prior ones, it is now |Maybe| either of the two previous ones.
+However, instead of the new control being defined as either of the two prior ones, it is now |Maybe| either of the two previous ones.
 %
 The idea is that we extend the control space to have one more inhabitant, the value |nothing|.
 %
@@ -304,9 +302,9 @@ S₁ ⇄S S₂ = Fin 2 × S₁ × S₂
 %
 The control space for the interleaved process is the sum of the two prior control spaces.
 %
-If the value of the first component is zero, we select the first predicate.
+If the value of the first component is zero, we select the first control.
 %
-If the value is one, we select the second predicate.
+If the value is one, we select the second control.
 %
 \begin{code}
 one : Fin 2

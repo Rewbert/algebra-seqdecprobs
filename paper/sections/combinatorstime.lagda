@@ -17,11 +17,11 @@ open import Relation.Binary.PropositionalEquality
 \end{code}
 %endif
 %
-Before we move on we want to highlight that the state now is a predicate on the natural numbers.
+Before we move on we want to highlight that the state now is dependent on the natural numbers.
 %
-The controls of these time dependent processes can be seen as a predicate on those natural number predicates.
+The controls of these time dependent processes are time dependent themselves.
 %
-We capture this reasoning in the definition of |Pred'|.
+We capture this reasoning in the definition of |Con'|.
 %
 \begin{code}
 Con' : Con ℕ → Set₁
@@ -30,14 +30,14 @@ Con' S = (t : ℕ) → Con (S t)
 %
 Now on to the product combinator for the time dependent case.
 %
-To combine two predicates on natural numbers, two time dependent states, we return a new predicate on natural numbers that given a time |t| returns the product of applying the two predicates to |t|.
+To combine two states that are time dependent we compute a new time dependent state that is the product of applying the prior states to the time.
 %
 \begin{code}
 _×S_ : (S₁ S₂ : Con ℕ) → Con ℕ
 s₁ ×S s₂ = λ t → s₁ t × s₂ t
 \end{code}
 %
-The product combinator for two controls should produce a new |Pred'| on |S₁ ×S S₂| defined in terms of two predicates |Pred' S₁| and |Pred' S₂|.
+The product combinator for two controls should produce a new |Con'| on |S₁ ×S S₂| defined in terms of two controls |Con' S₁| and |Con' S₂|.
 %
 The defining equation is similar to the time independent case, but the extra parameter time is given as the first argument.
 %
@@ -49,7 +49,9 @@ _×C_  :   {S₁ S₂ : Con ℕ}
 %
 Again we capture the type of the step function in a type |Step|.
 %
-|Step| accepts a state and a control, a predicate |S| on natural numbers and a predicate on |S|, and returns a type.
+|Step| accepts a state and a control and returns a type.
+%
+The type is that of the step function for time dependent processes.
 %
 \begin{code}
 Step : (S : Con ℕ) -> Con' S -> Set

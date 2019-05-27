@@ -29,7 +29,7 @@ In section \ref{subsec:policycombinators} we introduce combinators for policy se
 Here we use the product combinator to produce a policy sequence that is compatible with the new process.
 %
 \begin{code}
-twodsequence :  PolicySeq twod-system 5
+twodsequence :  PolicySeq (#st twod-system) (#c twod-system) 5
 twodsequence =  zipWith _×P_ pseq pseq
 \end{code}
 %

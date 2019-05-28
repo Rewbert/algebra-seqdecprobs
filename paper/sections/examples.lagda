@@ -166,11 +166,11 @@ We can use |≡| and |refl| to assert that the system behaves as intended.
 %
 \begin{code}
 test1 : trajectory oned-system pseq 0 ≡  0 ∷ 0 ∷ 1 ∷
-                                         1 ∷ 2 ∷ 2 ∷ []
+                                         1 ∷ 2 ∷ []
 test1 = refl
 
 test2 : trajectory oned-system pseq 5 ≡  4 ∷ 3 ∷ 4 ∷
-                                         4 ∷ 5 ∷ 5 ∷ []
+                                         4 ∷ 5 ∷ []
 test2 = refl
 \end{code}
 

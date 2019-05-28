@@ -81,8 +81,10 @@ Val = ℕ
 %
 To better see the type structure we introduce a type synonym for the family of controls depending on a state:
 %
->Con : Set → Set₁
->Con S = S → Set
+\begin{spec}
+Con : Set → Set₁
+Con S = S → Set
+\end{spec}
 %
 and for the the type of step functions defined in terms of a state and a family of controls on that state:
 %
@@ -90,6 +92,7 @@ and for the the type of step functions defined in terms of a state and a family 
 >Step S C = (s : S) -> C s -> S
 %
 With these in place we define a record type for Sequential Decision Processes:
+\savecolumns
 >record SDProc : Set1 where
 >  constructor SDP
 >  field
@@ -99,6 +102,7 @@ With these in place we define a record type for Sequential Decision Processes:
 %
 We can extend this idea of a sequential decision \emph{process} to that of a \emph{problem} by adding an additional field |reward| (where |Val| is often |ℝ|).
 %
+\restorecolumns
 >    reward   :  (x : State) -> Control x -> State -> Val
 %
 From the type we conclude that the reward puts a value on the steps taken by the step function.
@@ -132,8 +136,7 @@ The brief example illustrated here is presented in its entirety in the appendix.
 %
 \begin{code}
 pseq = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
-test1 :  trajectory oned-system pseq 0 ≡  0 ∷ 0 ∷ 1 ∷
-                                          1 ∷ 2 ∷ 2 ∷ []
+test1 :  trajectory oned-system pseq 0 ≡  0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ []
 test1 = refl
 \end{code}
 %
@@ -209,9 +212,8 @@ To reuse the policy sequence we need to also combine policies, which we show how
 %
 \begin{code}
 twodsequence = zipWith _×P_ pseq pseq
-twodtest1 :  trajectory twod-system twodsequence
-             (0 , 5) ≡  (0 , 4) ∷ (0 , 3) ∷ (1 , 4) ∷
-                        (1 , 4) ∷ (2 , 5) ∷ (2 , 5) ∷ []
+twodtest1 :  trajectory twod-system twodsequence (0 , 5)
+               ≡  (0 , 4) ∷ (0 , 3) ∷ (1 , 4) ∷  (1 , 4) ∷ (2 , 5) ∷ []
 twodtest1 = refl
 \end{code}
 %

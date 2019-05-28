@@ -20,13 +20,18 @@ open import Data.Vec
 \end{code}
 %endif
 \begin{code}
+ConT : (ℕ -> Set) → Set₁
+ConT S = (t : ℕ) -> S t → Set
+
+StepT : (S : ℕ -> Set) -> ConT S -> Set
+StepT S C = (t : ℕ) -> (s : S t) -> C t s -> S (suc t)
+
 record SDProcT : Set₁ where
   constructor SDPT
   field
-    State    : (t : ℕ) → Set
-    Control  : (t : ℕ) → State t → Set
-    step     : (t : ℕ)
-           →  (x : State t) → Control t x → State (suc t)
+    State    : ℕ → Set
+    Control  : ConT State
+    step     : StepT State Control
 \end{code}
 %if false
 \begin{code}

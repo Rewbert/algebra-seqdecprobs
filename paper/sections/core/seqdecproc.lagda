@@ -22,12 +22,21 @@ Since the available actions depend on what state the process is in, the control 
 To exemplify this we consider the case of an airplane that can only execute the action of lifting the landing gears if the plane is airborne.
 %
 \begin{code}
+Policy : (S : Set) → ((s : S) → Set) → Set
+Policy S C = (s : S) → C s
+
 record SDProc : Set1 where
   constructor SDP
   field
     State    : Set
     Control  : State -> Set
     step     : (x : State) -> Control x -> State
+  Pol = Policy State Control
+
+-- Can these be defined here?  #st, #pol, #c
+-- open SDProc
+-- postulate hej : (P : SDProc) -> Vec (SDProc.Pol P) 3
+-- postulate haj : (P : SDProc) -> State P
 \end{code}
 
 %if false
@@ -51,8 +60,8 @@ Many different controls could be available at each step.
 To decide which control should be selected at a state we resort to the notion of a Policy.
 %
 \begin{code}
-Policy : (S : Set) → ((s : S) → Set) → Set
-Policy S C = (s : S) → C s
+-- Policy : (S : Set) → ((s : S) → Set) → Set
+-- Policy S C = (s : S) → C s
 \end{code}
 %
 If we want to make |n| transitions we need a sequence of |n| policies.
@@ -69,8 +78,8 @@ Now we have all the definitions we need in order to implement the trajectory fun
 \begin{code}
 trajectory  :   {n : ℕ}
             ->  (p : SDProc) -> PolicySeq (#st p) (#c p) n -> #st p
-            ->  Vec (#st p) (suc n)
-trajectory sys []        x0  = x0  ∷ []
+            ->  Vec (#st p) n
+trajectory sys []        x0  = []
 trajectory sys (p ∷ ps)  x0  = x1 ∷ trajectory sys ps x1
   where  x1  :  #st sys
          x1  =  (#sf sys) x0 (p x0)

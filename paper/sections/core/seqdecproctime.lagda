@@ -149,24 +149,13 @@ With the time dependent process at our disposal however we notice a source of in
 %
 
 %
-In the general case we could only be in three different states after one step.
+We consider the case where the process is always evaluated with |zero| as the initial state.
 %
-Either we stayed, went left or we went right.
+After 1 step we could either have stayed or we went right, meaning the state is now |zero| or |suc zero|.
 %
-After two steps we could be in any of five possible states.
+After 2 steps we could have gone left, stayed or gone right.
 %
-This behaviour is illustrated in figure \ref{fig:generalcasefin}.
-%
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.75]{images/generalcasefin}
-  \caption{How the state space grows in the general case, where we can either increment, decrement or do nothing.}
-  \label{fig:generalcasefin}
-\end{figure}
-%
-This can be generalised to saying that at time |n| the number of possible states are |n + 2|.
-%
-In figure \ref{fig:edgecasefin} the edge case is illustrated, and we note that the number of possible states after n steps are |n+1|.
+In figure \ref{fig:edgecasefin} this edge case is illustrated, and we note that the number of possible states after n steps is |n+1|.
 %
 \begin{figure}[H]
   \centering
@@ -176,8 +165,6 @@ In figure \ref{fig:edgecasefin} the edge case is illustrated, and we note that t
 \end{figure}
 %
 If we consider the example from earlier but restrict it to starting in state zero, we could define this process as follows.
-%
-We can encode this behaviour in the state space of the coordinate system as follows.
 %
 \begin{code}
 oned-state : ℕ → Set

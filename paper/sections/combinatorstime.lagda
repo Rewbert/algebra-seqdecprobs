@@ -174,5 +174,5 @@ The main problem is that since the step function only advances one of the state 
 %
 At time |n| one of the components get advanced to a state in time |suc n|, while the other is not changed at all.
 % TODO @patrikja is this a thing, with several appendixes?
-This problem is discussed further in Appendix B.
+%This problem is discussed further in Appendix B.
 %

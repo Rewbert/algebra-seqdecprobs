@@ -163,7 +163,7 @@ Patrik has been an invaluable source of information, both regarding sequential d
 %------------------------------------------------------------------------------
 %include sections/conclusions.lagda
 %------------------------------------------------------------------------------
-\newpage
-%include sections/appendix.lagda
+% \newpage
+% %include sections/appendix.lagda
 
 \end{document}

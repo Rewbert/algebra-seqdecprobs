@@ -103,7 +103,7 @@ It does not know what moves it has made.
 %
 The combinator above does indeed not inspect the other states component before applying the policy.
 %
-If we write new policies we can of course look at this parameter also.
+If we write new policies we can of course also look at this parameter.
 %
 The state of an interleaved process is a product, and we recall that by curring |(a,b) → c| is the same as |a → b → c|.
 %

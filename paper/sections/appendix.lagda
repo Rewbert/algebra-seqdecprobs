@@ -53,7 +53,7 @@ _⇄C_  :  {S₁ S₂ : Con ℕ}
 %
 We get stuck when we try to implement the new step function.
 %
-As already mentioned in the text Agda does not recognise that if we advance the first component the second one can be left unchanged.
+As already mentioned in the text, Agda does not recognise that if we advance the first component the second one can be left unchanged.
 %
 One approach to implement this could maybe be to let the state carry a proof that if the remainder is zero, incrementing the time index by one and then taking half of that is the same as the current time index.
 %
@@ -80,7 +80,7 @@ _⇄sf_  :  {S₁ S₂ : Con ℕ}
 %
 In section \ref{subsec:policycombinators} we showed how to combine policies.
 %
-The policy combinators works very well with |zipWith|.
+The policy combinators work very well with |zipWith|.
 %
 We did however also implement a function to combine sequences, where we could be very clear in the types what is actually happening.
 %

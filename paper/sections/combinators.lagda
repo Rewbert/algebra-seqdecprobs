@@ -75,12 +75,14 @@ singleton = record {
   Control  =  λ state -> ⊤;
   step     =  λ state -> λ control -> tt}
 \end{code}
-
+%
+An example of evaluating the singleton process is illustrated in Figure \ref{images:singleton}
+%
 \begin{figure}
-\label{images:singleton}
 \centering
 \includegraphics[scale=0.7]{images/singleton.png}
 \caption{Illustration of the singleton process. The subscript ₀ is meant to indicate that the state remains the same when the process advances.}
+\label{images:singleton}
 \end{figure}
 
 %
@@ -126,7 +128,7 @@ _⊎sf_  :   {S₁ S₂ : Set}
 (sf₁ ⊎sf sf₂) (inj₂ s₂) c₂  = inj₂ (sf₂ s₂ c₂)
 \end{code}
 %
-The sum of two problems is computed by applying the sum operators componentwise.
+The sum of two problems is computed by applying the sum operators componentwise, and Figure \ref{images:coproduct} illustrate how such a problem is evaluated.
 %
 \begin{code}
 _⊎SDP_ : SDProc → SDProc → SDProc
@@ -149,8 +151,8 @@ SDP S₁ C₁ sf₁ ⊎SDP SDP S₂ C₂ sf₂
   \caption{Right injection.}
   \label{images:coproduct-inj2}
 \end{subfigure}
-\label{images:coproduct}
 \caption{The coproduct of two processes. The process will take the shape of either of the two alternatives, but never both or a mix of the two.}
+\label{images:coproduct}
 \end{figure}
 
 %

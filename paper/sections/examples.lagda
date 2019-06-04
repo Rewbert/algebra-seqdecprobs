@@ -148,7 +148,6 @@ oned-reward target x0 y x1
 %
 We can redefine the sequential decision process above to be a sequential decision problem simply by instantiating the |SDProb| record.
 %
-
 \begin{code}
 problem : oned-state -> SDProblem
 problem target

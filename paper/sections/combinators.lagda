@@ -258,13 +258,12 @@ _⊎SDP+_  :  (p₁ : SDProc) → (p₂ : SDProc)
 \caption{Illustration of the yielding coproduct process. It is capable of switching between the two processes.}
 \end{figure}
 
-With a combinator such as this one you could describe e.g software.
 %
-As an example, one process could model the normal execution of some software while the other could model the behaviour of an exception handler.
+With a combinator such as this one could you model e.g a two player game.
 %
-When the process modeling the software reaches a point where an exception is thrown, the process can yield control to the exception handler.
+The processes would be the players and the combined process allows each to take turns making their next move.
 %
-When the exception handler process is done, it can yield in favour of the other process again.
+In section \ref{subsec:policycombinators} we discuss how a policy for such a process is something of a game leader.
 %
 
 %

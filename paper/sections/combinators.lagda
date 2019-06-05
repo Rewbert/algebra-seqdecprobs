@@ -382,20 +382,6 @@ If we combine three processes using this combinator the resulting system would b
   \label{images:badvsgoodinterleave}
 \end{figure*}
 
-%\begin{figure}
-%\label{images:badinterleave}
-%\centering
-%\includegraphics[scale=0.5]{images/badinterleave2.png}
-%\caption{If we interleave two processes and then interleave the resulting process with a third we get a situation like this. They are not properly %interleaved.}
-%\end{figure}%%
-
-%\begin{figure}
-%\label{images:wantedinterleave}
-%\centering
-%\includegraphics[scale=0.5]{images/wantedinterleave2.png}
-%\caption{This is the interleaved behaviour we might expect for three processes.}
-%\end{figure}
-
 %
-This does not necessarily mean that the combinator described here is wrong, but rather that there is another combinator we could implement that would have this other behaviour.
+This does not necessarily mean that the combinator described in Figure \ref{images:badvsgoodinterleave}  is wrong, but rather that there is another combinator we could implement that would have this other behaviour.
 %

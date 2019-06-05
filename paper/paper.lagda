@@ -145,9 +145,9 @@
 \label{subsec:projectintroduction}
 \TODO{Är det GU + Chalmers? Jag vet aldrig hur jag skall framställa sådant här pga sammmarbetet.}
 %
-The work described in this text is the result of a project carried out at Gothenburg Univsersity by Robert Krook, under the supervision of Patrik Jansson.
+The work described in this text is the result of a project carried out at Gothenburg University by Robert Krook, under the supervision of Patrik Jansson.
 %
-Robert has worked independently and met once a week with Patrik over the course of 8 weeks, to discuss progress, obstructions and what to do next.
+Robert has worked independently and met once a week with Patrik over the course of 8 weeks to discuss progress, potential bottlenecks and what to do next.
 %
 Patrik has been an invaluable source of information, both regarding sequential decision problems and how to write a scientific text.
 %

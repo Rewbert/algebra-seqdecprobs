@@ -122,9 +122,8 @@ test2 = refl
 We can use the clever policy to steer the process towards a goal.
 %
 \begin{code}
-test3 : trajectory oned-system (replicate (towards 5))
-  2 ≡  3 ∷ 4 ∷ 5 ∷
-       5 ∷ 5 ∷ []
+test3 :  trajectory oned-system (replicate (towards 5)) 2 ≡
+          3 ∷ 4 ∷ 5 ∷ 5 ∷ 5 ∷ []
 test3 = refl
 \end{code}
 

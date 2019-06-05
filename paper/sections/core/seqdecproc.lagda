@@ -32,6 +32,7 @@ record SDProc : Set1 where
     Control  : State -> Set
     step     : (x : State) -> Control x -> State
   Pol = Policy State Control
+  St  = State
 
 -- Can these be defined here?  #st, #pol, #c
 -- open SDProc
@@ -42,7 +43,7 @@ record SDProc : Set1 where
 %if false
 \begin{code}
 #st_ : SDProc → Set
-#st SDP State Control step = State
+#st_ = SDProc.St --SDP State Control step = State
 
 infix 30 #st_
 

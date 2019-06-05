@@ -250,7 +250,7 @@ _⊎SDP+_  :  (p₁ : SDProc) → (p₂ : SDProc)
 ((SDP S₁ C₁ sf₁) ⊎SDP+ (SDP S₂ C₂ sf₂)) rel
   = SDP (S₁ ⊎ S₂) (C₁ ⊎C+ C₂) (sf₁ ⟨ rel ⟩ sf₂)
 \end{code}
-
+\TODO{Fix yielding coproduct image, make it bigger figure*}
 \begin{figure}
 \label{images:yieldcoproduct}
 \centering

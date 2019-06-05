@@ -127,12 +127,6 @@ In such a scenario a policy could be something of a game leader, making the best
 The policy can, after all, make a decision for one of the components based on the state of both components.
 %
 
-%
-This capability is not given any consideration by the policy combinators.
-%
-The combinators base their choice solely on a previously defined choice that was based on only one component.
-%
-
 \subsubsection{Sum state implies Product Policy}
 \label{subsubsec:sumstateimpliesproductpolicy}
 Another interesting observation to make is that a policy for a process with a sum state, e.g a policy for a coproduct, is a pair of policies for the separate processes.

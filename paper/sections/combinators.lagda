@@ -250,7 +250,6 @@ _⊎SDP+_  :  (p₁ : SDProc) → (p₂ : SDProc)
 ((SDP S₁ C₁ sf₁) ⊎SDP+ (SDP S₂ C₂ sf₂)) rel
   = SDP (S₁ ⊎ S₂) (C₁ ⊎C+ C₂) (sf₁ ⟨ rel ⟩ sf₂)
 \end{code}
-\TODO{Fix yielding coproduct image, make it bigger figure*}
 \begin{figure}
 \label{images:yieldcoproduct}
 \centering
@@ -366,20 +365,36 @@ Combining more than two processes will produce potentially unexpected behaviour.
 %
 If we combine three processes using this combinator the resulting system would be one where one of the processes advance half the time, and the other two only a quarter of the time each.
 %
+\begin{figure*}[htbp]
+  \begin{subfigure}[b]{.8\textwidth}
+    \centering
+    \includegraphics[scale=0.8]{images/badinterleave2.png}
+    \caption{If we interleave two processes and then interleave the resulting process with a third we get a situation like this. They are not properly interleaved.}
+    \label{images:badinterleave}
+  \end{subfigure}
+  \begin{subfigure}[b]{.8\textwidth}
+    \centering
+    \includegraphics[scale=0.8]{images/wantedinterleave2.png}
+    \caption{This is the interleaved behaviour we might expect for three processes. A round robin behaviour that gives the processes equally many turns.}
+    \label{images:wantedinterleave}
+  \end{subfigure}
+  \caption{Illustrations of why the interleaved combinator might not behave as one would expect.}
+  \label{images:badvsgoodinterleave}
+\end{figure*}
 
-\begin{figure}
-\label{images:badinterleave}
-\centering
-\includegraphics[scale=0.5]{images/badinterleave2.png}
-\caption{If we interleave two processes and then interleave the resulting process with a third we get a situation like this. They are not properly interleaved.}
-\end{figure}
+%\begin{figure}
+%\label{images:badinterleave}
+%\centering
+%\includegraphics[scale=0.5]{images/badinterleave2.png}
+%\caption{If we interleave two processes and then interleave the resulting process with a third we get a situation like this. They are not properly %interleaved.}
+%\end{figure}%%
 
-\begin{figure}
-\label{images:wantedinterleave}
-\centering
-\includegraphics[scale=0.5]{images/wantedinterleave2.png}
-\caption{This is the interleaved behaviour we might expect for three processes.}
-\end{figure}
+%\begin{figure}
+%\label{images:wantedinterleave}
+%\centering
+%\includegraphics[scale=0.5]{images/wantedinterleave2.png}
+%\caption{This is the interleaved behaviour we might expect for three processes.}
+%\end{figure}
 
 %
 This does not necessarily mean that the combinator described here is wrong, but rather that there is another combinator we could implement that would have this other behaviour.

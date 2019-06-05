@@ -94,23 +94,47 @@ _⇄P_  :  {S₁ S₂ : Set}
 (p₁ ⇄P p₂) (suc (suc ()) , _)
 \end{code}
 
+\subsection{A note on Policies}
+\label{subsec:anoteonpolicies}
 %
 With these policy combinators defined, we make a few observations.
 %
-We recall the claim that in an interleaved process the two prior processes does not know what state the other process is in.
+These observations intend to illustrate some of the meanings behind policies.
 %
-It does not know what moves it has made.
+\subsubsection{Product State Policies}
+\label{subsubsec:productstatepolicies}
 %
-The combinator above does indeed not inspect the other states component before applying the policy.
+Recall a policy for a product state.
 %
-If we write new policies we can of course also look at this parameter.
+The type of this policy is |(s : State) → Control s|, where State is the type of states and Control is the type family of controls.
 %
-The state of an interleaved process is a product, and we recall that by curring |(a,b) → c| is the same as |a → b → c|.
+Since |s| is a product , the signature actually is something like |((a , b) : A × B) → Control (a , b)|.
 %
-Consider |a| to be one processes state and |b| to be the others, we reason that a policy for the interleaved process is something like a policy for one of the processes parameterised over the other process.
+We know from currying that this is the same as |(a : A) → (b : B) → Control (a , b)|.
 %
 
-% \TODO{Should we keep these? Seems like we need more if we should keep these.}
+%
+In the case of the product combinator the control space was the product of the separate state components control spaces.
+%
+Where a policy for the individual process would base the choice of control on the state, the policy for a product process will select a control for the same state component, but base the choice on both state components.
+%
+
+%
+In the case of the interleaved process we related the situation to that of a game, where players take turns making their moves.
+%
+In such a scenario a policy could be something of a game leader, making the best choices for each component based both components.
+%
+The policy can, after all, make a decision for one of the components based on the state of both components.
+%
+
+%
+This capability is not given any consideration by the policy combinators.
+%
+The combinators base their choice solely on a previously defined choice that was based on only one component.
+%
+
+\subsubsection{Sum state implies Product Policy}
+\label{subsubsec:sumstateimpliesproductpolicy}
 Another interesting observation to make is that a policy for a process with a sum state, e.g a policy for a coproduct, is a pair of policies for the separate processes.
 %
 We can make this concrete with the following two definitions.

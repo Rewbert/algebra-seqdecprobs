@@ -120,16 +120,7 @@ We can use this definition to give a way of evaluating a process.
 %
 Here the |#st| and |#sf| functions extract the state and step component from the |SDProc| respectively.
 %
-\TODO{check import, maybe its own file}
-%
->trajectory  :  {n : ℕ} ->
->               (P : SDProc) ->
->               Vec (Policy (#st P) (#c P)) n ->
->               #st P -> Vec (#st P) n
->trajectory sys []        x0  = []
->trajectory sys (p ∷ ps)  x0  = x1 ∷ trajectory sys ps x1
->  where  x1  :  #st sys
->         x1  =  (#sf sys) x0 (p x0)
+%include core/traj.lagda
 %
 To illustrate how a process is evaluated using this function we assume we have a one dimensional process |oned-system| and an example policy sequence |pseq|, which we evaluate as seen in the type of |test1|.
 %

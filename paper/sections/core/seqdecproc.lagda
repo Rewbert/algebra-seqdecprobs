@@ -31,8 +31,8 @@ record SDProc : Set1 where
     State    : Set
     Control  : State -> Set
     step     : (x : State) -> Control x -> State
-  Pol = Policy State Control
-  St  = State
+  Pol  = Policy State Control
+  St   = State
 
 -- Can these be defined here?  #st, #pol, #c
 -- open SDProc
@@ -76,13 +76,5 @@ PolicySeq S C n = Vec (Policy S C) n
 %
 Now we have all the definitions we need in order to implement the trajectory function for sequential decision processes.
 %
-\begin{code}
-trajectory  :   {n : ℕ}
-            ->  (p : SDProc) -> PolicySeq (#st p) (#c p) n -> #st p
-            ->  Vec (#st p) n
-trajectory sys []        x0  = []
-trajectory sys (p ∷ ps)  x0  = x1 ∷ trajectory sys ps x1
-  where  x1  :  #st sys
-         x1  =  (#sf sys) x0 (p x0)
-\end{code}
+%include traj.lagda
 %

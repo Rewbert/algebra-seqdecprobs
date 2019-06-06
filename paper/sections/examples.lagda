@@ -7,11 +7,14 @@
 module examples where
 
 \begin{code}
+open import core.traj
 open import core.seqdecproc
 open import core.seqdecprob hiding (Policy; PolicySeq)
-open import Data.Nat
+open import Data.Nat hiding (_<_)
+open import Agda.Builtin.Nat using (_<_)
 open import Data.Vec
 open import Relation.Binary.PropositionalEquality
+open import Data.Bool
 \end{code}
 
 %endif
@@ -135,14 +138,15 @@ For our example we define the reward function to be parameterised over a target 
 The reward function could then reward a proposed step based on how close to the target it lands.
 %
 \begin{code}
-large-number : ℕ
-large-number = 10000
-
-oned-reward  :   oned-state
-             ->  (x : oned-state) -> oned-control x
-             ->  oned-state -> ℕ
-oned-reward target x0 y x1
-  = large-number  ∸ (distance target x1)
+oned-reward  :  oned-state
+             →  (x : oned-state) → oned-control x
+             →  oned-state → ℕ
+oned-reward target x₀ y x₁
+  = if distance target x₁ < distance target x₀
+    then 2
+    else (if distance target x₀ < distance target x₁
+          then 0
+          else 1)
 \end{code}
 %
 We can redefine the sequential decision process above to be a sequential decision problem simply by instantiating the |SDProb| record.

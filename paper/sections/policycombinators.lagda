@@ -160,3 +160,4 @@ Then we can further solidify this statement by showing that they are equal by fu
 ∀⊎↦× _ (inj₁ _) = refl
 ∀⊎↦× _ (inj₂ _) = refl
 \end{code}
+\TODO{formatters for these}

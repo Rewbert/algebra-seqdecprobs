@@ -111,6 +111,12 @@ The problem becomes that of finding the sequence of controls that produces the h
 %
 Or, in more realistic settings with uncertainty (which can be modelled by a monadic step function), finding a sequence of \emph{policies} which maximises the expected reward.
 %
+The system presented here aims at describing finite horizon problems, meaning that the sum of rewards is finite.
+%
+Furthermore, rewards are usually discounted the as time passes.
+%
+One step |now| is worth more than the same step e.g 20 turns from now.
+%
 Rewards, and problems, are not the focus of this abstract but are mentioned for completeness.
 
 A policy is a function from states to controls:
@@ -128,9 +134,7 @@ To illustrate how a process is evaluated using this function we assume we have a
 %
 Ideally |pseq| is the result of an optimization computed using Bellmans backwards induction.
 %
-Otherwise the evaluations might not be that interesting.
-%
-The brief example illustrated here is presented in its entirety in the appendix.
+Otherwise, the evaluations might not be that interesting.
 %
 \begin{code}
 pseq = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
@@ -138,6 +142,15 @@ test1 :  trajectory oned-system pseq 0 ≡  0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ []
 test1 = refl
 \end{code}
 %
+We use a sequence of policies rather than a constant policy as the policy is something of a strategy.
+%
+As a process progresses and different states are inhabited one might wish to alter his or her strategy.
+%
+
+%
+The brief example illustrated here is presented in its entirety in the appendix.
+%
+
 %
 In this abstract we focus on non-monadic, time-independent, sequential decision processes, but the algebra extends nicely to the more general case.
 %

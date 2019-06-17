@@ -233,8 +233,8 @@ If the selected control is |nothing| the step function will apply the appropriat
       →  Step (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
 ⊎sf+ _          sf₁ sf₂  (inj₁ s₁)  (just c)  = inj₁ (sf₁ s₁ c)
 ⊎sf+ _          sf₁ sf₂  (inj₂ s₂)  (just c)  = inj₂ (sf₂ s₂ c)
-⊎sf+ (r₁ , _ )  sf₁ sf₂  (inj₁ s₁)  nothing   = inj₂ (r₁ s₁)
-⊎sf+ (_  , r₂)  sf₁ sf₂  (inj₂ s₂)  nothing   = inj₁ (r₂ s₂)
+⊎sf+ (v₁ , _ )  sf₁ sf₂  (inj₁ s₁)  nothing   = inj₂ (v₁ s₁)
+⊎sf+ (_  , v₂)  sf₁ sf₂  (inj₂ s₂)  nothing   = inj₁ (v₂ s₂)
 \end{code}
 Since the other operators were infix, we give a syntax declaration that mimics the same style.
 \begin{code}
@@ -254,7 +254,7 @@ _⊎SDP+_  :  (p₁ : SDProc) → (p₂ : SDProc)
 \label{images:yieldcoproduct}
 \centering
 \includegraphics[scale=0.7]{images/yieldcoproduct.png}
-\caption{Illustration of the yielding coproduct process. It is capable of switching between the two processes.}
+\caption{Illustration of the yielding coproduct process. It is capable of switching between the two processes, as illustrated by the calls to v1 and v2.}
 \end{figure}
 
 %
@@ -348,7 +348,7 @@ The final process behaves as illustrated in figure \ref{images:interleave}.
 \begin{figure}
 \centering
 \includegraphics[scale=0.7]{images/interleave.png}
-\caption{Illustration of two interleaved process. We want to emphasise that the state holds components of both prior states, but chooses to advance only one.}
+\caption{Illustration of two interleaved process. We want to emphasise that the state holds components of both prior states, but chooses to advance only one. The policy that chooses what control to use can however inspect both components.}
 \label{images:interleave}
 \end{figure}
 
@@ -378,7 +378,7 @@ If we combine three processes using this combinator the resulting system would b
     \caption{This is the interleaved behaviour we might expect for three processes. A round robin behaviour that gives the processes equally many turns.}
     \label{images:wantedinterleave}
   \end{subfigure}
-  \caption{Illustrations of why the interleaved combinator might not behave as one would expect.}
+  \caption{Illustrations of why the interleaved combinator might not behave as one would expect. Again the two incoming arrows illustrate that the policy that selects the control has access to all components and can base the choice of control on them.}
   \label{images:badvsgoodinterleave}
 \end{figure*}
 

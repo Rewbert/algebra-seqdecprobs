@@ -105,11 +105,13 @@ We can extend this idea of a sequential decision \emph{process} to that of a \em
 \restorecolumns
 >    reward   :  (x : State) -> Control x -> State -> Val
 %
-From the type we conclude that the reward puts a value on the steps taken by the step function.
+From the type we conclude that the reward puts a value on the steps taken by the step function, based on the state transition and the control used.
 %
 The problem becomes that of finding the sequence of controls that produces the highest sum of rewards.
 %
 Or, in more realistic settings with uncertainty (which can be modelled by a monadic step function), finding a sequence of \emph{policies} which maximises the expected reward.
+%
+Rewards, and problems, are not the focus of this abstract but are mentioned for completeness.
 
 A policy is a function from states to controls:
 %
@@ -123,6 +125,10 @@ Here the |#st| and |#sf| functions extract the state and step component from the
 %include core/traj.lagda
 %
 To illustrate how a process is evaluated using this function we assume we have a one dimensional process |oned-system| and an example policy sequence |pseq|, which we evaluate as seen in the type of |test1|.
+%
+Ideally |pseq| is the result of an optimization computed using Bellmans backwards induction.
+%
+Otherwise the evaluations might not be that interesting.
 %
 The brief example illustrated here is presented in its entirety in the appendix.
 %
@@ -185,7 +191,7 @@ We illustrate what this combinator does in Figure \ref{images:product}.
 \begin{figure}
 \centering
 \includegraphics[scale=0.7]{images/product.png}
-\caption{Illustration of a product of two processes. The process holds components of both states and applies the step function to both components simultaneously.}
+\caption{Illustration of a product of two processes. The process holds components of both states and applies the step function to both components simultaneously. To understand why the components have two incoming arrows, we need to discuss policies. A policy for a product process has access to both states and computes controls for both components. Thus it can base the choice of control for one component on both state components.}
 \label{images:product}
 \end{figure}
 

@@ -2,6 +2,7 @@
 module core.dfa where
 
 open import Data.Nat
+open import Data.Product renaming (Σ to Sigma)
 open import Data.List
 open import Data.Maybe
 open import Data.Bool
@@ -113,13 +114,33 @@ DFA→SDP (DFA Q Σ x₀ δ F eq) =
         (λ _ → Σ)
         (λ state → λ symbol → δ symbol state)
 
--- | Can not implement this.
-SDP→DFA : SDProc → DeterministicFiniteAutomata
-SDP→DFA (SDP S C sf) =
-    DFA S
-        {!!} -- have no (s : S) to apply to C to get the control space
-        {!!} -- what state is initial?
-        (λ symbol → λ state → sf state {!!})
-        {!!} -- where does it end?
-        {!!} -- how to compare? Can only give trivial definitions (const true or const false)
+EqT : Set -> Set
+EqT A = A -> A -> Bool
+
+import Relation.Nullary as RN
+open import Relation.Nullary.Decidable using (⌊_⌋)
+
+-- define another helper using ⌊_⌋ to extract Bool from Dec a
+
+eqM : {a : Set} -> EqT a -> EqT (Maybe a)
+eqM eq (just x) (just y) = eq x y
+eqM eq nothing nothing   = true
+eqM eq _ _ = false
+
+helpStep = \eq ->
+        (λ { (s , c) → λ {(just state) → if eq s state then just {!sf state c!} else nothing;
+                           nothing -> nothing} })
+
+-- TODO: with (decEq s state) will give the proof that s==state which is needed to apply sf
+
+
+SDP→DFA : (p : SDProc) -> (#st p) -> List (#st p) → RN.Dec (#st p) -> DeterministicFiniteAutomata
+SDP→DFA (SDP S C sf) init fi decEq =
+    DFA (Maybe S)
+        (Sigma S C)
+        (just init)
+        (?)  -- use helpStep
+        (Data.List.map just fi)
+        (eqM decEq) -- fix type
+
 \end{code}

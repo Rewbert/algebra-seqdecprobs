@@ -111,7 +111,7 @@ The problem becomes that of finding the sequence of controls that produces the h
 %
 Or, in more realistic settings with uncertainty (which can be modelled by a monadic step function), finding a sequence of \emph{policies} which maximises the |expected| reward.
 %
-The system presented here aims at describing finite horizon problems, meaning that the sum of rewards is finite.
+The system presented here aims at describing finite horizon problems, meaning that the sum of rewards is over a finite list.
 %
 Furthermore, rewards are usually discounted the as time passes.
 %

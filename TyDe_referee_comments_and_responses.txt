@@ -2,13 +2,13 @@
 > Overall merit: 4, 3, 1 (Accept, Weak Accept, Reject)
 > Reviewer expertise: 3, 3, 3 (Knowledgeable)
 
-TODO line 114 explain that rewards are important but not part of the paper (just shown for completeness)
-TODO line 114.5, why does `reward` take a second `State` argument? [A]
-TODO line 120 explain that we aim at finite horizon problems [no inf. sum, but usually discounted] perhaps comment in paper [A]
-TODO line 121, why "a sequence of _policies_" rather than "a _policy_"? [A]
-TODO line 148 (tests) explain that the goal is to compute policies Bellman's backward induction [C]
-TODO line 148 seems to have an extra `2 ::` [A]
-TODO line 212.5 seems to have an extra `(2,5) ::` [A]
+DONE line 114 explain that rewards are important but not part of the paper (just shown for completeness)
+DONE line 114.5, why does `reward` take a second `State` argument? [A]
+DONE line 120 explain that we aim at finite horizon problems [no inf. sum, but usually discounted] perhaps comment in paper [A]
+DONE line 121, why "a sequence of _policies_" rather than "a _policy_"? [A]
+DONE line 148 (tests) explain that the goal is to compute policies Bellman's backward induction [C]
+DONE line 148 seems to have an extra `2 ::` [A]
+DONE line 212.5 seems to have an extra `(2,5) ::` [A]
 TODO line 250 Can ×ᵀ be seen as an instance of ×? [C] Check
 TODO line 300 What kind of combinators of SDProc's are reasonable?  Is it just ×, ×ᵀ, ⊎, ⊎ᵀ? [C] No! More future work.
 

@@ -46,7 +46,7 @@ You could think of this as choosing a map in a game.
 %
 Then we would want a combinator |_⊎SDPT_ : SDProcT → SDProcT → SDProcT| such that
 %
->  game = p²' ⊎SDPT (embed p₃)
+>  game = p²' ⊎SDPT (embed p³)
 
 %
 These combinators, and more, make up an \emph{Algebra of Sequential Decision Processes}.
@@ -103,13 +103,13 @@ With these in place we define a record type for Sequential Decision Processes:
 We can extend this idea of a sequential decision \emph{process} to that of a \emph{problem} by adding an additional field |reward| (where |Val| is often |ℝ|).
 %
 \restorecolumns
->    reward   :  (x : State) -> Control x -> State -> Val
+>    reward   :  (x : State) -> Control x -> Val
 %
 From the type we conclude that the reward puts a value on the steps taken by the step function, based on the state transition and the control used.
 %
 The problem becomes that of finding the sequence of controls that produces the highest sum of rewards.
 %
-Or, in more realistic settings with uncertainty (which can be modelled by a monadic step function), finding a sequence of \emph{policies} which maximises the expected reward.
+Or, in more realistic settings with uncertainty (which can be modelled by a monadic step function), finding a sequence of \emph{policies} which maximises the |expected| reward.
 %
 The system presented here aims at describing finite horizon problems, meaning that the sum of rewards is finite.
 %

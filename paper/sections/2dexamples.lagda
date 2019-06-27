@@ -24,7 +24,7 @@ twod-system = oned-system ×SDP oned-system
 \end{code}
 
 %
-In section \ref{subsec:policycombinators} we introduce combinators for policy sequences.
+In section \ref{sec:policycombinators} we introduce combinators for policy sequences.
 %
 Here we use the product combinator to produce a policy sequence that is compatible with the new process.
 %

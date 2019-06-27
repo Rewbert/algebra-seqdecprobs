@@ -1,6 +1,6 @@
 % -*- Latex -*-
-\subsection{Combinators for the Time Dependent Case}
-\label{subsec:combinatorstime}
+\section{Combinators for the Time Dependent Case}
+\label{sec:combinatorstime}
 %if false
 \begin{code}
 module combinatorstime where

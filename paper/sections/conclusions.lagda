@@ -1,12 +1,12 @@
 % -*- Latex -*.
-\subsection{Conclusions and future work}
-\label{subsec:conclusionsandfuturework}
+\section{Conclusions and future work}
+\label{sec:conclusionsandfuturework}
 %
 We have shown that sequential decision processes can quite comfortably be combined.
 %
 Things start to get interesting when we consider writing new policies rather than combining existing policies.
 %
-As exemplified in section \ref{subsec:policycombinators} a policy for a product state is essentially a policy for one process parameterised over another.
+As exemplified in section \ref{sec:policycombinators} a policy for a product state is essentially a policy for one process parameterised over another.
 %
 This becomes particularly interesting when we look at the interleaved process where we only wish to advance one component but we now have information about the other also.
 %

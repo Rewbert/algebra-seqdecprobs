@@ -1,6 +1,6 @@
 % -*- latex -*-
-\subsection{Time dependent processes}
-\label{subsec:timedependentcase}
+\section{Time dependent processes}
+\label{sec:timedependentcase}
 
 %
 Imagine a process where the state space can vary over time.
@@ -43,7 +43,7 @@ record SDProcT : Set₁ where
 %
 The state is now dependent on a parameter |t : ℕ|, which allows the state to take on alternate forms.
 %
-In section \ref{subsubsec:timedependentexample} we illustrate what this means.
+In section \ref{subsec:timedependentexample} we illustrate what this means.
 %
 
 %
@@ -57,8 +57,8 @@ embed (SDP S C sf)
   = SDPT (λ _ → S) (λ _ → C) (λ _ → sf)
 \end{code}
 
-\subsection{A discussion on the |Fin| type}
-\label{subsec:fintype}
+\section{A discussion on the |Fin| type}
+\label{sec:fintype}
 %
 Before we move on to an example of a time dependent process, we need to briefly present the |Fin| type and its properties.
 %
@@ -138,8 +138,8 @@ We can't do this as is since the element |suc x| is of type |Fin (suc n)|, the e
 %
 To get the proper type we need to invoke |inject₁| twice, which is illustrated in figure \ref{images:injectinject}.
 
-\subsubsection{Time dependent example}
-\label{subsubsec:timedependentexample}
+\subsection{Time dependent example}
+\label{subsec:timedependentexample}
 %
 Looking back at the time independent example, we reflect on the choice of state.
 %
@@ -201,7 +201,7 @@ The step function says the same thing as in the previous example, but it says it
 %
 If the state is zero there is only two available controls, and we update the state like we did previously.
 %
-However, if the state is greater than |zero| we need to change the types as described in section \ref{subsec:fintype}.
+However, if the state is greater than |zero| we need to change the types as described in section \ref{sec:fintype}.
 %
 For the left control the result has to be injected twice, and for the stay control it has to be injected once.
 %

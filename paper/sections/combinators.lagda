@@ -1,6 +1,6 @@
 % -*- latex -*-
-\subsection{Combinators for sequential decision processes}
-\label{subsec:combsecdecproc}
+\section{Combinators for sequential decision processes}
+\label{sec:combsecdecproc}
 
 %if false
 \begin{code}
@@ -92,8 +92,8 @@ Of course, the other process could itself be the singleton process also, in whic
 %
 
 %-----------------------------------------------------------------------
-\subsubsection{Coproduct}
-\label{subsubsec:coproductseqdecproc}
+\subsection{Coproduct}
+\label{subsec:coproductseqdecproc}
 
 %
 Seeing how we defined a product combinator of two processes, we are interested in also defining a sum combinator for processes.
@@ -186,8 +186,8 @@ There is no way to begin advancing the empty process, and so the only available 
 %
 
 %-----------------------------------------------------------------------
-\subsubsection{Yielding Coproduct}
-\label{subsubsec:yieldingcoproductseqdecproc}
+\subsection{Yielding Coproduct}
+\label{subsec:yieldingcoproductseqdecproc}
 
 %
 Computing the coproduct of two processes and getting a process that behaves like either of the two, without actually considering the other process, leaves us wondering what this is useful for.
@@ -262,7 +262,7 @@ With a combinator such as this one could you model e.g a two player game.
 %
 The processes would be the players and the combined process allows each to take turns making their next move.
 %
-In section \ref{subsec:policycombinators} we discuss how a policy for such a process is something of a game leader.
+In section \ref{sec:policycombinators} we discuss how a policy for such a process is something of a game leader.
 %
 
 %
@@ -274,8 +274,8 @@ Further more, we would not be able to give a definition for a function |S₁ -> 
 %
 
 %-----------------------------------------------------------------------
-\subsubsection{Interleaving processes}
-\label{subsubsec:interleavingseqdecproc}
+\subsection{Interleaving processes}
+\label{subsec:interleavingseqdecproc}
 %
 The next combinator we introduce is one that interleaves processes.
 %
@@ -285,7 +285,7 @@ This behaviour could be similar to that of a game, where two players take turns 
 %
 However, the users do not know what moves the other player has made, and can therefore not make particularly smart moves.
 %
-In section \ref{subsec:policycombinators} it is reasoned that writing new policies for a process like this will be a policy that does know what move the other 'player' has made.
+In section \ref{sec:policycombinators} it is reasoned that writing new policies for a process like this will be a policy that does know what move the other 'player' has made.
 %
 
 %

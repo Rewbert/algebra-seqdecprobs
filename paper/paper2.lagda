@@ -126,44 +126,43 @@
 %\end{abstract}
 \maketitle
 
-%include sections/extabstract.lagda
+% include sections/extabstract.lagda
 
 % \paragraph{Acknowledgements.}
 % %
 % The reviewers suggested many improvements to the paper.
 
 %------------------------------------------------------------------------------
-%\newpage
-\bibliography{paper}
+% \newpage
 
 %\clearpage
 %\appendix
 %\section{Appendix}
 %\label{sec:appendix}
 %\TODO{Better title perhaps}
-%\subsection{Project introduction}
-%\label{subsec:projectintroduction}
-%\TODO{Är det GU + Chalmers? Jag vet aldrig hur jag skall framställa sådant här pga sammmarbetet.}
+\section{Project introduction}
+\label{sec:projectintroduction}
+\TODO{Är det GU + Chalmers? Jag vet aldrig hur jag skall framställa sådant här pga sammmarbetet.}
 %
-%The work described in this text is the result of a project carried out at Gothenburg University by Robert Krook, under the supervision of Patrik Jansson.
+The work described in this text is the result of a project carried out at Gothenburg University by Robert Krook, under the supervision of Patrik Jansson.
 %
-%Robert has worked independently and met once a week with Patrik over the course of 8 weeks to discuss progress, potential bottlenecks and what to do next.
+Robert has worked independently and met once a week with Patrik over the course of 8 weeks to discuss progress, potential bottlenecks and what to do next.
 %
-%Patrik has been an invaluable source of information, both regarding sequential decision problems and how to write a scientific text.
+Patrik has been an invaluable source of information, both regarding sequential decision problems and how to write a scientific text.
 %
-% include sections/examples.lagda
+%include sections/examples.lagda
 %------------------------------------------------------------------------------
-% include sections/combinators.lagda
+%include sections/combinators.lagda
 %------------------------------------------------------------------------------
-% include sections/core/seqdecproctime.lagda
+%include sections/core/seqdecproctime.lagda
 %------------------------------------------------------------------------------
-% include sections/combinatorstime.lagda
+%include sections/combinatorstime.lagda
 %------------------------------------------------------------------------------
-% include sections/policycombinators.lagda
+%include sections/policycombinators.lagda
 %------------------------------------------------------------------------------
-% xinclude sections/conclusions.lagda
+%include sections/conclusions.lagda
 %------------------------------------------------------------------------------
 % \newpage
 % %include sections/appendix.lagda
-
+\bibliography{paper}
 \end{document}

@@ -1,7 +1,7 @@
 % -*- Latex -*-
 
-\subsection{Policy Combinators}
-\label{subsec:policycombinators}
+\section{Policy Combinators}
+\label{sec:policycombinators}
 
 %
 Now that we have a way of reusing sequential decision processes to create more sophisticated processes, we want to reuse existing policy sequences also.
@@ -94,15 +94,15 @@ _⇄P_  :  {S₁ S₂ : Set}
 (p₁ ⇄P p₂) (suc (suc ()) , _)
 \end{code}
 
-\subsection{A note on Policies}
-\label{subsec:anoteonpolicies}
+\section{A note on Policies}
+\label{sec:anoteonpolicies}
 %
 With these policy combinators defined, we make a few observations.
 %
 These observations intend to illustrate some of the meanings behind policies.
 %
-\subsubsection{Product State Policies}
-\label{subsubsec:productstatepolicies}
+\subsection{Product State Policies}
+\label{subsec:productstatepolicies}
 %
 Recall a policy for a product state.
 %
@@ -127,8 +127,8 @@ In such a scenario a policy could be something of a game leader, making the best
 The policy can, after all, make a decision for one of the components based on the state of both components.
 %
 
-\subsubsection{Sum state implies Product Policy}
-\label{subsubsec:sumstateimpliesproductpolicy}
+\subsection{Sum state implies Product Policy}
+\label{subsec:sumstateimpliesproductpolicy}
 Another interesting observation to make is that a policy for a process with a sum state, e.g a policy for a coproduct, is a pair of policies for the separate processes.
 %
 We can make this concrete with the following two definitions.

@@ -5,7 +5,8 @@
 DONE line 114 explain that rewards are important but not part of the paper (just shown for completeness)
 DONE line 114.5, why does `reward` take a second `State` argument? [A]
 DONE line 120 explain that we aim at finite horizon problems [no inf. sum, but usually discounted] perhaps comment in paper [A]
-DONE line 121, why "a sequence of _policies_" rather than "a _policy_"? [A]
+TODO line 121, why "a sequence of _policies_" rather than "a _policy_"? [A]
+  comment: Need the extra space in the article. Perhaps mention in talk?
 DONE line 148 (tests) explain that the goal is to compute policies Bellman's backward induction [C]
 DONE line 148 seems to have an extra `2 ::` [A]
 DONE line 212.5 seems to have an extra `(2,5) ::` [A]

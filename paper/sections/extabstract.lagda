@@ -69,6 +69,7 @@ open import Data.Nat
 open import Data.Product
 open import Data.Vec
 open import Relation.Binary.PropositionalEquality
+open import core.traj
 
 open import examples using (oned-state; oned-control; oned-step; oned-system; tryleft; stay; right)
 open import core.seqdecproc -- using (SDProc; #st_; #sf_)
@@ -142,9 +143,9 @@ test1 :  trajectory oned-system pseq 0 ≡  0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ []
 test1 = refl
 \end{code}
 %
-We use a sequence of policies rather than a constant policy as the policy is something of a strategy.
+%We use a sequence of policies rather than a constant policy as the policy is something of a strategy.
 %
-As a process progresses and different states are inhabited one might wish to alter his or her strategy.
+%As a process progresses and different states are inhabited one might wish to alter his or her strategy.
 %
 
 %
@@ -163,8 +164,6 @@ The state of the product of two processes is the product of the two separate sta
 %
 
 %
-The other components, the |Control| and the function |step| must be described and combined more thoroughly.
-%
 Given two control families, we can compute the control family for pairs of states.
 %
 The inhabitants (the controls) of each family member are pairs of controls for the two state components.
@@ -177,19 +176,14 @@ _×C_  :  {S₁ S₂ : Set} ->
 %
 %TODO Maybe insert conor mcbride discussion here - not for the extabstract
 %
-Next we want to compute the product of two such step functions.
-%
-Given two step functions we can define a new step function by returning the pair computed by applying the individual step functions to the corresponding components of the input.
+Given two step functions we can define a new step function for the product process by returning the pair computed by applying the individual step functions to the corresponding components of the input.
 %
 \begin{code}
-_×sf_  :  {S₁ S₂ : Set} ->
-          {C₁ : Con S₁} {C₂ : Con S₂} ->
-          Step S₁ C₁ -> Step S₂ C₂ ->
-          Step (S₁ × S₂) (C₁ ×C C₂)
+_×sf_  :   {S₁ S₂ : Set} {C₁ : Con S₁} {C₂ : Con S₂}
+       ->  Step S₁ C₁ -> Step S₂ C₂
+       ->  Step (S₁ × S₂) (C₁ ×C C₂)
 (sf₁ ×sf sf₂) (s₁ , s₂) (c₁ , c₂) = (sf₁ s₁ c₁ , sf₂ s₂ c₂)
 \end{code}
-%
-Now we have combinators for each of the individual components.
 %
 We can compute the product of two sequential decision processes by applying the combinators componentwise.
 %
@@ -204,14 +198,12 @@ We illustrate what this combinator does in Figure \ref{images:product}.
 \begin{figure}
 \centering
 \includegraphics[scale=0.7]{images/product.png}
-\caption{Illustration of a product of two processes. The process holds components of both states and applies the step function to both components simultaneously. To understand why the components have two incoming arrows, we need to discuss policies. A policy for a product process has access to both states and computes controls for both components. Thus it can base the choice of control for one component on both state components.}
+\caption{The product process holds components of both states and applies the step function to both components simultaneously. Each component of the successor state has two incoming arrows as the policy that computes the control that is used has access to both components of the previous state.}
 \label{images:product}
 \end{figure}
 
 %
-With the product combinator now at hand we illustrate how we can use it.
-%
-We apply the combinator to the system assumed to exist earlier.
+To illustrate how the combinator works we apply it to the system assumed to exist earlier.
 %
 \begin{code}
 twod-system = oned-system ×SDP oned-system
@@ -223,8 +215,8 @@ To reuse the policy sequence we need to also combine policies, which we show how
 %
 \begin{code}
 twodsequence = zipWith _×P_ pseq pseq
-twodtest1 :  trajectory twod-system twodsequence (0 , 5)
-               ≡  (0 , 4) ∷ (0 , 3) ∷ (1 , 4) ∷  (1 , 4) ∷ (2 , 5) ∷ []
+twodtest1  :  trajectory twod-system twodsequence (0 , 5)
+           ≡  (0 , 4) ∷ (0 , 3) ∷ (1 , 4) ∷  (1 , 4) ∷ (2 , 5) ∷ []
 twodtest1 = refl
 \end{code}
 %

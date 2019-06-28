@@ -3,7 +3,7 @@
 \label{sec:introduction}
 Sequential decision processes and problems are a well established concept in decision theory, with the Bellman equation \cite{Bellman1957} as a popular choice for describing them.
 %
-Botta et al \cite{brady2013idris} have formalised the notion of such problems in Idris, a general purpose programming language with dependent types.
+Botta et al \cite{brady2013idris} have formalised the notion of such problems in Idris. %, a general purpose programming language with dependent types.
 %
 Using dependent types to bridge the gap between description and implementation of complex systems, for purposes of simulation, has been shown to be a good choice \cite{ionescujansson2013DTPinSciComp}.
 %
@@ -22,6 +22,7 @@ The concepts of feasibility and avoidability have been formalised and presented 
 Although motivated by the complexity of modelling in climate impact research, we focus on simpler examples of sequential decision processes and how to combine them.
 %
 
+\paragraph{Examples:}
 Assume that we have a process |p : SDProc| that models something moving through a 1-D coordinate system with a natural number as the state and |+1|, |0|, and |-1| as actions.
 %
 If the circumstances change and we need to model how something moves in a 2-D coordinate system, it would be convenient if we could reuse the one dimensional system and get the desired system for free.
@@ -49,7 +50,7 @@ Then we would want a combinator |_⊎SDPT_ : SDProcT → SDProcT → SDProcT| su
 >  game = p²' ⊎SDPT (embed p³)
 
 %
-These combinators, and more, make up an \emph{Algebra of Sequential Decision Processes}.
+These combinators, and more, make up an \emph{Algebra of SDPs}.%Sequential Decision Processes
 %
 
 \section{Sequential Decision Problems}
@@ -92,19 +93,20 @@ and for the the type of step functions defined in terms of a state and a family 
 >Step : (S : Set) -> Con S -> Set
 >Step S C = (s : S) -> C s -> S
 %
-With these in place we define a record type for Sequential Decision Processes:
+With these in place we define a record type for SDPs:% Sequential Decision Processes
 \savecolumns
 >record SDProc : Set1 where
 >  constructor SDP
->  field
->    State    : Set
->    Control  : Con State
->    step     : Step State Control
+>  field    State    : Set
+>           Control  : Con State
+>           step     : Step State Control
 %
-We can extend this idea of a sequential decision \emph{process} to that of a \emph{problem} by adding an additional field |reward| (where |Val| is often |ℝ|).
+We can extend this idea of a sequential decision \emph{process} to that of a \emph{problem} by adding an additional field |reward|.
 %
 \restorecolumns
->    reward   :  (x : State) -> Control x -> Val
+>           reward   :  (x : State) -> Control x -> Val
+%
+where |Val| is often |ℝ|.
 %
 From the type we conclude that the reward puts a value on the steps taken by the step function, based on the state transition and the control used.
 %
@@ -116,7 +118,7 @@ The system presented here aims at describing finite horizon problems, meaning th
 %
 Furthermore, rewards are usually discounted the as time passes.
 %
-One step |now| is worth more than the same step e.g 20 turns from now.
+One action |now| is worth more than the same action a few steps later.
 %
 Rewards, and problems, are not the focus of this abstract but are mentioned for completeness.
 
@@ -125,17 +127,17 @@ A policy is a function from states to controls:
 >Policy : (S : Set) -> Con S -> Set
 >Policy S C = (s : S) → C s
 %
-We can use this definition to give a way of evaluating a process.
+Given a list of policies to apply, one for each time step, we can compute the trajectory of a process from a starting state.
 %
 Here the |#st| and |#sf| functions extract the state and step component from the |SDProc| respectively.
 %
 %include core/traj.lagda
 %
-To illustrate how a process is evaluated using this function we assume we have a one dimensional process |oned-system| and an example policy sequence |pseq|, which we evaluate as seen in the type of |test1|.
+As an example of a trajectory computation we return to the one dimensional process |oned-system| (called just |p| in the intro) and an example policy sequence |pseq|.
 %
 Ideally |pseq| is the result of an optimization computed using Bellmans backwards induction.
 %
-Otherwise, the evaluations might not be that interesting.
+Here we just illustrate one trajectory:
 %
 \begin{code}
 pseq = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
@@ -143,13 +145,13 @@ test1 :  trajectory oned-system pseq 0 ≡  0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ []
 test1 = refl
 \end{code}
 %
+In an applied setting many trajectories would be computed to explore the system behaviour.
+%
 %We use a sequence of policies rather than a constant policy as the policy is something of a strategy.
 %
 %As a process progresses and different states are inhabited one might wish to alter his or her strategy.
 %
-
-%
-The brief example illustrated here is presented in its entirety in the appendix.
+This brief example is fully presented in an accompanying technical report \cite{AlgSDPreport}.
 %
 
 %
@@ -160,7 +162,16 @@ In this abstract we focus on non-monadic, time-independent, sequential decision 
 %
 To compute |p²| we need to define a \emph{product} combinator for SDPs.
 %
-The state of the product of two processes is the product of the two separate states.
+We illustrate what this combinator does in Figure \ref{images:product}.
+%
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{images/product.png}
+\caption{The product process holds components of both states and applies the step function to both components simultaneously. Each component of the next state has two incoming arrows as the policy that computes the control that is used has access to both components of the previous state.}
+\label{images:product}
+\end{figure}
+%
+The state of the product of two processes is the cartesian product of the two separate states.
 %
 
 %
@@ -185,25 +196,16 @@ _×sf_  :   {S₁ S₂ : Set} {C₁ : Con S₁} {C₂ : Con S₂}
 (sf₁ ×sf sf₂) (s₁ , s₂) (c₁ , c₂) = (sf₁ s₁ c₁ , sf₂ s₂ c₂)
 \end{code}
 %
-We can compute the product of two sequential decision processes by applying the combinators componentwise.
+Finally, we can compute the product of two sequential decision processes by applying the combinators componentwise.
 %
 \begin{code}
 _×SDP_ : SDProc → SDProc → SDProc
 (SDP S₁ C₁ sf₁) ×SDP (SDP S₂ C₂ sf₂)
   = SDP (S₁ × S₂) (C₁ ×C C₂) (sf₁ ×sf sf₂)
 \end{code}
-%
-We illustrate what this combinator does in Figure \ref{images:product}.
-%
-\begin{figure}
-\centering
-\includegraphics[scale=0.7]{images/product.png}
-\caption{The product process holds components of both states and applies the step function to both components simultaneously. Each component of the successor state has two incoming arrows as the policy that computes the control that is used has access to both components of the previous state.}
-\label{images:product}
-\end{figure}
 
 %
-To illustrate how the combinator works we apply it to the system assumed to exist earlier.
+To illustrate how the combinator works we apply it to the system (|oned-system|) mentioned previously.
 %
 \begin{code}
 twod-system = oned-system ×SDP oned-system
@@ -211,18 +213,20 @@ twod-system = oned-system ×SDP oned-system
 %
 Now |twod-system| is a process of two dimensions rather than one, as illustrated by the type of |test2|.
 %
-To reuse the policy sequence we need to also combine policies, which we show how to do in section \ref{subsec:policycombinators} of the appendix.
-%
 \begin{code}
 twodsequence = zipWith _×P_ pseq pseq
-twodtest1  :  trajectory twod-system twodsequence (0 , 5)
-           ≡  (0 , 4) ∷ (0 , 3) ∷ (1 , 4) ∷  (1 , 4) ∷ (2 , 5) ∷ []
-twodtest1 = refl
+test2  :  trajectory twod-system twodsequence (0 , 5)
+       ≡  (0 , 4) ∷ (0 , 3) ∷ (1 , 4) ∷  (1 , 4) ∷ (2 , 5) ∷ []
+test2 = refl
 \end{code}
 %
-Further work is presented in the appendix.
-%
-We present more combinators both for time dependent and time independent processes.
+
+\section{Wrapping up}
+
+In the technical report \cite{AlgSDPreport} we present more combinators for time dependent and time independent processes and policies.
 %
 We implement the example of a coordinate system described above, and make it even more precise as a time dependent process.
 %
+Future work includes generalising to monadic SDPs and applying our combinators to the green house gas emission problem \cite{esd-2017-86}.
+
+We thank the anonymous reviewers for their helpful comments and the Agda developers for a great tool!

@@ -14,12 +14,13 @@
 
 %let submit = False
 % \documentclass[sigplan,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
-\documentclass[sigplan,review]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+\documentclass[sigplan]{acmart}%\settopmatter{printfolios=true,printccs=false,printacmref=false}
 
 %% Conference information
 %% Supplied to authors by publisher for camera-ready submission;
 %% use defaults for review submission.
-\acmConference[TyDe'19]{ACM SIGPLAN TODO}{August 18, 2019}{Berlin, Germany}
+\acmConference[TyDe'19]{ACM SIGPLAN Workshop on Type-Driven Development}{August 18, 2019}{Berlin, Germany}
+%\acmConference[TyDe'19]{Type-Driven Development}{August 18, 2019}{Berlin, Germany}
 \acmYear{2019}
 \acmISBN{} % \acmISBN{978-x-xxxx-xxxx-x/YY/MM}
 \acmDOI{} % \acmDOI{10.1145/nnnnnnn.nnnnnnn}
@@ -95,7 +96,7 @@
 % -------------------------------------------------------------------------------
 \begin{document}
 \title{An Algebra of Sequential Decision Problems}
-\subtitle{Extended Abstract}
+\subtitle{Technical Report}
 % \author{Robert Krook\inst{1}\orcidID{0000-0003-3619-2975}
 %    \and Patrik Jansson\inst{1,2}\orcidID{0000-0003-3078-1437}}
 \author{Robert Krook}
@@ -126,23 +127,27 @@
 %\end{abstract}
 \maketitle
 
-% include sections/extabstract.lagda
+%include sections/extabstract.lagda
 
 % \paragraph{Acknowledgements.}
 % %
 % The reviewers suggested many improvements to the paper.
 
 %------------------------------------------------------------------------------
-% \newpage
+%\newpage
+\bibliography{paper}
 
-%\clearpage
+\clearpage
 %\appendix
-%\section{Appendix}
-%\label{sec:appendix}
-%\TODO{Better title perhaps}
-\section{Project introduction}
-\label{sec:projectintroduction}
-\TODO{Är det GU + Chalmers? Jag vet aldrig hur jag skall framställa sådant här pga sammmarbetet.}
+
+\section{Technical Report}
+\label{sec:technicalreport}
+%
+The rest of this report makes up the technical report.
+%
+The technical report describes further combinators, discusses time dependent processes and provide more thorough examples.
+%
+
 %
 The work described in this text is the result of a project carried out at Gothenburg University by Robert Krook, under the supervision of Patrik Jansson.
 %
@@ -164,5 +169,5 @@ Patrik has been an invaluable source of information, both regarding sequential d
 %------------------------------------------------------------------------------
 % \newpage
 % %include sections/appendix.lagda
-\bibliography{paper}
+
 \end{document}

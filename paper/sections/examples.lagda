@@ -54,7 +54,6 @@ data oned-control : oned-state -> Set where
 %
 We implement the step function by pattern matching on the control.
 %
-\TODO{spellcheck recognises}
 In the case of the |Left| control Agda recognises that the state must be a sucessor.
 %
 We increment or decrement the state accordingly and leave it unchanged for the |Stay| control.
@@ -72,7 +71,6 @@ The policies right, stay and tryleft are all policies of this kind.
 %
 tryleft is special in the sense that if the state is zero it will do nothing, as it can not go left.
 %
-\TODO{Put policy in record}
 \begin{code}
 oned-Policy = (x : oned-state) -> oned-control x
 

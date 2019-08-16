@@ -1,10 +1,10 @@
 % -*- Latex -*-
 
-\section{Appendix}
-\label{sec:appendix}
+\subsection{Appendix B}
+\label{subsec:appendixb}
 
-\subsection{Time dependent interleaved process}
-\label{subsec:timedependentinterleavedprocess}
+\subsubsection{Time dependent interleaved process}
+\label{subsubsec:timedependentinterleavedprocess}
 
 %
 The time dependent interleaved combinator needs to compute a process that holds components of both processes.
@@ -30,7 +30,7 @@ half n = ⌊ n /2⌋
 \end{code}
 %endif
 \begin{code}
-_⇄S_ : (S₁ S₂ : Pred ℕ) → Pred ℕ
+_⇄S_ : (S₁ S₂ : Con ℕ) → Con ℕ
 s₁ ⇄S s₂ = λ t → s₁ (half t + rem t) × s₂ (half t)
 \end{code}
 %
@@ -41,8 +41,8 @@ If the remainder is |zero|, we want to advance the first component of the state 
 Correspondingly, if the remainder is one we want to advance the other and therefore select the second components control space.
 %
 \begin{code}
-_⇄C_  :  {S₁ S₂ : Pred ℕ}
-      →  Pred' S₁ → Pred' S₂ → Pred' (S₁ ⇄S S₂)
+_⇄C_  :  {S₁ S₂ : Con ℕ}
+      →  Con' S₁ → Con' S₂ → Con' (S₁ ⇄S S₂)
 (C₁ ⇄C C₂) time (s₁ , s₂)
   with rem time | inspect rem time
 (C₁ ⇄C C₂) time (s₁ , s₂) | zero     | p
@@ -53,7 +53,7 @@ _⇄C_  :  {S₁ S₂ : Pred ℕ}
 %
 We get stuck when we try to implement the new step function.
 %
-As already mentioned in the text Agda does not recognise that if we advance the first component the second one can be left unchanged.
+As already mentioned in the text, Agda does not recognise that if we advance the first component the second one can be left unchanged.
 %
 One approach to implement this could maybe be to let the state carry a proof that if the remainder is zero, incrementing the time index by one and then taking half of that is the same as the current time index.
 %
@@ -62,8 +62,8 @@ Then perhaps Agda could see that leaving the second component unchanged is a val
 Similar reasoning applies to changing the second component and leaving the first unchanged.
 %
 \begin{code}
-_⇄sf_  :  {S₁ S₂ : Pred ℕ}
-       →  {C₁ : Pred' S₁} {C₂ : Pred' S₂}
+_⇄sf_  :  {S₁ S₂ : Con ℕ}
+       →  {C₁ : Con' S₁} {C₂ : Con' S₂}
        →  Step S₁ C₁ → Step S₂ C₂
        →  Step (S₁ ⇄S S₂) (C₁ ⇄C C₂)
 (sf₁ ⇄sf sf₂) time (s₁ , s₂) c
@@ -78,22 +78,26 @@ _⇄sf_  :  {S₁ S₂ : Pred ℕ}
 \label{subsec:combiningpolicysequences}
 
 %
-In section \ref{sec:policycombinators} we showed how to combine policies.
+In section \ref{subsec:policycombinators} we showed how to combine policies.
 %
-The policy combinators works very well with |zipWith|.
+The policy combinators work very well with |zipWith|.
 %
 We did however also implement a function to combine sequences, where we could be very clear in the types what is actually happening.
 %
-The defining equation is the same as we used in section \ref{sec:timedependentcase} to combine two sequences, |zipWith|.
+The defining equation is the same as we used in section \ref{subsec:timedependentcase} to combine two sequences, |zipWith|.
 %
 When we use this combinator Agda will mark the usage as yellow and report errors of unsolved constraints.
 %
 \begin{code}
 combineSeq  :  {p₁ p₂ : SDProc} {n : ℕ}
                {_:c:_ : SDProc → SDProc → SDProc}
-            →  (Policy p₁ → Policy p₂ → Policy (p₁ :c: p₂))
-            →  PolicySeq p₁ n → PolicySeq p₂ n
-            →  PolicySeq (p₁ :c: p₂) n
+            →  (  Policy (#st p₁) (#c p₁) →
+                  Policy (#st p₂) (#c p₂) →
+                  Policy (#st (p₁ :c: p₂)) (#c (p₁ :c: p₂)))
+            →  PolicySeq (#st p₁) (#c p₁) n
+            →  PolicySeq (#st p₂) (#c p₂) n
+            →  PolicySeq  (#st (p₁ :c: p₂))
+                          (#c (p₁ :c: p₂)) n
 combineSeq = zipWith
 \end{code}
 

@@ -1,0 +1,26 @@
+Dear Patrik Jansson,
+
+Regarding your recently accepted extended abstract to appear at TyDe'19:
+
+       Title: An Algebra of Sequential Decision Problems
+        Site: https://tyde19.hotcrp.com/paper/18
+
+Here are a few gentle reminders regarding final submission:
+
+- Extended abstracts are posted to the workshop website, but not included
+in
+  the formal proceedings
+- The camera ready deadline is 30 June, 2019, 11:59pm AoE
+- You should submit the final version of your abstract by email to the
+  organizers (david.darais@uvm.edu,jeremy.gibbons@cs.ox.ac.uk)
+- The page limit for the main body of the paper is 2 pages; the
+bibliography
+  does not count towards this page limit
+- Appendices are not allowed
+
+Thanks, and let us know if you have any questions.
+
+Best,
+TyDe '19 Organizers
+David Darais
+Jeremy Gibbons

@@ -20,18 +20,24 @@ open import Data.Vec
 \end{code}
 %endif
 \begin{code}
+ConT : (ℕ -> Set) → Set₁
+ConT S = (t : ℕ) -> S t → Set
+
+StepT : (S : ℕ -> Set) -> ConT S -> Set
+StepT S C = (t : ℕ) -> (s : S t) -> C t s -> S (suc t)
+
 record SDProcT : Set₁ where
   constructor SDPT
   field
-    State    : (t : ℕ) → Set
-    Control  : (t : ℕ) → State t → Set
-    step     : (t : ℕ)
-           →  (x : State t) → Control t x → State (suc t)
+    State    : ℕ → Set
+    Control  : ConT State
+    step     : StepT State Control
 \end{code}
 %if false
 \begin{code}
 #st = SDProcT.State
 #sf = SDProcT.step
+#c  = SDProcT.Control
 \end{code}
 %endif
 %
@@ -51,8 +57,8 @@ embed (SDP S C sf)
   = SDPT (λ _ → S) (λ _ → C) (λ _ → sf)
 \end{code}
 
-\subsection{A discussion on the |Fin| type}
-\label{subsec:fintype}
+\section{A discussion on the |Fin| type}
+\label{sec:fintype}
 %
 Before we move on to an example of a time dependent process, we need to briefly present the |Fin| type and its properties.
 %
@@ -143,24 +149,13 @@ With the time dependent process at our disposal however we notice a source of in
 %
 
 %
-In the general case we could only be in three different states after one step.
+We consider the case where the process is always evaluated with |zero| as the initial state.
 %
-Either we stayed, went left or we went right.
+After 1 step we could either have stayed or we went right, meaning the state is now |zero| or |suc zero|.
 %
-After two steps we could be in any of five possible states.
+After 2 steps we could have gone left, stayed or gone right.
 %
-This behaviour is illustrated in figure \ref{fig:generalcasefin}.
-%
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.75]{images/generalcasefin}
-  \caption{How the state space grows in the general case, where we can either increment, decrement or do nothing.}
-  \label{fig:generalcasefin}
-\end{figure}
-%
-This can be generalised to saying that at time |n| the number of possible states are |n + 2|.
-%
-In figure \ref{fig:edgecasefin} the edge case is illustrated, and we note that the number of possible states after n steps are |n+1|.
+In figure \ref{fig:edgecasefin} this edge case is illustrated, and we note that the number of possible states after n steps is |n+1|.
 %
 \begin{figure}[H]
   \centering
@@ -170,8 +165,6 @@ In figure \ref{fig:edgecasefin} the edge case is illustrated, and we note that t
 \end{figure}
 %
 If we consider the example from earlier but restrict it to starting in state zero, we could define this process as follows.
-%
-We can encode this behaviour in the state space of the coordinate system as follows.
 %
 \begin{code}
 oned-state : ℕ → Set
@@ -208,7 +201,7 @@ The step function says the same thing as in the previous example, but it says it
 %
 If the state is zero there is only two available controls, and we update the state like we did previously.
 %
-However, if the state is greater than |zero| we need to change the types as described in section \ref{subsec:fintype}.
+However, if the state is greater than |zero| we need to change the types as described in section \ref{sec:fintype}.
 %
 For the left control the result has to be injected twice, and for the stay control it has to be injected once.
 %

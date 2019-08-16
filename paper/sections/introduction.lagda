@@ -67,7 +67,7 @@ In this text we implement a small library of combinators for sequential decision
 %
 We give examples where we use the combinators mentioned above and discuss the properties of the resulting processes.
 %
-In section \ref{sec:timedependentcase} we define time dependent processes and follow up by reimplementing a previously seen example, where we can now be more fine grained about what we are modeling.
+In section \ref{subsec:timedependentcase} we define time dependent processes and follow up by reimplementing a previously seen example, where we can now be more fine grained about what we are modeling.
 %
 Then we redefine the previously implemented combinators in terms of these new processes.
 %

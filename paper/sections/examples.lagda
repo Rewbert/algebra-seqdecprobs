@@ -1,49 +1,31 @@
 % -*- latex -*-
 
-\section{Examples}
-\label{sec:examples}
+\section{Example}
+\label{sec:example}
 
 %if false
 module examples where
 
 \begin{code}
+open import core.traj
 open import core.seqdecproc
 open import core.seqdecprob hiding (Policy; PolicySeq)
-open import Data.Nat
+open import Data.Nat hiding (_<_)
+open import Agda.Builtin.Nat using (_<_)
 open import Data.Vec
 open import Relation.Binary.PropositionalEquality
+open import Data.Bool
 \end{code}
 
 %endif
 
 Let us consider a sequential decision process where the state space is a one dimensional coordinate system represented by natural numbers.
 %
-
 \begin{code}
 oned-state  :  Set
 oned-state  =  ℕ
 \end{code}
 
-%
-Generally there are three available controls.
-%
-Taking a step to the left, staying, or taking a step to the right.
-%
-Here, taking a step to the left means subtracting one from the coordinate, staying means not changing it at all and taking a step to the right means incrementing by one.
-%
-
-\begin{code}
-data SAction : Set where
-  SL  : SAction -- left
-  SS  : SAction -- stay
-  SR  : SAction -- right
-\end{code}
-
-%
-However, there is an edge case.
-%
-When the state is zero, it is not possible to take a step to the left, and so there are only two available controls.
-%
 %if false
 \begin{code}
 distance : ℕ → ℕ → ℕ    -- distance m n = abs (m-n)  informally
@@ -53,150 +35,120 @@ distance (suc n) zero    = 1 + distance n zero
 distance (suc n) (suc m) = distance n m
 \end{code}
 %endif
-%if False
-\TODO{Perhaps use an indexed datatype (a type family) directly:}
-\TODO{Perhaps use |+1| for |Right|, some zero (say 0_C) for |Stay|, and |-1| for |Left| as in the intro.}
+
+%
+Seeing how the state space are the natural numbers we emphasize that the coordinate system has only positive coordinates.
+%
+In any given state, generally, we can choose to either increment, decrement or do nothing to the state.
+%
+In the edge case where the state is |0| we can not decrement the state.
+%
+We can encode this control as a type family in Agda.
+%
 \begin{code}
-module Family where
-  data oned-control : oned-state -> Set where
-    Right  : {n : oned-state} -> oned-control n
-    Stay   : {n : oned-state} -> oned-control n
-    Left   : {n : oned-state} -> oned-control (suc n)
-
-  oned-step  :  (x : oned-state) -> oned-control x -> oned-state
-  oned-step x        Right  = suc x
-  oned-step x        Stay   = x
-  oned-step (suc x)  Left   = x
-
-  oned-Policy = (x : oned-state) -> oned-control x
-
-  right stay tryleft : oned-Policy
-  right    _        = Right
-  stay     _        = Stay
-  tryleft  zero     = Stay
-  tryleft  (suc s)  = Left
-
-  towards : ℕ -> oned-Policy
-  towards goal n with compare n goal
-  ... | less _ _     = Right
-  ... | equal _      = Stay
-  ... | greater _ _  = Left
+data oned-control : oned-state -> Set where
+  Right  : {n : oned-state} -> oned-control n
+  Stay   : {n : oned-state} -> oned-control n
+  Left   : {n : oned-state} -> oned-control (suc n)
 \end{code}
-\TODO{I think a solution to the optimisation below should be |towards n|.}
-%endif
-
-\begin{code}
-data ZAction : Set where
-  ZS  : ZAction -- stay
-  ZR  : ZAction -- right
-\end{code}
-
 %
-We can encode this behaviour since the control is depending on the state.
+We implement the step function by pattern matching on the control.
 %
-If the state is zero, the available controls are those defined in the |ZAction| data type.
+In the case of the |Left| control Agda recognises that the state must be a sucessor.
 %
-Otherwise the available controls are those defined in the |SAction| data type.
-%
-
-\begin{code}
-oned-control  :  oned-state -> Set
-oned-control zero     = ZAction
-oned-control (suc n)  = SAction
-\end{code}
-
-%
-The step function is defined by pattern matching on the state and the control, followed by executing the updates as described above.
+We increment or decrement the state accordingly and leave it unchanged for the |Stay| control.
 %
 \begin{code}
 oned-step  :  (x : oned-state) -> oned-control x -> oned-state
-oned-step  zero ZS      = zero
-oned-step  zero ZR      = suc zero
-oned-step  (suc n)  SL  = n
-oned-step  (suc n)  SS  = suc n
-oned-step  (suc n)  SR  = suc (suc n)
+oned-step x        Right  = suc x
+oned-step x        Stay   = x
+oned-step (suc x)  Left   = x
 \end{code}
 %
-With these three components we can instantiate a sequential decision process.
+We define a policy to be a function that given a state select a control.
+%
+The policies right, stay and tryleft are all policies of this kind.
+%
+tryleft is special in the sense that if the state is zero it will do nothing, as it can not go left.
+%
+\begin{code}
+oned-Policy = (x : oned-state) -> oned-control x
+
+right stay tryleft : oned-Policy
+right    _        = Right
+stay     _        = Stay
+tryleft  zero     = Stay
+tryleft  (suc s)  = Left
+\end{code}
+%
+We can parameterise a policy over a coordinate and define a policy that will select controls that moves the system towards this coordinate.
+%
+\begin{code}
+towards : ℕ -> oned-Policy
+towards goal n with compare n goal
+... | less _ _     = Right
+... | equal _      = Stay
+... | greater _ _  = Left
+\end{code}
+%
+With the three components state, control and step, we can instantiate a sequential decision process.
 %
 \begin{code}
 oned-system  :  SDProc
 oned-system  =  SDP oned-state oned-control oned-step
 \end{code}
 %
-If we wish to run this system and see an example of a trajectory, we need to define some policies.
-%
-Based on what state the system is in a policy will return a control.
-%
-The first policy we define we will name |tryleft|.
-%
-We name it so since there is no way to move left if the state is zero.
-%
-If this is the case, the policy will return a control that does nothing to the state.
-%
-\begin{code}
-tryleft : Policy oned-system
-tryleft zero     = ZS
-tryleft (suc s)  = SL
-\end{code}
-%
-The policies for stay and right are easy, as there are no corner cases.
-%
-\begin{code}
-stay : Policy oned-system
-stay zero     = ZS
-stay (suc s)  = SS
-
-right : Policy oned-system
-right zero     = ZR
-right (suc s)  = SR
-\end{code}
-%
 A policy sequence is now just a vector of policies.
 %
 \begin{code}
-pseq : PolicySeq oned-system 5 -- Vec (Policy oned-system) 5
+pseq : PolicySeq (#st oned-system) (#c oned-system) 5
 pseq = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
 \end{code}
 %
-We can now evaluate the system using this sequence, starting from different points.
+We can evaluate the system using this sequence, starting from different points.
 %
 We can use |≡| and |refl| to assert that the system behaves as intended.
-\TODO{Maybe explain briefly what refl and ≡ are?}
+%\TODO{Maybe explain briefly what refl and ≡ are?}
 %
 \begin{code}
-test1 : trajectory oned-system pseq 0 ≡ 0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ 2 ∷ []
+test1 : trajectory oned-system pseq 0 ≡  0 ∷ 0 ∷ 1 ∷
+                                         1 ∷ 2 ∷ []
 test1 = refl
 
-test2 : trajectory oned-system pseq 5 ≡ 4 ∷ 3 ∷ 4 ∷ 4 ∷ 5 ∷ 5 ∷ []
+test2 : trajectory oned-system pseq 5 ≡  4 ∷ 3 ∷ 4 ∷
+                                         4 ∷ 5 ∷ []
 test2 = refl
+\end{code}
+%
+We can use the clever policy to steer the process towards a goal.
+%
+\begin{code}
+test3 :  trajectory oned-system (replicate (towards 5)) 2 ≡
+          3 ∷ 4 ∷ 5 ∷ 5 ∷ 5 ∷ []
+test3 = refl
 \end{code}
 
 %
-Now, how to turn a process into a problem?
-%
-We need to introduce a notion of a goal, described by a |reward| function.
+To turn a process into a problem we need to introduce a notion of a goal, described by a |reward| function.
 %
 For our example we define the reward function to be parameterised over a target coordinate.
 %
 The reward function could then reward a proposed step based on how close to the target it lands.
 %
-
-\TODO{Maybe we need to mention the large number? Or is it obvious?}
 \begin{code}
-large-number : ℕ
-large-number = 10000
-
-oned-reward  :   oned-state
-             ->  (x : oned-state) -> oned-control x -> oned-state
-             ->  ℕ
-oned-reward target x0 y x1
-  = large-number  ∸ (distance target x1)
+oned-reward  :  oned-state
+             →  (x : oned-state) → oned-control x
+             →  oned-state → ℕ
+oned-reward target x₀ y x₁
+  = if distance target x₁ < distance target x₀
+    then 2
+    else (if distance target x₀ < distance target x₁
+          then 0
+          else 1)
 \end{code}
 %
 We can redefine the sequential decision process above to be a sequential decision problem simply by instantiating the |SDProb| record.
 %
-
 \begin{code}
 problem : oned-state -> SDProblem
 problem target
@@ -204,4 +156,4 @@ problem target
             oned-step   (oned-reward target)
 \end{code}
 
-\TODO{Example ``run'' would be instructive}
+%\TODO{Example ``run'' would be instructive}

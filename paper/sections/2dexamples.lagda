@@ -11,10 +11,11 @@ open import Data.Product hiding (map; zip)
 open import Data.Nat
 open import Data.Vec
 open import Relation.Binary.PropositionalEquality
+open import extabstract using (_×SDP_)
 \end{code}
 %endif
 %
-Looking back at the example of the one dimensional coordinate system, we find ourselves wondering if we would now get a process of a two dimensional coordinate system seemingly for free.
+Looking back at the example of the one dimensional coordinate system we find ourselves wondering if we would now indeed get a process of a two dimensional coordinate system seemingly for free.
 %
 The answer, unsurprisingly, is yes.
 %
@@ -28,7 +29,7 @@ In section \ref{sec:policycombinators} we introduce combinators for policy seque
 Here we use the product combinator to produce a policy sequence that is compatible with the new process.
 %
 \begin{code}
-twodsequence :  PolicySeq twod-system 5
+twodsequence :  PolicySeq (#st twod-system) (#c twod-system) 5
 twodsequence =  zipWith _×P_ pseq pseq
 \end{code}
 %

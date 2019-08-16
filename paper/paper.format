@@ -19,7 +19,8 @@
 %format sf2 = sf "\!_2"
 % %format (getstate x) = "\getstate{" x "}"
 %format oned-state    = "\Varid{1\!d\text{-}state}"
-%format one-d          = "\Varid{1\!d}"
+%format oned-Policy   = "\Varid{1\!d\text{-}Policy}"
+%format one-d         = "\Varid{1\!d}"
 %format oned-control  = "\Varid{1d\text{-}control}"
 %format oned-step     = "\Varid{1d\text{-}step}"
 %format oned-reward   = "\Varid{1d\text{-}reward}"
@@ -34,6 +35,7 @@
 
 %format #st = # "\ensuremath{_{\text{st}}}"
 %format #sf = # "\ensuremath{_{\text{sf}}}"
+%format #c =  # "\ensuremath{_{\text{c}}}"
 
 \newcommand{\un}{\mbox{\texttt{\_}}}   % short underscore
 \newcommand{\unopun}[1]{\ensuremath{\,\un{#1}\un\,}}

@@ -1,13 +1,19 @@
-TODO by Sunday: extract a two-page "extended abstract" version to submit to TyDe (by email)
+TODO apply for travel / attendence funding 2019-06-18
+TODO act on most of the reviewer comments by 2019-06-30
+TODO submit "camera-ready copy" by 2019-06-30
+TODO ICFP-week registration 2019-07-18 [early reg. deadline - less expensive]
+TODO prepare presentation slides by 2019-08-14
+TODO dry-run 2019-08-14
+TODO final presentation 2019-08-18
 
-Ta med ca första sidan + 2.3 + delar av 4.1
 
-två sidor förkortat innehål + bibliography
-+ resten som appendix.
-TODO avsluta rapport sista maj
 
+
+DONE extract a two-page "extended abstract" version to submit to TyDe (by email)
+DONE avsluta rapport
 
 ????????????????????????????????????????????????????????????????
+
 Old comments:
 
 TODO: cite

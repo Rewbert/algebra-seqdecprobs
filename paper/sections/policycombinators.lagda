@@ -26,7 +26,7 @@ We start by combining single policies.
 %
 
 %
-We redefine a policy to be a predicate on a state and a control.
+We remind the reader that a policy is defined in terms of a state and a control.
 %
 \begin{code}
 P : (S : Set) → (C : S → Set) → Set
@@ -35,8 +35,14 @@ P S C = (s : S) → C s
 %
 A policy for a product process defined in terms of two policies for the individual processes, is created by taking a pair of the two previous policies applied to the components of the state.
 %
+%if False
 \begin{code}
-_×P_  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
+_×C_ : {S₁ S₂ : Set} (C₁ : Con S₁) (C₂ : Con S₂) → Con (S₁ × S₂)
+(C₁ ×C C₂) (s₁ , s₂) = C₁ s₁ × C₂ s₂
+\end{code}
+%endif
+\begin{code}
+_×P_  :  {S₁ S₂ : Set} {C₁ : Con S₁} {C₂ : Con S₂}
       →  P S₁ C₁ → P S₂ C₂
       →  P (S₁ × S₂) (C₁ ×C C₂)
 (p₁ ×P p₂) (s₁ , s₂) = p₁ s₁ , p₂ s₂
@@ -49,7 +55,7 @@ If the pattern matches on the left injection, we can reuse the previous policy d
 Similarly, if the pattern matches on the right injection we can reuse the given policy for the other process.
 %
 \begin{code}
-_⊎P_  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
+_⊎P_  :  {S₁ S₂ : Set} {C₁ : Con S₁} {C₂ : Con S₂}
       →  P S₁ C₁ → P S₂ C₂
       →  P (S₁ ⊎ S₂) (C₁ ⊎C C₂)
 (p₁ ⊎P p₂) (inj₁ s₁) = p₁ s₁
@@ -61,7 +67,7 @@ Reusing policies for the yielding coproduct is similar to that of the regular co
 The only difference is that when reusing the old policy the result must be wrapped in the |just| constructor.
 %
 \begin{code}
-_⊎P+_  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
+_⊎P+_  :  {S₁ S₂ : Set} {C₁ : Con S₁} {C₂ : Con S₂}
        →  P S₁ C₁ → P S₂ C₂
        →  P (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
 (p₁ ⊎P+ p₂) (inj₁ s₁) = just (p₁ s₁)
@@ -80,7 +86,7 @@ If it is |suc zero|, we reuse the second policy.
 %
 \begin{code}
 _⇄P_  :  {S₁ S₂ : Set}
-          {C₁ : Pred S₁} {C₂ : Pred S₂}
+          {C₁ : Con S₁} {C₂ : Con S₂}
       →  P S₁ C₁ → P S₂ C₂
       →  P (S₁ ⇄S S₂) (C₁ ⇄C C₂)
 (p₁ ⇄P p₂) (zero , s₁ , _)      = p₁ s₁
@@ -88,65 +94,69 @@ _⇄P_  :  {S₁ S₂ : Set}
 (p₁ ⇄P p₂) (suc (suc ()) , _)
 \end{code}
 
+\section{A note on Policies}
+\label{sec:anoteonpolicies}
 %
 With these policy combinators defined, we make a few observations.
 %
-We recall the claim that in an interleaved process the two prior processes does not know what state the other process is in.
+These observations intend to illustrate some of the meanings behind policies.
 %
-It does not know what moves it has made.
+\subsection{Product State Policies}
+\label{subsec:productstatepolicies}
 %
-The combinator above does indeed not inspect the other states component before applying the policy.
+Recall a policy for a product state.
 %
-If we write new policies we can of course look at this parameter also.
+The type of this policy is |(s : State) → Control s|, where State is the type of states and Control is the type family of controls.
 %
-The state of an interleaved process is a product, and we recall that by curring |(a,b) → c| is the same as |a → b → c|.
+Since |s| is a product , the signature actually is something like |((a , b) : A × B) → Control (a , b)|.
 %
-Consider |a| to be one processes state and |b| to be the others, we reason that a policy for the interleaved process is something like a policy for one of the processes parameterised over the other process.
+We know from currying that this is the same as |(a : A) → (b : B) → Control (a , b)|.
 %
 
-% \TODO{Should we keep these? Seems like we need more if we should keep these.}
+%
+In the case of the product combinator the control space was the product of the separate state components control spaces.
+%
+Where a policy for the individual process would base the choice of control on the state, the policy for a product process will select a control for the same state component, but base the choice on both state components.
+%
+
+%
+In the case of the interleaved process we related the situation to that of a game, where players take turns making their moves.
+%
+In such a scenario a policy could be something of a game leader, making the best choices for each component based both components.
+%
+The policy can, after all, make a decision for one of the components based on the state of both components.
+%
+
+\subsection{Sum state implies Product Policy}
+\label{subsec:sumstateimpliesproductpolicy}
 Another interesting observation to make is that a policy for a process with a sum state, e.g a policy for a coproduct, is a pair of policies for the separate processes.
 %
 We can make this concrete with the following two definitions.
 %
 \begin{code}
-module test where
-  ⊎↦×  : {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
-       →  P (S₁ ⊎ S₂) (C₁ ⊎C C₂)
-       →  P S₁ C₁ × P S₂ C₂
-  ⊎↦× policy = (  λ s₁ → policy (inj₁ s₁)) ,
-                  λ s₂ → policy (inj₂ s₂)
-
-  ×↦⊎  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
-       →  P S₁ C₁ × P S₂ C₂
-       →  P (S₁ ⊎ S₂) (C₁ ⊎C C₂)
-  ×↦⊎ (p₁ , p₂) = λ {  (inj₁ s₁) → p₁ s₁ ;
-                       (inj₂ s₂) → p₂ s₂}
-
-  ∀⊎↦×  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
-            (p : P (S₁ ⊎ S₂) (C₁ ⊎C C₂)) → (state : S₁ ⊎ S₂) →
-            ×↦⊎ (⊎↦× p) state ≡  p state
-  ∀⊎↦× _ (inj₁ _) = refl
-  ∀⊎↦× _ (inj₂ _) = refl
-
-⊎↦×  :  {p₁ p₂ : SDProc}
-     →  Policy (p₁ ⊎SDP p₂)
-     →  Policy p₁ × Policy p₂
+⊎↦×  :  {S₁ S₂ : Set}
+        {C₁ : Con S₁} {C₂ : Con S₂}
+     →  P (S₁ ⊎ S₂) (C₁ ⊎C C₂)
+     →  P S₁ C₁ × P S₂ C₂
 ⊎↦× policy = (  λ s₁ → policy (inj₁ s₁)) ,
                 λ s₂ → policy (inj₂ s₂)
 
-×↦⊎  :  {p₁ p₂ : SDProc}
-     →  Policy p₁ × Policy p₂
-     →  Policy (p₁ ⊎SDP p₂)
+×↦⊎  :  {S₁ S₂ : Set}
+        {C₁ : Con S₁} {C₂ : Con S₂}
+     →  P S₁ C₁ × P S₂ C₂
+     →  P (S₁ ⊎ S₂) (C₁ ⊎C C₂)
 ×↦⊎ (p₁ , p₂) = λ {  (inj₁ s₁) → p₁ s₁ ;
                      (inj₂ s₂) → p₂ s₂}
 \end{code}
-
+%
+Then we can further solidify this statement by showing that they are equal by functional extensionality.
+%
 \begin{code}
-∀⊎↦×  :  {p₁ p₂ : SDProc} →
-          (p : Policy (p₁ ⊎SDP p₂)) → (state : #st (p₁ ⊎SDP p₂)) →
-          ×↦⊎ {p₁} {p₂} (⊎↦× {p₁} {p₂} p) state ≡  p state
+∀⊎↦×  :  {S₁ S₂ : Set}
+         {C₁ : Con S₁} {C₂ : Con S₂}
+         (p : P (S₁ ⊎ S₂) (C₁ ⊎C C₂))
+      →  (state : S₁ ⊎ S₂)
+      →  ×↦⊎ (⊎↦× p) state ≡  p state
 ∀⊎↦× _ (inj₁ _) = refl
 ∀⊎↦× _ (inj₂ _) = refl
-
 \end{code}

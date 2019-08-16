@@ -1,0 +1,136 @@
+> Review summary:
+> Overall merit: 4, 3, 1 (Accept, Weak Accept, Reject)
+> Reviewer expertise: 3, 3, 3 (Knowledgeable)
+
+DONE line 114 explain that rewards are important but not part of the paper (just shown for completeness)
+DONE line 114.5, why does `reward` take a second `State` argument? [A]
+DONE line 120 explain that we aim at finite horizon problems [no inf. sum, but usually discounted] perhaps comment in paper [A]
+TODO line 121, why "a sequence of _policies_" rather than "a _policy_"? [A]
+  comment: Need the extra space in the article. Perhaps mention in talk?
+TODO line 214 (radnummer), referera till den separata artikeln i stället.
+DONE line 148 (tests) explain that the goal is to compute policies Bellman's backward induction [C]
+DONE line 148 seems to have an extra `2 ::` [A]
+DONE line 212.5 seems to have an extra `(2,5) ::` [A]
+TODO line 250 Can ×ᵀ be seen as an instance of ×? [C] Check
+TODO line 300 What kind of combinators of SDProc's are reasonable?  Is it just ×, ×ᵀ, ⊎, ⊎ᵀ? [C] No! More future work.
+
+TODO state machine connection? [C] perhaps comment on this in the paper
+
+TODO completeness of the combinators? [we think No - show example] [A] comment in talk
+
+TODO clearer motivation [B] explain more in talk
+TODO motivate the climate change connection [A] comment in talk
+
+
+
+> Review #18A
+> ===========================================================================
+>
+> Overall merit
+> -------------
+> 4. Accept
+>
+> Reviewer expertise
+> ------------------
+> 3. Knowledgeable
+>
+> Paper summary
+> -------------
+> This submission shows an elegant dependently-typed representation of sequential decision problems and action policies.
+>
+> Comments for author
+> -------------------
+> This submission is interesting and in scope.
+>
+> Although the dependently-typed representation is elegant, I hope the talk will explain more how it is "motivated by the complexity of modeling in climate impact research" and whether/how it in fact helps.
+
+TODO comment in talk
+
+> More questions that would be interesting to discuss in the talk:
+>
+> Is there a completeness result that says that every SDProc in some sense can be expressed using some set of combinators?
+
+TODO comment in talk
+
+> Computing the total/expected (discounted) reward of a given sequential decision problem under a given policy seems to require arguing for the convergence of an infinite sum.  Does Agda make that easy?
+
+TODO perhaps comment in paper
+
+> Minor comments:
+>
+> On line 114.5, why does `reward` take a second `State` argument?
+
+TODO
+
+> On line 121, why "a sequence of _policies_" rather than "a _policy_"?  I see the matching `Vec` on line 133, but even if policies with memory were desirable, it would be cleaner and more expressive to let a policy keep and update its own state.  (More expressive, because the policy may depend on the transitions chosen by a nondeterministic process.)
+
+TODO
+
+> Line 148 seems to have an extra `2 ::`
+> and line 212.5 seems to have an extra `(2,5) ::`
+
+TODO
+
+> Review #18B
+> ===========================================================================
+>
+> Overall merit
+> -------------
+> 3. Weak accept
+>
+> Reviewer expertise
+> ------------------
+> 3. Knowledgeable
+>
+> Paper summary
+> -------------
+> The abstract describes decision processes, of the kind encoutered in modelling climate impact, and how to combine them. It builds on previous work which has described a framework for modelling decision problems, by giving a combinator for a product of two decision processes. This is within the scope of TyDe, given that it models the processes as dependently typed programs.
+
+> Comments for author
+> -------------------
+> The abstract gives the motivation for modelling SDPs in general terms, and sketches motivation for why you'd want to combine them, but in the talk I'd like to see some more concrete details of specific problems which would benefit from the new work. Even the (rather long!) appendix doesn't  really do this, instead describing further combinators and describing processes in abstract terms. I'm reasonably sure this is a good idea, based on my background knowledge of the topic, and with some clearer motivation this will make for an interesting talk on type driven development in action.
+
+TODO explain more in talk
+
+> Review #18C
+> ===========================================================================
+>
+> Overall merit
+> -------------
+> 1. Reject
+>
+> Reviewer expertise
+> ------------------
+> 3. Knowledgeable
+>
+> Paper summary
+> -------------
+> The abstract sets out to formalize sequential decision problems and their combination.
+>
+> Comments for author
+> -------------------
+> I found this abstract frustrating, and I imagine the authors will find my response equally so.  I'm sorry!  There is clearly a good deal of work that has gone into this library, and I don't doubt that there are valuable insights gained in that work.  That said, I thought the abstract itself (i.e., the first two pages) did not do nearly enough to motivate the formalization or explain its consequences.
+
+> Some lingering questions:
+>
+>  - An SDProc (record) seems to me to have a good deal in common with a state machine.  Is this a matter of recognizing a common abstraction in different domains?  If so, presumably the combinators discussed have already been developed for state machines.  If not, what is the difference?
+
+TODO - perhaps comment on this
+
+>  - What have rewards got to do with the bits that follow?  How would a policy be stated to maximize reward?  Isn't any policy going to amount to reward maximization, given a suitable definition of reward?
+
+TODO explain that rewards are important but not part of the paper (just shown for completeness)
+
+>  - What kind of combinators of SDProc's are reasonable?  Is it just ×, ×ᵀ, ⊎, ⊎ᵀ?  Are there other superscripts that might be of interest?  Can ×ᵀ be seen as an instance of ×?
+
+TODO ?
+
+>  - The tests given seem to amount to single iterations through the state space.  Presumably that is not the goal.  What is the final aim of this work?
+
+TODO
+
+> A comment on the appendix: I am happy to turn to the appendix for further details.  But I feel like it is unfair to other authors, who were able to motivate and survey their work in two pages, for me to hunt for answers to these questions in the appendix.
+
+> In summary: I believe there may be value in this work, but, for myself, it was not conveyed in the abstract itself.
+
+***================================================================***

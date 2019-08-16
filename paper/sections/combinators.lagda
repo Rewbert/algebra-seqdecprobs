@@ -21,6 +21,12 @@ open import Data.Fin hiding (lift)
 open import Data.Maybe
 open import Data.Vec
 
+Con : Set → Set₁
+Con S = S → Set
+
+Step : (S : Set) -> Con S -> Set
+Step S C = (s : S) -> C s -> S
+
 \end{code}
 %endif
 
@@ -30,77 +36,11 @@ Now that we've seen an example of a sequential decision process and are getting 
 This section will explore different ways sequential decision processes can be combined in order to produce more sophisticated processes.
 %
 %-----------------------------------------------------------------------
-\subsection{Product}
-\label{subsec:productseqdecproc}
-%
-As a first combinator let us compute the product of two processes.
-%
-The new state is just the product of the two prior states.
-%
-The other components, the |Control| and the |step| must be described and combined more thoroughly.
-%
-The control is a predicate on the state.
-%
-\begin{code}
-Pred : Set → Set₁
-Pred S = S → Set
-\end{code}
-%
-Given two states and two predicates, one on each state, we can compute the predicate on the product of the two states.
-%
-The inhabitants of this predicate on the product are pairs of the inhabitants of the prior predicates.
-%
-\begin{code}
-_×C_  :   {S₁ S₂ : Set}
-      ->  Pred S₁ -> Pred S₂ -> Pred (S₁ × S₂)
-(C₁ ×C C₂) (s₁ , s₂) = C₁ s₁ × C₂ s₂
-\end{code}
-%
-% insert connor mcbride discussion here i suppose.
-%
-To make type signatures more readable we define a type of step functions.
-%
-A step function is defined in terms of a state and a predicate on that state.
-%
-\begin{code}
-Step : (S : Set) -> Pred S -> Set
-Step S C = (s : S) -> C s -> S
-\end{code}
-%
-Next we want to compute the product of two such step functions.
-%
-The function is given two states |S₁| and |S₂|.
-%
-Two predicates |C₁ : Pred S₁| and |C₂ : Pred S₂|, and lastly two functions |Step S₁ C₁| and |Step S₂ C₂|.
-%
-We can define a new step function by returning the pair computed by applying the individual step functions to the corresponding compontents of the input.
-%
-\begin{code}
-_×sf_  :   {S₁ S₂ : Set}
-       ->  {C₁ : Pred S₁} {C₂ : Pred S₂}
-       ->  Step S₁ C₁ -> Step S₂ C₂
-       ->  Step (S₁ × S₂) (C₁ ×C C₂)
-(sf₁ ×sf sf₂) (s₁ , s₂) (c₁ , c₂) = (sf₁ s₁ c₁ , sf₂ s₂ c₂)
-\end{code}
 
 %
-Seeing how we know how to combine all components on the bases of a product, we can now compute the product of two sequential decision processes.
+We already defined the product combinator, and before we move on to additional combinators we'd like to make a few notes on the product combinator.
 %
-\begin{code}
-_×SDP_ : SDProc → SDProc → SDProc
-(SDP S₁ C₁ sf₁) ×SDP (SDP S₂ C₂ sf₂)
-  = SDP (S₁ × S₂) (C₁ ×C C₂) (sf₁ ×sf sf₂)
-\end{code}
-
-\begin{figure}
-\label{images:product}
-\centering
-\includegraphics[scale=0.7]{images/product.png}
-\caption{Illustration of a product of two processes. The process holds components of both states and applies the step function to both components simultaneously.}
-\end{figure}
-
-%
-An observation to be made here is that in order for the new system to exist in any state, it has to hold components of both prior states.
+An observation to be made is that in order for the new system to exist in any state, it has to hold components of both prior states.
 %
 This has the consequence that if the state space of one of the prior processes is empty, the new problems state space is also empty.
 %
@@ -135,12 +75,14 @@ singleton = record {
   Control  =  λ state -> ⊤;
   step     =  λ state -> λ control -> tt}
 \end{code}
-
+%
+An example of evaluating the singleton process is illustrated in Figure \ref{images:singleton}
+%
 \begin{figure}
-\label{images:singleton}
 \centering
 \includegraphics[scale=0.7]{images/singleton.png}
 \caption{Illustration of the singleton process. The subscript ₀ is meant to indicate that the state remains the same when the process advances.}
+\label{images:singleton}
 \end{figure}
 
 %
@@ -160,13 +102,11 @@ The approach is similar to that of the product case.
 %
 
 %
-The control, is a predicate on the sum of the states.
-%
-The inhabitants of this sum predicate is the sum of the inhabitants of the prior predicates.
+The inhabitants of the sum control is the sum of the inhabitants of the prior controls.
 %
 \begin{code}
 _⊎C_  :  {S₁ S₂ : Set}
-      →  Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
+      →  Con S₁ → Con S₂ → Con (S₁ ⊎ S₂)
 (C₁ ⊎C C₂) (inj₁ s₁)  = C₁ s₁
 (C₁ ⊎C C₂) (inj₂ s₂)  = C₂ s₂
 \end{code}
@@ -175,20 +115,20 @@ Calculating a new step function from two prior step functions is relatively stra
 %
 The first input is the sum of the two states.
 %
-Depending on which state the first argument belongs to, one of the prior step functions is applied to it and the second argument, the predicate on that state.
+Depending on which state the first argument belongs to, one of the prior step functions is applied to it and the second argument, the control for that state.
 %
 The result of the application is then injected into the sum type using the same injection as the input.
 %
 \begin{code}
 _⊎sf_  :   {S₁ S₂ : Set}
-       ->  {C₁ : Pred S₁} -> {C₂ : Pred S₂}
+       ->  {C₁ : Con S₁} -> {C₂ : Con S₂}
        ->  Step S₁ C₁ -> Step S₂ C₂
        ->  Step (S₁ ⊎ S₂) (C₁ ⊎C C₂)
 (sf₁ ⊎sf sf₂) (inj₁ s₁) c₁  = inj₁ (sf₁ s₁ c₁)
 (sf₁ ⊎sf sf₂) (inj₂ s₂) c₂  = inj₂ (sf₂ s₂ c₂)
 \end{code}
 %
-The sum of two problems is computed by applying the sum operators componentwise.
+The sum of two problems is computed by applying the sum operators componentwise, and Figure \ref{images:coproduct} illustrate how such a problem is evaluated.
 %
 \begin{code}
 _⊎SDP_ : SDProc → SDProc → SDProc
@@ -211,8 +151,8 @@ SDP S₁ C₁ sf₁ ⊎SDP SDP S₂ C₂ sf₂
   \caption{Right injection.}
   \label{images:coproduct-inj2}
 \end{subfigure}
-\label{images:coproduct}
 \caption{The coproduct of two processes. The process will take the shape of either of the two alternatives, but never both or a mix of the two.}
+\label{images:coproduct}
 \end{figure}
 
 %
@@ -263,9 +203,9 @@ _⇄_ : (S₁ S₂ : Set) → Set
 s₁ ⇄ s₂ = (s₁ -> s₂) × (s₂ -> s₁)
 \end{code}
 %
-Combining the two predicates on the states is similar to that of the coproduct case, when looking at the type.
+Combining the two controls on the states is similar to that of the coproduct case, when looking at the type.
 %
-However, instead of the new predicate being defined as either of the two prior ones, it is now |Maybe| either of the two previous ones.
+However, instead of the new control being defined as either of the two prior ones, it is now |Maybe| either of the two previous ones.
 %
 The idea is that we extend the control space to have one more inhabitant, the value |nothing|.
 %
@@ -273,7 +213,7 @@ If we select this control the process should yield in favour of the other proces
 %
 \begin{code}
 _⊎C+_  :  {S₁ S₂ : Set}
-       →  Pred S₁ → Pred S₂ → Pred (S₁ ⊎ S₂)
+       →  Con S₁ → Con S₂ → Con (S₁ ⊎ S₂)
 (C₁ ⊎C+ C₂) (inj₁ s₁) = Maybe (C₁ s₁)
 (C₁ ⊎C+ C₂) (inj₂ s₂) = Maybe (C₂ s₂)
 \end{code}
@@ -287,14 +227,14 @@ We describe how to yield by supplying an element of type |S₁ ⇄ S₂|.
 If the selected control is |nothing| the step function will apply the appropriate component of this element to the current state.
 %
 \begin{code}
-⊎sf+  :  {S₁ S₂ : Set} {C₁ : Pred S₁} {C₂ : Pred S₂}
+⊎sf+  :  {S₁ S₂ : Set} {C₁ : Con S₁} {C₂ : Con S₂}
       →  (S₁ ⇄ S₂)
       →  Step S₁ C₁ → Step S₂ C₂
       →  Step (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
 ⊎sf+ _          sf₁ sf₂  (inj₁ s₁)  (just c)  = inj₁ (sf₁ s₁ c)
 ⊎sf+ _          sf₁ sf₂  (inj₂ s₂)  (just c)  = inj₂ (sf₂ s₂ c)
-⊎sf+ (r₁ , _ )  sf₁ sf₂  (inj₁ s₁)  nothing   = inj₂ (r₁ s₁)
-⊎sf+ (_  , r₂)  sf₁ sf₂  (inj₂ s₂)  nothing   = inj₁ (r₂ s₂)
+⊎sf+ (v₁ , _ )  sf₁ sf₂  (inj₁ s₁)  nothing   = inj₂ (v₁ s₁)
+⊎sf+ (_  , v₂)  sf₁ sf₂  (inj₂ s₂)  nothing   = inj₁ (v₂ s₂)
 \end{code}
 Since the other operators were infix, we give a syntax declaration that mimics the same style.
 \begin{code}
@@ -310,21 +250,19 @@ _⊎SDP+_  :  (p₁ : SDProc) → (p₂ : SDProc)
 ((SDP S₁ C₁ sf₁) ⊎SDP+ (SDP S₂ C₂ sf₂)) rel
   = SDP (S₁ ⊎ S₂) (C₁ ⊎C+ C₂) (sf₁ ⟨ rel ⟩ sf₂)
 \end{code}
-
 \begin{figure}
 \label{images:yieldcoproduct}
 \centering
 \includegraphics[scale=0.7]{images/yieldcoproduct.png}
-\caption{Illustration of the yielding coproduct process. It is capable of switching between the two processes.}
+\caption{Illustration of the yielding coproduct process. It is capable of switching between the two processes, as illustrated by the calls to v1 and v2.}
 \end{figure}
 
-With a combinator such as this one you could describe e.g software.
 %
-As an example, one process could model the normal execution of some software while the other could model the behaviour of an exception handler.
+With a combinator such as this one could you model e.g a two player game.
 %
-When the process modeling the software reaches a point where an exception is thrown, the process can yield control to the exception handler.
+The processes would be the players and the combined process allows each to take turns making their next move.
 %
-When the exception handler process is done, it can yield in favour of the other process again.
+In section \ref{sec:policycombinators} we discuss how a policy for such a process is something of a game leader.
 %
 
 %
@@ -364,16 +302,16 @@ S₁ ⇄S S₂ = Fin 2 × S₁ × S₂
 %
 The control space for the interleaved process is the sum of the two prior control spaces.
 %
-If the value of the first component is zero, we select the first predicate.
+If the value of the first component is zero, we select the first control.
 %
-If the value is one, we select the second predicate.
+If the value is one, we select the second control.
 %
 \begin{code}
 one : Fin 2
 one = suc zero
 
 _⇄C_  :  {S₁ S₂ : Set}
-      →  Pred S₁ → Pred S₂ → Pred (S₁ ⇄S S₂)
+      →  Con S₁ → Con S₂ → Con (S₁ ⇄S S₂)
 (C₁ ⇄C C₂) (zero , s₁ , s₂)  = C₁ s₁
 (C₁ ⇄C C₂) (one , s₁ , s₂)   = C₂ s₂
 \end{code}
@@ -388,7 +326,7 @@ Similarly if the index is zero we apply the second step function to the last com
 %
 \begin{code}
 _⇄sf_  :  {S₁ S₂ : Set}
-       →  {C₁ : Pred S₁} → {C₂ : Pred S₂}
+       →  {C₁ : Con S₁} → {C₂ : Con S₂}
        →  Step S₁ C₁ → Step S₂ C₂
        →  Step (S₁ ⇄S S₂) (C₁ ⇄C C₂)
 (sf₁ ⇄sf sf₂) (zero , s₁ , s₂) c  = (one , sf₁ s₁ c , s₂)
@@ -410,7 +348,7 @@ The final process behaves as illustrated in figure \ref{images:interleave}.
 \begin{figure}
 \centering
 \includegraphics[scale=0.7]{images/interleave.png}
-\caption{Illustration of two interleaved process. We want to emphasise that the state holds components of both prior states, but chooses to advance only one.}
+\caption{Illustration of two interleaved process. We want to emphasise that the state holds components of both prior states, but chooses to advance only one. The policy that chooses what control to use can however inspect both components.}
 \label{images:interleave}
 \end{figure}
 
@@ -427,21 +365,23 @@ Combining more than two processes will produce potentially unexpected behaviour.
 %
 If we combine three processes using this combinator the resulting system would be one where one of the processes advance half the time, and the other two only a quarter of the time each.
 %
-
-\begin{figure}
-\label{images:badinterleave}
-\centering
-\includegraphics[scale=0.5]{images/badinterleave2.png}
-\caption{If we interleave two processes and then interleave the resulting process with a third we get a situation like this. They are not properly interleaved.}
-\end{figure}
-
-\begin{figure}
-\label{images:wantedinterleave}
-\centering
-\includegraphics[scale=0.5]{images/wantedinterleave2.png}
-\caption{This is the interleaved behaviour we might expect for three processes.}
-\end{figure}
+\begin{figure*}[htbp]
+  \begin{subfigure}[b]{.8\textwidth}
+    \centering
+    \includegraphics[scale=0.8]{images/badinterleave2.png}
+    \caption{If we interleave two processes and then interleave the resulting process with a third we get a situation like this. They are not properly interleaved.}
+    \label{images:badinterleave}
+  \end{subfigure}
+  \begin{subfigure}[b]{.8\textwidth}
+    \centering
+    \includegraphics[scale=0.8]{images/wantedinterleave2.png}
+    \caption{This is the interleaved behaviour we might expect for three processes. A round robin behaviour that gives the processes equally many turns.}
+    \label{images:wantedinterleave}
+  \end{subfigure}
+  \caption{Illustrations of why the interleaved combinator might not behave as one would expect. Again the two incoming arrows illustrate that the policy that selects the control has access to all components and can base the choice of control on them.}
+  \label{images:badvsgoodinterleave}
+\end{figure*}
 
 %
-This does not necessarily mean that the combinator described here is wrong, but rather that there is another combinator we could implement that would have this other behaviour.
+This does not necessarily mean that the combinator described in Figure \ref{images:badvsgoodinterleave}  is wrong, but rather that there is another combinator we could implement that would have this other behaviour.
 %

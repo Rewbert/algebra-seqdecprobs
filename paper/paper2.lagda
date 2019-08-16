@@ -96,7 +96,7 @@
 % -------------------------------------------------------------------------------
 \begin{document}
 \title{An Algebra of Sequential Decision Problems}
-\subtitle{Extended Abstract}
+\subtitle{Technical Report}
 % \author{Robert Krook\inst{1}\orcidID{0000-0003-3619-2975}
 %    \and Patrik Jansson\inst{1,2}\orcidID{0000-0003-3078-1437}}
 \author{Robert Krook}
@@ -137,32 +137,35 @@
 %\newpage
 \bibliography{paper}
 
-%\clearpage
+\clearpage
 %\appendix
-%\section{Appendix}
-%\label{sec:appendix}
-%\TODO{Better title perhaps}
-%\subsection{Project introduction}
-%\label{subsec:projectintroduction}
-%\TODO{Är det GU + Chalmers? Jag vet aldrig hur jag skall framställa sådant här pga sammmarbetet.}
+
+\section{Technical Report}
+\label{sec:technicalreport}
 %
-%The work described in this text is the result of a project carried out at Gothenburg University by Robert Krook, under the supervision of Patrik Jansson.
+The rest of this report makes up the technical report.
 %
-%Robert has worked independently and met once a week with Patrik over the course of 8 weeks to discuss progress, potential bottlenecks and what to do next.
+The technical report describes further combinators, discusses time dependent processes and provide more thorough examples.
 %
-%Patrik has been an invaluable source of information, both regarding sequential decision problems and how to write a scientific text.
+
 %
-% include sections/examples.lagda
+The work described in this text is the result of a project carried out at Gothenburg University by Robert Krook, under the supervision of Patrik Jansson.
+%
+Robert has worked independently and met once a week with Patrik over the course of 8 weeks to discuss progress, potential bottlenecks and what to do next.
+%
+Patrik has been an invaluable source of information, both regarding sequential decision problems and how to write a scientific text.
+%
+%include sections/examples.lagda
 %------------------------------------------------------------------------------
-% include sections/combinators.lagda
+%include sections/combinators.lagda
 %------------------------------------------------------------------------------
-% include sections/core/seqdecproctime.lagda
+%include sections/core/seqdecproctime.lagda
 %------------------------------------------------------------------------------
-% include sections/combinatorstime.lagda
+%include sections/combinatorstime.lagda
 %------------------------------------------------------------------------------
-% include sections/policycombinators.lagda
+%include sections/policycombinators.lagda
 %------------------------------------------------------------------------------
-% xinclude sections/conclusions.lagda
+%include sections/conclusions.lagda
 %------------------------------------------------------------------------------
 % \newpage
 % %include sections/appendix.lagda

@@ -1,5 +1,13 @@
 \documentclass[notitlepage]{beamer}
 \usepackage{tikz}
+%%% Standard definitions from the lhs2TeX installation
+%include polycode.fmt
+%%% Put your own formatting directives in a separate file
+%include ../paper/paper.format
+%for agda
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8x]{inputenc}
+\RequirePackage{ucs}
 \title{Algebra of Sequential Decision Problems}
 \subtitle{formalised in Agda}
 \author{Robert Krook \and \textbf{Patrik Jansson}}
@@ -17,6 +25,7 @@ Sequential decision problems are a well established concept in decision theory, 
 \begin{frame}
   \frametitle{Example: 1-dimensional coordinate system}
 
+\only<1-5>{
   \begin{tikzpicture}[
     arr/.style={thick, ->},
     ]
@@ -25,12 +34,34 @@ Sequential decision problems are a well established concept in decision theory, 
     \foreach \x in {0,...,5}
       \draw (\x,1pt) -- (\x,-3pt)
         node[anchor=north] {\x};
-    \only<1>{\draw[arr] (0,1.5) -- (0,0.2) node[midway,right] {Right}; }
-    \only<2>{\draw[arr] (1,1.5) -- (1,0.2) node[midway,right] {Right};}
-    \only<3>{\draw[arr] (2,1.5) -- (2,0.2) node[midway,right] {Left};}
-    \only<4>{\draw[arr] (1,1.5) -- (1,0.2) node[midway,right] {Stay};}
+    \only<1-2>{\draw[arr] (0,1.5) -- (0,0.2) node[midway,right] {\only<2>{Right}}; }
+    \only<3>{\draw[arr] (1,1.5) -- (1,0.2) node[midway,right] {Right};}
+    \only<4>{\draw[arr] (2,1.5) -- (2,0.2) node[midway,right] {Left};}
+    \only<5>{\draw[arr] (1,1.5) -- (1,0.2) node[midway,right] {Stay};}
   \end{tikzpicture}
+}
+\begin{code}
+oned-state  :  Set
+oned-state  =  ℕ
+\end{code}
 
+\onslide<2->{
+\begin{code}
+data oned-control : oned-state -> Set where
+  Right  : {n : oned-state} -> oned-control n
+  Stay   : {n : oned-state} -> oned-control n
+  Left   : {n : oned-state} -> oned-control (suc n)
+\end{code}
+}
+
+\only<6>{
+\begin{code}
+oned-step  :  (x : oned-state) -> oned-control x -> oned-state
+oned-step x        Right  = suc x
+oned-step x        Stay   = x
+oned-step (suc x)  Left   = x
+\end{code}
+}
 \end{frame}
 \end{document}
 

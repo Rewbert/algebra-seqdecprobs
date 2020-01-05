@@ -63,6 +63,83 @@ oned-step (suc x)  Left   = x
 \end{code}
 }
 \end{frame}
+
+\begin{frame}
+  \frametitle{Policies}
+
+\only<1-2>{%
+In general:
+\begin{code}
+Policy : (S : Set) → ((s : S) → Set) → Set
+Policy S C = (s : S) → C s
+\end{code}
+}%
+\pause%
+\only<2-3>{%
+Specialised:
+%format invisible = "\quad \mbox{\onelinecomment}"
+\begin{code}
+oned-Policy  :  Set
+oned-Policy  =  Policy oned-state oned-control
+invisible    =  (x : oned-state) -> oned-control x
+\end{code}
+}%
+\pause%
+Example policies:
+\begin{code}
+right stay tryleft : oned-Policy
+right    _        = Right
+stay     _        = Stay
+tryleft  zero     = Stay
+tryleft  (suc s)  = Left
+\end{code}
+\pause
+A family of policies (to move |towards| a particular goal coordinate):
+\begin{code}
+towards : ℕ -> oned-Policy
+towards goal n with compare n goal
+... | less _ _     = Right
+... | equal _      = Stay
+... | greater _ _  = Left
+\end{code}
+\end{frame}
+\begin{frame}
+  \frametitle{Sequential Decision Process}
+\savecolumns
+\begin{code}
+record SDProc : Set1 where
+  constructor SDP
+  field
+    State    : Set
+\end{code}
+\pause
+\vspace{-1.2cm}% \vspace{-\abovedisplayskip}\vspace{-\belowdisplayskip}
+\restorecolumns
+\begin{code}
+    Control  : State -> Set
+\end{code}
+\pause
+\vspace{-1.2cm}% \vspace{-\abovedisplayskip}\vspace{-\belowdisplayskip}
+\restorecolumns
+\begin{code}
+    step     : (x : State) -> Control x -> State
+\end{code}
+\pause
+\vspace{-1.2cm}% \vspace{-\abovedisplayskip}\vspace{-\belowdisplayskip}
+\restorecolumns
+\begin{code}
+  Pol  = Policy State Control
+  St   = State
+\end{code}
+\pause
+Our example:
+\begin{code}
+oned-system  :  SDProc
+oned-system  =  SDP oned-state oned-control oned-step
+\end{code}
+
+\end{frame}
+
 \end{document}
 
 \begin{tikzpicture}[y=.2cm, x=.7cm,font=\sffamily]

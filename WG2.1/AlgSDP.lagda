@@ -8,7 +8,8 @@
 \RequirePackage[T1]{fontenc}
 \RequirePackage[utf8x]{inputenc}
 \RequirePackage{ucs}
-\title{Algebra of Sequential Decision Problems}
+\setbeamertemplate{navigation symbols}{}
+\title{AlgSDP: Algebra of Sequential Decision Problems}
 \subtitle{formalised in Agda}
 \author{Robert Krook \and \textbf{Patrik Jansson}}
 \date{2020-01-06, WG2.1 \#79 in Otterlo, NL}
@@ -21,6 +22,43 @@ Sequential decision problems are a well established concept in decision theory, 
 % WG2.1 talk: 2017-02-20, Patrik Jansson, Sequential Decision Problems and Avoidability using Dependent Types
 % WG2.1 talk: 2018-07-03, Nicola Botta, Specifications in Small and Large Contexts https://ifipwg21wiki.cs.kuleuven.be/pub/IFIP21/Brandenburg/slides_botta.pdf
 \end{frame}
+
+\begin{frame}
+\frametitle{AlgSDP by example in one slide}
+
+A 1D-coord. syst. with |ℕ| as state and |+1|, |0|, and |-1| as actions.
+
+> p : SDProc
+
+\pause
+We define a product to enable reusing |p| in a 2D setting:
+
+> _×SDP_ : SDProc → SDProc → SDProc
+> p² = p ×SDP p
+
+\pause
+Both |p| and |p²| use a fixed state space, but we can also handle time dependent processes (for example |p'| of type |SDProcT|).
+
+> _×SDPT_ : SDProcT → SDProcT → SDProcT
+> embed : SDProc → SDProcT
+> p²' = p' ×SDPT (embed p)
+> p³ = p² ×SDP p
+
+\pause
+Final example: a process that moves either in 3D or in 2D.
+
+> _⊎SDPT_ : SDProcT → SDProcT → SDProcT
+> game = p²' ⊎SDPT (embed p³)
+
+You could think of this as choosing a map in a game.
+\end{frame}
+
+
+% \begin{frame}
+%   \frametitle{AlgSDP contributions}
+%
+% \end{frame}
+
 
 \begin{frame}
   \frametitle{Example: 1-dimensional coordinate system}

@@ -1,14 +1,18 @@
-\documentclass{beamer}
+\documentclass[notitlepage]{beamer}
 \usepackage{tikz}
 \title{Algebra of Sequential Decision Problems}
 \subtitle{formalised in Agda}
 \author{Robert Krook \and \textbf{Patrik Jansson}}
 \date{2020-01-06, WG2.1 \#79 in Otterlo, NL}
 \begin{document}
-\maketitle
+\begin{frame}
+\titlepage
 \begin{abstract}
-TODO
+Sequential decision problems are a well established concept in decision theory, with the Bellman equation as a popular choice for describing them. Botta, Jansson, Ionescu have formalised the notion of such problems in Idris (presented by Jansson at \#75 Uruguay, by Botta at \#77  Brandenburg). Here we focus on an Algebra of SDPs (in Agda): combinators for building more complex SDPs from simpler ones.
 \end{abstract}
+% WG2.1 talk: 2017-02-20, Patrik Jansson, Sequential Decision Problems and Avoidability using Dependent Types
+% WG2.1 talk: 2018-07-03, Nicola Botta, Specifications in Small and Large Contexts https://ifipwg21wiki.cs.kuleuven.be/pub/IFIP21/Brandenburg/slides_botta.pdf
+\end{frame}
 
 \begin{frame}
   \frametitle{Example: 1-dimensional coordinate system}

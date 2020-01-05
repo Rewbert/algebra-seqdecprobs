@@ -1,10 +1,23 @@
-TODO apply for travel / attendence funding 2019-06-18
-TODO act on most of the reviewer comments by 2019-06-30
-TODO submit "camera-ready copy" by 2019-06-30
-TODO ICFP-week registration 2019-07-18 [early reg. deadline - less expensive]
-TODO prepare presentation slides by 2019-08-14
-TODO dry-run 2019-08-14
-TODO final presentation 2019-08-18
+2020-01-05: Patrik perhaps using some of this for a research talk
+
+at the IFIP WG 2.1 meeting in Otterlo, NL
+https://ifipwg21wiki.cs.kuleuven.be/IFIP21/Otterlo
+
+2019-08-18: Presentation done
+
+Status:
++ [[http://tydeworkshop.org/2019-abstracts/paper18.pdf][extended abstract (2p) på TyDe 2019]]
++ [[http://www.cse.chalmers.se/~patrikj/papers/AlgSDP_Krook_Jansson_2019_TechReport.pdf][TechReport 12pages]]
++ [[https://github.com/Rewbert/algebra-seqdecprobs][Källkod på github]]
+
+
+DONE apply for travel / attendence funding 2019-06-18
+DONE act on most of the reviewer comments by 2019-06-30
+DONE submit "camera-ready copy" by 2019-06-30
+DONE ICFP-week registration 2019-07-18 [early reg. deadline - less expensive]
+DONE prepare presentation slides by 2019-08-14
+DONE dry-run 2019-08-14
+DONE final presentation 2019-08-18
 
 
 

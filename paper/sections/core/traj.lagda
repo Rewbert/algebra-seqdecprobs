@@ -12,7 +12,7 @@ open import Data.Vec
 %endif
 
 \begin{code}
-trajectory  :   {n : ℕ} ->  (p : SDProc)
+trajectory  :   (p : SDProc) -> {n : ℕ} ->
             ->  Vec (Policy (#st p) (#c p)) n
             ->  #st p ->  Vec (#st p) n
 trajectory sys []        x0  = []

@@ -8,6 +8,10 @@
 \RequirePackage[T1]{fontenc}
 \RequirePackage[utf8x]{inputenc}
 \RequirePackage{ucs}
+\DeclareUnicodeCharacter{8759}{::}
+\DeclareUnicodeCharacter{8760}{\dotdiv}
+\DeclareUnicodeCharacter{8644}{\rightleftarrows}
+\DeclareUnicodeCharacter{7511}{^{t}}
 \setbeamertemplate{navigation symbols}{}
 \title{AlgSDP: Algebra of Sequential Decision Problems}
 \subtitle{formalised in Agda}
@@ -103,7 +107,69 @@ oned-step (suc x)  Left   = x
 \end{frame}
 
 \begin{frame}
-  \frametitle{Policies}
+  \frametitle{Sequential Decision Process}
+\savecolumns
+\begin{code}
+record SDProc : Set1 where
+  constructor SDP
+  field
+    State    : Set
+\end{code}
+\pause
+\vspace{-1.2cm}% \vspace{-\abovedisplayskip}\vspace{-\belowdisplayskip}
+\restorecolumns
+\begin{code}
+    Control  : State -> Set
+\end{code}
+\pause
+\vspace{-1.2cm}% \vspace{-\abovedisplayskip}\vspace{-\belowdisplayskip}
+\restorecolumns
+\begin{code}
+    step     : (x : State) -> Control x -> State
+\end{code}
+% \pause
+% \vspace{-1.2cm}% \vspace{-\abovedisplayskip}\vspace{-\belowdisplayskip}
+% \restorecolumns
+% \begin{code}
+%   Pol  = Policy State Control
+%   St   = State
+% \end{code}
+\pause
+Our example:
+\begin{code}
+oned-system  :  SDProc
+oned-system  =  SDP oned-state oned-control oned-step
+\end{code}
+
+\end{frame}
+\begin{frame}
+  \frametitle{Sequential Decision Problem}
+
+In a sequential decision \textbf{problem} there is also a fourth field |reward|:
+\begin{code}
+record SDProb : Set1 where
+  constructor SDP
+  field
+    State    :  Set
+    Control  :  State -> Set
+    step     :  (x : State) -> Control x -> State
+    reward   :  (x : State) -> Control x -> Val
+\end{code}
+(where |Val| is often |ℝ|).
+
+%TODO: perhaps also Accessors for state, control and step function components: #st, #c, #sf
+
+\begin{itemize}
+\item The Seq. Dec. Problem is: find a sequence of controls that maximises the sum of rewards.
+\item Or, in more realistic settings with uncertainty, finding a sequence of \emph{policies} which maximises the \emph{expected} reward.
+\item Rewards, and problems, are not the focus of this talk but are mentioned for completeness.
+\end{itemize}
+
+
+
+\end{frame}
+\begin{frame}
+  \frametitle{Policy}
 
 \only<1-2>{%
 In general:
@@ -141,127 +207,143 @@ towards goal n with compare n goal
 ... | greater _ _  = Left
 \end{code}
 \end{frame}
+%TODO perhaps introduce trajectory
+%TODO show Plus and Times with illustrations
+%TODO show code for them
+\newcommand{\citet}[1]{}
+\newcommand{\paragraph}[1]{#1}
+
+%if False
+\begin{code}
+module extabstract where
+
+open import Data.Nat
+open import Data.Product
+open import Data.Vec
+open import Relation.Binary.PropositionalEquality
+open import core.traj
+
+open import examples using (oned-state; oned-control; oned-step; oned-system; tryleft; stay; right)
+open import core.seqdecproc -- using (SDProc; #st_; #sf_)
+open import combinators using (Con; Step)
+open import policycombinators using (_×P_)
+
+Val = ℕ
+\end{code}
+%endif
+
 \begin{frame}
-  \frametitle{Sequential Decision Process}
-\savecolumns
+  \frametitle{Back to Processes - now with abbreviations}
+
 \begin{code}
 record SDProc : Set1 where
   constructor SDP
-  field
-    State    : Set
+  field    State    : Set
+           Control  : Con State
+           step     : Step State Control
 \end{code}
-\pause
-\vspace{-1.2cm}% \vspace{-\abovedisplayskip}\vspace{-\belowdisplayskip}
-\restorecolumns
+
+\begin{spec}
+Con : Set → Set₁
+Con S = S → Set
+
+Step : (S : Set) -> Con S -> Set
+Step S C = (s : S) -> C s -> S
+
+Policy : (S : Set) → ((s : S) → Set) → Set
+Policy S C = (s : S) → C s
+\end{spec}
+\end{frame}
+\begin{frame}
+  \frametitle{Trajectory}
+
+% Given a list of policies to apply, one for each time step, we can compute the trajectory of a process from a starting state.
+%
+Here |#st|, |#c|, |#sf| extract the different components of an SDP.
+%
+%include ../paper/sections/core/traj.lagda
+%
+
+\textbf{Example:}
+%
 \begin{code}
-    Control  : State -> Set
+pseq       = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
+test1      = trajectory oned-system pseq 0
+invisible  = 0 ∷ 0 ∷ 1 ∷ 1 ∷ 2 ∷ []
 \end{code}
-\pause
-\vspace{-1.2cm}% \vspace{-\abovedisplayskip}\vspace{-\belowdisplayskip}
-\restorecolumns
+%
+In an applied setting many trajectories would be computed to explore the system behaviour.
+\end{frame}
+
+%
+% In this abstract we focus on non-monadic, time-independent, sequential decision processes, but the algebra extends nicely to the more general case.
+%
+\begin{frame}
+  \frametitle{The Product of SDPs}
+
 \begin{code}
-    step     : (x : State) -> Control x -> State
+_×SDP_ : SDProc → SDProc → SDProc
+(SDP S₁ C₁ sf₁) ×SDP (SDP S₂ C₂ sf₂)
+  = SDP (S₁ × S₂) (C₁ ×C C₂) (sf₁ ×sf sf₂)
 \end{code}
-\pause
-\vspace{-1.2cm}% \vspace{-\abovedisplayskip}\vspace{-\belowdisplayskip}
-\restorecolumns
+\only<2-3>{
+\vspace{-0.8cm}
 \begin{code}
-  Pol  = Policy State Control
-  St   = State
+Con : Set → Set₁
+Con S = S → Set
 \end{code}
-\pause
-Our example:
+}
+\only<2-3>{\vspace{-1cm}
 \begin{code}
-oned-system  :  SDProc
-oned-system  =  SDP oned-state oned-control oned-step
+_×C_  :  {S₁ S₂ : Set} ->
+         Con S₁ -> Con S₂ -> Con (S₁ × S₂)
+(C₁ ×C C₂) (s₁ , s₂) = C₁ s₁ × C₂ s₂
 \end{code}
+}\only<3>{
+\begin{code}
+Step : (S : Set) -> Con S -> Set
+Step S C = (s : S) -> C s -> S
+\end{code}
+}\only<3-4>{\vspace{-1cm}
+\begin{code}
+_×sf_  :   {S₁ S₂ : Set} {C₁ : Con S₁} {C₂ : Con S₂}
+       ->  Step S₁ C₁ -> Step S₂ C₂
+       ->  Step (S₁ × S₂) (C₁ ×C C₂)
+(sf₁ ×sf sf₂) (s₁ , s₂) (c₁ , c₂) = (sf₁ s₁ c₁ , sf₂ s₂ c₂)
+\end{code}
+}
+\only<4>{
+%format P1 = P "_1"
+%format P2 = P "_2"
+\textbf{Example:} |P1 ×SDP P2|
+\includegraphics{../paper/images/product.png}
+}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Product example}
+
+Example:
+%
+\begin{code}
+twod-system = oned-system ×SDP oned-system
+\end{code}
+
+Now |twod-system| is a process of two dimensions rather than one:
+
+\begin{code}
+pseq = tryleft ∷ tryleft ∷ right ∷ stay ∷ right ∷ []
+twodsequence  = zipWith _×P_ pseq pseq
+test2         = trajectory twod-system twodsequence (0 , 5)
+invisible     =  (0 , 4) ∷ (0 , 3) ∷ (1 , 4) ∷ (1 , 4) ∷ (2 , 5) ∷ []
+\end{code}
+%
+where |_×P_| is a combinator for policies.
 
 \end{frame}
 
 \end{document}
 
-\begin{tikzpicture}[y=.2cm, x=.7cm,font=\sffamily]
- 	%axis
-	\draw (0,0) -- coordinate (x axis mid) (10,0);
-    	\draw (0,0) -- coordinate (y axis mid) (0,30);
-    	%ticks
-    	\foreach \x in {0,...,10}
-     		\draw (\x,1pt) -- (\x,-3pt)
-			node[anchor=north] {\x};
-    	\foreach \y in {0,5,...,30}
-     		\draw (1pt,\y) -- (-3pt,\y)
-     			node[anchor=east] {\y};
-	%labels
-	\node[below=0.8cm] at (x axis mid) {MOPS};
-	\node[rotate=90, above=0.8cm] at (y axis mid) {Power [mW]};
-
-	%plots
-	\draw plot[mark=*, mark options={fill=white}]
-		file {div_soft.data};
-	\draw plot[mark=triangle*, mark options={fill=white} ]
-		file {div_ciu.data};
-	\draw plot[mark=square*, mark options={fill=white}]
-		file {div_ciu_oscar.data};
-	\draw plot[mark=square*]
-		file {div_ciu_oscar_extrapolated.data};
-
-	%legend
-	\begin{scope}[shift={(4,4)}]
-	\draw (0,0) --
-		plot[mark=*, mark options={fill=white}] (0.25,0) -- (0.5,0)
-		node[right]{soft};
-	\draw[yshift=\baselineskip] (0,0) --
-		plot[mark=triangle*, mark options={fill=white}] (0.25,0) -- (0.5,0)
-		node[right]{ciu};
-	\draw[yshift=2\baselineskip] (0,0) --
-		plot[mark=square*, mark options={fill=white}] (0.25,0) -- (0.5,0)
-		node[right]{ciu + oscar};
-	\draw[yshift=3\baselineskip] (0,0) --
-		plot[mark=square*, mark options={fill=black}] (0.25,0) -- (0.5,0)
-		node[right]{ciu + oscar extrapolated};
-	\end{scope}
-\end{tikzpicture}
-
-% ----------------------------------------------------------------
-\usetikzlibrary{arrows}
-% ..
-\begin{tikzpicture}[
-    scale=5,
-    axis/.style={very thick, ->, >=stealth'},
-    important line/.style={thick},
-    dashed line/.style={dashed, thin},
-    pile/.style={thick, ->, >=stealth', shorten <=2pt, shorten
-    >=2pt},
-    every node/.style={color=black}
-    ]
-    % axis
-    \draw[axis] (-0.1,0)  -- (1.1,0) node(xline)[right]
-        {$G\uparrow/T\downarrow$};
-    \draw[axis] (0,-0.1) -- (0,1.1) node(yline)[above] {$E$};
-    % Lines
-    \draw[important line] (.15,.15) coordinate (A) -- (.85,.85)
-        coordinate (B) node[right, text width=5em] {$Y^O$};
-    \draw[important line] (.15,.85) coordinate (C) -- (.85,.15)
-        coordinate (D) node[right, text width=5em] {$\mathit{NX}=x$};
-    % Intersection of lines
-    \fill[red] (intersection cs:
-       first line={(A) -- (B)},
-       second line={(C) -- (D)}) coordinate (E) circle (.4pt)
-       node[above,] {$A$};
-    % The E point is placed more or less randomly
-    \fill[red]  (E) +(-.075cm,-.2cm) coordinate (out) circle (.4pt)
-        node[below left] {$B$};
-    % Line connecting out and ext balances
-    \draw [pile] (out) -- (intersection of A--B and out--[shift={(0:1pt)}]out)
-        coordinate (extbal);
-    \fill[red] (extbal) circle (.4pt) node[above] {$C$};
-    % line connecting  out and int balances
-    \draw [pile] (out) -- (intersection of C--D and out--[shift={(0:1pt)}]out)
-        coordinate (intbal);
-    \fill[red] (intbal) circle (.4pt) node[above] {$D$};
-    % line between out og all balanced out :)
-    \draw[pile] (out) -- (E);
-\end{tikzpicture}
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: t

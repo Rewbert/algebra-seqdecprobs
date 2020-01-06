@@ -317,6 +317,7 @@ _×sf_  :   {S₁ S₂ : Set} {C₁ : Con S₁} {C₂ : Con S₂}
 %format P2 = P "_2"
 \textbf{Example:} |P1 ×SDP P2|
 \includegraphics{../paper/images/product.png}
+% Note that |Policy (S₁ × S₂) (C₁ ×C C₂) = (s : (S₁ × S₂)) → (C₁ ×C C₂) s|
 }
 \end{frame}
 
@@ -342,6 +343,112 @@ where |_×P_| is a combinator for policies.
 
 \end{frame}
 
+\begin{frame}{Zero and One}
+
+\begin{code}
+zero : SDProc
+zero = record {
+  State    = ⊥;
+  Control  = λ state -> ⊥;
+  step     = λ state -> λ control -> state }
+\end{code}
+
+\begin{code}
+unit : SDProc
+unit = record {
+  State    =  ⊤;
+  Control  =  λ state -> ⊤;
+  step     =  λ state -> λ control -> tt}
+\end{code}
+\end{frame}
+\begin{frame}
+  \frametitle{Coproduct combinator}
+
+\begin{code}
+_⊎SDP_ : SDProc → SDProc → SDProc
+SDP S₁ C₁ sf₁ ⊎SDP SDP S₂ C₂ sf₂
+  = SDP (S₁ ⊎ S₂) (C₁ ⊎C C₂) (sf₁ ⊎sf sf₂)
+
+_⊎C_  :  {S₁ S₂ : Set}
+      →  Con S₁ → Con S₂ → Con (S₁ ⊎ S₂)
+(C₁ ⊎C C₂) (inj₁ s₁)  = C₁ s₁
+(C₁ ⊎C C₂) (inj₂ s₂)  = C₂ s₂
+
+_⊎sf_  :   {S₁ S₂ : Set}
+       ->  {C₁ : Con S₁} -> {C₂ : Con S₂}
+       ->  Step S₁ C₁ -> Step S₂ C₂
+       ->  Step (S₁ ⊎ S₂) (C₁ ⊎C C₂)
+(sf₁ ⊎sf sf₂) (inj₁ s₁) c₁  = inj₁ (sf₁ s₁ c₁)
+(sf₁ ⊎sf sf₂) (inj₂ s₂) c₂  = inj₂ (sf₂ s₂ c₂)
+\end{code}
+\end{frame}
+\begin{frame}
+  \frametitle{Coproduct combinator example}
+
+Left injection:
+  \includegraphics[width=.8\linewidth]{../paper/images/coproduct-inj1.png}
+
+Right injection:
+  \includegraphics[width=.8\linewidth]{../paper/images/coproduct-inj2.png}
+\end{frame}
+
+\begin{frame}{Yielding coproduct example}
+
+Illustration: It is capable of switching between the two processes, as illustrated by the calls to |v1| and |v2|.
+
+\includegraphics[scale=0.7]{../paper/images/yieldcoproduct.png}
+
+With a combinator such as this one could you model e.g a two player game.
+
+The processes would be the players and the combined process allows each to take turns making their next move.
+
+\end{frame}
+\begin{frame}{Yielding coproduct code}
+
+\begin{code}
+_⊎C+_  :  {S₁ S₂ : Set}
+       →  Con S₁ → Con S₂ → Con (S₁ ⊎ S₂)
+(C₁ ⊎C+ C₂) (inj₁ s₁) = Maybe (C₁ s₁)
+(C₁ ⊎C+ C₂) (inj₂ s₂) = Maybe (C₂ s₂)
+\end{code}
+
+\begin{code}
+_⇄_ : (S₁ S₂ : Set) → Set
+s₁ ⇄ s₂ = (s₁ -> s₂) × (s₂ -> s₁)
+\end{code}
+
+\begin{code}
+⊎sf+  :  {S₁ S₂ : Set} {C₁ : Con S₁} {C₂ : Con S₂}
+      →  (S₁ ⇄ S₂)
+      →  Step S₁ C₁ → Step S₂ C₂
+      →  Step (S₁ ⊎ S₂) (C₁ ⊎C+ C₂)
+⊎sf+ _          sf₁ sf₂  (inj₁ s₁)  (just c)  = inj₁ (sf₁ s₁ c)
+⊎sf+ _          sf₁ sf₂  (inj₂ s₂)  (just c)  = inj₂ (sf₂ s₂ c)
+⊎sf+ (v₁ , _ )  sf₁ sf₂  (inj₁ s₁)  nothing   = inj₂ (v₁ s₁)
+⊎sf+ (_  , v₂)  sf₁ sf₂  (inj₂ s₂)  nothing   = inj₁ (v₂ s₂)
+
+syntax ⊎sf+ r sf₁ sf₂  =  sf₁ ⟨ r ⟩ sf₂
+\end{code}
+\end{frame}
+%
+
+\begin{frame}{Summary}
+  \begin{itemize}
+  \item It is possible to implement an algebra of SDPs
+  \item Products are immediately useful\\
+\includegraphics[scale=0.4]{../paper/images/product.png}
+  \item Plain coproducts --- not so much
+  \item Many variants possible: yielding coproducts, interleaving product, etc.\\
+\includegraphics[scale=0.4]{../paper/images/yieldcoproduct.png}
+\includegraphics[scale=0.4]{../paper/images/interleave.png}
+
+
+\end{itemize}
+Time-depedent, monadic cases left as exercises for the audience;-)
+
+
+
+\end{frame}
 \end{document}
 
 %%% Local Variables:
